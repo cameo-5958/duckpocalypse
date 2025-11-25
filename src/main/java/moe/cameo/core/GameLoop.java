@@ -17,30 +17,29 @@ public class GameLoop implements Runnable{
     private final Renderer renderer; 
     private boolean running = true;
 
-    // Calculate per-frame waiting time
-    private static final int FRAME_TIME_MS = 1000 / Constants.FPS;
-
     public GameLoop(GameState state, Renderer renderer) {
         this.state = state;
         this.renderer = renderer;
     }
 
     @Override
+    @SuppressWarnings("CallToPrintStackTrace")
     public void run() {
         // Main loop
         long prev = System.nanoTime();
+        // double dt = 1.0 / Constants.FPS;
 
         while (running && !state.isGameOver()) {
             // Calculate deltatime for other processes
             long now = System.nanoTime();
-            float dt = (now - prev) / 1_000_000_000f;
+            double dt = (now - prev) / 1_000_000_000.0;
             prev = now;
 
             state.update(dt);
             renderer.repaint();
 
             try {
-                Thread.sleep(FRAME_TIME_MS);
+                Thread.sleep(Constants.FRAME_TIME_MS);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 running = false;
