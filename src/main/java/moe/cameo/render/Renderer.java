@@ -83,12 +83,12 @@ public class Renderer extends JPanel {
         int ey = (int) e.getY();
 
         // Main box
-        g.setColor(Color.YELLOW);
+        g.setColor(e.getColor());
         g.fillRect(ex - es / 2, ey - es / 2, es, es);
 
         // Border
         g.setColor(Color.BLACK);
-        g.fillRect(ex - es / 2, ey - es / 2, es, es);
+        g.drawRect(ex - es / 2, ey - es / 2, es, es);
 
         // Draw directional line
         drawCenteredDirLine(g, ex, ey, es, e.getDirection());

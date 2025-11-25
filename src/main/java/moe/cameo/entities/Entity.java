@@ -1,5 +1,7 @@
 package moe.cameo.entities;
 
+import java.awt.Color;
+
 public abstract class Entity {
     protected double x;
     protected double y;
@@ -7,6 +9,8 @@ public abstract class Entity {
     protected double hp;
 
     protected double direction; // In degrees
+
+    protected Color entity_color = Color.PINK;
 
     protected final int ENTITY_SIZE = 32;
 
@@ -37,6 +41,7 @@ public abstract class Entity {
     public double getMaxHP() { return this.max_hp; }
 
     public int getSize() { return this.ENTITY_SIZE; }
+    public Color getColor() { return this.entity_color; }
 
     // Setters
     public void changeHP(int amount) {

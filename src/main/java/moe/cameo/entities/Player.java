@@ -5,6 +5,8 @@
 
 package moe.cameo.entities;
 
+import java.awt.Color;
+
 import moe.cameo.core.Constants;
 
 /**
@@ -24,7 +26,7 @@ public class Player extends Entity {
     private final float acceleration = Constants.PLAYER_ACCELERATION;
     private final float decceleration = Constants.PLAYER_DECCELERATION;
     private final float max_speed = Constants.PLAYER_MAX_SPEED;
-
+    
     // Store speed
     private float vx = 0.0f;
     private float vy = 0.0f;
@@ -32,6 +34,8 @@ public class Player extends Entity {
     // Override Constructor to start near middle
     public Player() {
         super(); 
+
+        entity_color = Color.YELLOW;
         this.x = Constants.SCREEN_X / 2;
         this.y = Constants.SCREEN_Y / 2;
     } 
@@ -42,6 +46,7 @@ public class Player extends Entity {
     }
 
     // Inherit RenderStepped
+    @Override
     public void renderStepped(double dt) {
         // VERTICAL direction handling
         if (key_states[KEY_UP] ^ key_states[KEY_DOWN]) {
@@ -98,5 +103,6 @@ public class Player extends Entity {
     }   
 
     // Player doesn't need to handle collisions
+    @Override
     public void onCollide(Entity e) { }
 }
