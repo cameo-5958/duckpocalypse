@@ -2,6 +2,7 @@ package moe.cameo;
 
 import javax.swing.JFrame;
 
+import moe.cameo.core.Constants;
 import moe.cameo.core.GameLoop;
 import moe.cameo.core.GameState;
 import moe.cameo.render.Renderer;
@@ -10,7 +11,7 @@ import moe.cameo.world.Board;
 public class Main {
     public static void main(String[] args) {
         // Initialize world and rendering
-        Board board = new Board(10, 8);
+        Board board = new Board(Constants.GAME_COLUMNS, Constants.GAME_ROWS);
         GameState state = new GameState(board);        
         Renderer renderer = new Renderer(state);
 
