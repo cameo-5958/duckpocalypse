@@ -1,0 +1,102 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+package moe.cameo.entities;
+
+import moe.cameo.core.Constants;
+
+/**
+ *
+ * @author kunru
+ */
+public class Player extends Entity {
+    // Store states on the movement keys
+    // "Enum" values
+    public static final int KEY_UP = 0;
+    public static final int KEY_DOWN = 1;
+    public static final int KEY_LEFT = 2;
+    public static final int KEY_RIGHT = 3;
+
+    // Store key states
+    private final boolean[] key_states = new boolean[4];
+    private final float acceleration = Constants.PLAYER_ACCELERATION;
+    private final float decceleration = Constants.PLAYER_DECCELERATION;
+    private final float max_speed = Constants.PLAYER_MAX_SPEED;
+
+    // Store speed
+    private float vx = 0.0f;
+    private float vy = 0.0f;
+
+    // Override Constructor to start near middle
+    public Player() {
+        super(); 
+        this.x = Constants.SCREEN_X / 2;
+        this.y = Constants.SCREEN_Y / 2;
+    } 
+
+    // Setter
+    public void setKeyState(int key, boolean down) {
+        key_states[key] = down;
+    }
+
+    // Inherit RenderStepped
+    public void renderStepped(double dt) {
+        // VERTICAL direction handling
+        if (key_states[KEY_UP] ^ key_states[KEY_DOWN]) {
+            // Accelerate in one of the two directions
+            if (key_states[KEY_UP]) {
+                // DECREASE vy
+                this.vy -= this.acceleration * dt;
+                this.vy = Math.max(this.vy, -this.max_speed);
+            } else {
+                // INCREASE vy
+                this.vy += this.acceleration * dt;
+                this.vy = Math.min(this.vy, this.max_speed);
+            }
+        } else {
+            // Deccelerate
+            if (this.vy > 0) {
+                this.vy -= decceleration * dt;
+                this.vy = Math.max(0, this.vy);
+            } else if (this.vy < 0) {
+                this.vy += decceleration * dt;
+                this.vy = Math.min(0, this.vy);
+            }
+        }
+        
+        // HORIZONTAL direction handling
+        if (key_states[KEY_RIGHT] ^ key_states[KEY_LEFT]) {
+            // Accelerate in one of the two directions
+            if (key_states[KEY_LEFT]) {
+                // DECREASE vx
+                this.vx -= this.acceleration * dt;
+                this.vx = Math.max(this.vx, -this.max_speed);
+            } else {
+                // INCREASE vx
+                this.vx += this.acceleration * dt;
+                this.vx = Math.min(this.vx, this.max_speed);
+            }
+        } else {
+            // Deccelerate
+            if (this.vx > 0) {
+                this.vx -= decceleration * dt;
+                this.vx = Math.max(0, this.vx);
+            } else if (this.vx < 0) {
+                this.vx += decceleration * dt;
+                this.vx = Math.min(0, this.vx);
+            }
+        }
+    
+        // Change direction if vx > 0, etc.
+        if (vx > 0) { this.direction = 0; }
+        else if (vx < 0) { this.direction = 180; }
+        
+        // Move by vx, vy
+        this.move(vx * dt, vy * dt);
+    }   
+
+    // Player doesn't need to handle collisions
+    public void onCollide(Entity e) { }
+}

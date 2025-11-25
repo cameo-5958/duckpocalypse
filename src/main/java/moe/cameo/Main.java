@@ -3,6 +3,7 @@ package moe.cameo;
 import javax.swing.JFrame;
 
 import moe.cameo.core.Constants;
+import moe.cameo.core.GameControls;
 import moe.cameo.core.GameLoop;
 import moe.cameo.core.GameState;
 import moe.cameo.render.Renderer;
@@ -21,6 +22,13 @@ public class Main {
         frame.add(renderer);
         frame.pack();
         frame.setVisible(true);
+
+        // Set focusable, request focus
+        renderer.setFocusable(true);
+        renderer.requestFocusInWindow();
+
+        // Register events
+        GameControls.registerAllControls(state, renderer);
 
         // Create the thread for the main loop
         // and start it

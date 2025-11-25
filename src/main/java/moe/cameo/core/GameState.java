@@ -5,6 +5,7 @@
 
 package moe.cameo.core;
 
+import moe.cameo.entities.Player;
 import moe.cameo.world.Board;
 
 /**
@@ -15,15 +16,24 @@ public class GameState {
     // Store board
     private final Board board;
     private boolean gameOver = false;
+    private Player player;
 
     public GameState(Board board) {
         this.board = board;
+
+        // Create a player and add to board
+        player = new Player();
+        board.addEntity(player);
     }
 
     // Getter
     public Board getBoard()     { return this.board; }
     public boolean isGameOver() { return this.gameOver; }
+    public Player getPlayer()   { return this.player; }
 
     // Tick updates
-    public void update(float dt) {}
+    public void update(double dt) {
+        // Call renderStepped on the board
+        board.renderStepped(dt);
+    }
 }

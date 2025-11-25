@@ -32,15 +32,19 @@ public class Renderer extends JPanel {
 
     // Constructor
     public Renderer(GameState state) {
+        // Set constants
         this.state = state;
+        SCREEN_X = Constants.SCREEN_X;
+        SCREEN_Y = Constants.SCREEN_Y;
 
-        SCREEN_X = state.getBoard().getWidth() * TILE_SIZE;
-        SCREEN_Y = state.getBoard().getHeight() * TILE_SIZE;
-
+        // Change window size
         setPreferredSize(new Dimension(
             SCREEN_X,
             SCREEN_Y
         ));
+
+        // Enable double buffering
+        setDoubleBuffered(true);
     }
 
     // Draw ground
@@ -110,7 +114,14 @@ public class Renderer extends JPanel {
     // Paint
     @Override
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
         // Draw the ground to begin
         this.drawGround(g);
+
+        // Then units
+
+        // Entities after
+        this.drawEntities(g);
     }
 }

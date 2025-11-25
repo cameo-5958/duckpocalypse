@@ -29,11 +29,12 @@ public class GameLoop implements Runnable{
     public void run() {
         // Main loop
         long prev = System.nanoTime();
+        // double dt = 1.0 / Constants.FPS;
 
         while (running && !state.isGameOver()) {
             // Calculate deltatime for other processes
             long now = System.nanoTime();
-            float dt = (now - prev) / 1_000_000_000f;
+            double dt = (now - prev) / 1_000_000_000.0;
             prev = now;
 
             state.update(dt);

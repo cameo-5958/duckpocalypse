@@ -50,7 +50,14 @@ public abstract class Entity {
         }
     }
 
+    // Other
+    public void move(double dx, double dy) {
+        this.x += dx;
+        this.y += dy;
+    }
+
     // Abstract methods
     public abstract void renderStepped(double dt); // mirroring RBLX renderstepped event
-    
+    public abstract void onCollide(Entity e);
+
 }

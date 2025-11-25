@@ -63,4 +63,12 @@ public class Board {
     public void sortEntities() {
         Collections.sort( this.entities, Comparator.comparing(Entity::getY));
     }
+
+    // renderStepped
+    public void renderStepped(double dt) {
+        // Update entities first
+        for (Entity e : this.entities) {
+            e.renderStepped(dt);
+        }
+    }
 }
