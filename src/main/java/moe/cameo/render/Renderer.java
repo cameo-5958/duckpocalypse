@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
+import moe.cameo.entities.Entity;
+import moe.cameo.world.Board;
 
 /**
  *
@@ -56,6 +58,53 @@ public class Renderer extends JPanel {
         for (int y=TILE_SIZE; y<SCREEN_Y; y += TILE_SIZE) {
             g.fillRect(0, y-1, SCREEN_X, 2);
         }
+    }
+
+    // Drawing entities
+    private void drawEntities(Graphics g) {
+        Board board = state.getBoard();
+
+        // Get the list of entities and draw them
+        for (Entity e : board.getEntities()) {
+            drawEntity(g, e);
+        }
+    }
+
+    private void drawEntity(Graphics g, Entity e) {
+        // FOR NOW, just draw placeholder for 
+        // entity location
+
+        int es = e.getSize();
+        int ex = (int) e.getX();
+        int ey = (int) e.getY();
+
+        // Main box
+        g.setColor(Color.YELLOW);
+        g.fillRect(ex - es / 2, ey - es / 2, es, es);
+
+        // Border
+        g.setColor(Color.BLACK);
+        g.fillRect(ex - es / 2, ey - es / 2, es, es);
+
+        // Draw directional line
+        drawCenteredDirLine(g, ex, ey, es, e.getDirection());
+    }
+
+    // Draw DirLine. Mostly used for debug
+    private void drawCenteredDirLine(Graphics g, int px, int py, int size, double dir) {
+        // Convert to radians
+        double ang = dir / 180 * Math.PI;
+
+        // Arrow length
+        int len = size / 3;
+
+        // Tip of line
+        int tx = px + (int) (Math.cos(ang) * len);
+        int ty = py + (int) (Math.sin(ang) * len);
+
+        // Draw line
+        g.setColor(Color.RED);
+        g.drawLine(px, py, tx, ty);
     }
 
     // Paint

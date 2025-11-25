@@ -8,6 +8,8 @@ public abstract class Entity {
 
     protected double direction; // In degrees
 
+    protected final int ENTITY_SIZE = 32;
+
     // Default constructor
     public Entity() {
         // Initialize with 0s for
@@ -34,6 +36,8 @@ public abstract class Entity {
     public double getHP() { return this.hp; }
     public double getMaxHP() { return this.max_hp; }
 
+    public int getSize() { return this.ENTITY_SIZE; }
+
     // Setters
     public void changeHP(int amount) {
         this.hp += amount;
@@ -46,4 +50,7 @@ public abstract class Entity {
         }
     }
 
+    // Abstract methods
+    public abstract void renderStepped(double dt); // mirroring RBLX renderstepped event
+    
 }
