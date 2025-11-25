@@ -3,6 +3,7 @@ package moe.cameo.entities;
 import java.awt.Color;
 import java.util.List;
 
+import moe.cameo.collision.Rect;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.enemy.Enemy;
 
@@ -16,6 +17,12 @@ public abstract class Entity {
 
     protected Color COLOR;
     protected int SIZE;
+
+    protected Rect collider;
+
+    protected boolean collides_with_tiles = true;
+
+    protected double dx, dy;
 
     // Default constructor
     public Entity() {
@@ -48,6 +55,11 @@ public abstract class Entity {
     public int getSize()    { return this.SIZE; }
     public Color getColor() { return this.COLOR; }
 
+    public double getDX() { return this.dx; }
+    public double getDY() { return this.dy; }
+
+    public Rect getCollider() { return this.collider; }
+
     // Setters
     public void changeHP(int amount) {
         this.hp += amount;
@@ -60,10 +72,24 @@ public abstract class Entity {
         }
     }
 
+    public void shiftX(double dx) { this.x += dx; }
+    public void shiftY(double dy) { this.y += dy; }
+
     // Other
     public void move(double dx, double dy) {
-        this.x += dx;
-        this.y += dy;
+        this.dx = dx;
+        this.dy = dy;
+    }
+
+    public void _renderStep(double dt) {
+        // Recalculate rect
+        collider = new Rect(this.x, this.y, this.SIZE, this.SIZE);
+
+        // Reset dx, dy requests
+        dx = 0; dy = 0;
+        
+        // Call renderStepped
+        renderStepped(dt);
     }
 
     // Abstract methods

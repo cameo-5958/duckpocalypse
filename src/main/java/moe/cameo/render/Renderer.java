@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.Entity;
+import moe.cameo.units.Unit;
 import moe.cameo.world.Board;
 
 /**
@@ -64,7 +65,37 @@ public class Renderer extends JPanel {
         }
     }
 
-    // Drawing entities
+    // Drawing units ----
+    private void drawUnits(Graphics g) {
+        Board board = state.getBoard();
+
+        // Geta list of units and draw them
+        for (Unit u : board.getUnits()) {
+            drawUnit(g, u);
+        }
+    }
+
+    private void drawUnit(Graphics g, Unit u) {
+        // FOR NOW, just draw placeholder for 
+        // unit location
+
+        int us = Constants.TILE_SIZE;
+        int ux = (int) u.getX() * us;
+        int uy = (int) u.getY() * us;
+
+        // Main box
+        g.setColor(Color.BLACK);
+        g.fillRect(ux, uy, us, us);
+
+        // Border
+        g.setColor(Color.BLACK);
+        g.drawRect(ux, uy, us, us);
+
+        // Draw directional line
+        drawCenteredDirLine(g, ux + (us / 2), uy + (us / 2), us, u.getDirection());
+    }
+
+    // Drawing entities ----
     private void drawEntities(Graphics g) {
         Board board = state.getBoard();
 
@@ -120,6 +151,7 @@ public class Renderer extends JPanel {
         this.drawGround(g);
 
         // Then units
+        this.drawUnits(g);
 
         // Entities after
         this.drawEntities(g);

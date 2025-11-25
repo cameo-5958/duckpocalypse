@@ -21,6 +21,7 @@ public abstract class Projectile extends Entity {
 
     public Projectile(double vx, double vy) {
         this.vx = vx; this.vy = vy;
+        this.collides_with_tiles = false;
     }
 
     @Override
