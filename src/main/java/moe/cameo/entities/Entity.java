@@ -8,6 +8,23 @@ public abstract class Entity {
 
     protected double direction; // In degrees
 
+    // Default constructor
+    public Entity() {
+        // Initialize with 0s for
+        // all values that might need it
+        this.x = 0;
+        this.y = 0;
+        this.direction = 0;
+    }
+
+    // x,y constructor
+    public Entity(float x, float y) {
+        this();
+
+        this.x = x;
+        this.y = y;
+    }
+
     // Getters
     public boolean isAlive() { return this.hp > 0; }
     public double getX() { return this.x; }
