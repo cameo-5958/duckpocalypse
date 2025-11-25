@@ -12,6 +12,8 @@ public class Constants {
     public static final int PLAYER_DECCELERATION = 180;
     public static final int PLAYER_MAX_SPEED = 120;
 
+    public static final int GRACE_TIME_PER_ATTACK = 3;
+
     // Calculate other data ---- DON'T CHANGE PAST THESE
     // POINTS AS THEY'RE NOT CONFIGURATIONS
     public static final int SCREEN_X = GAME_COLUMNS * TILE_SIZE;

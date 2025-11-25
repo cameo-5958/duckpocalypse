@@ -5,6 +5,7 @@
 
 package moe.cameo.core;
 
+import moe.cameo.entities.Goal;
 import moe.cameo.entities.Player;
 import moe.cameo.world.Board;
 
@@ -16,7 +17,8 @@ public class GameState {
     // Store board
     private final Board board;
     private boolean gameOver = false;
-    private Player player;
+    private final Player player;
+    private final Goal goal;
 
     public GameState(Board board) {
         this.board = board;
@@ -24,6 +26,10 @@ public class GameState {
         // Create a player and add to board
         player = new Player();
         board.addEntity(player);
+
+        // Create a new goal and add to board
+        goal = new Goal();
+        board.addEntity(goal);
     }
 
     // Getter
@@ -35,5 +41,10 @@ public class GameState {
     public void update(double dt) {
         // Call renderStepped on the board
         board.renderStepped(dt);
+
+        // Check if game over
+        if (!goal.isAlive()) {
+            this.gameOver = true;
+        }
     }
 }

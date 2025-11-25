@@ -5,10 +5,20 @@
 
 package moe.cameo.entities.enemy;
 
+import java.util.List;
+
+import moe.cameo.core.GameState;
+import moe.cameo.entities.Entity;
+
 /**
  *
  * @author kunru
  */
-public class Enemy {
+public class Enemy extends Entity {
+    @Override
+    public void renderStepped(double dt) {};
+
+    @Override
+    public void onCollide(GameState state, List<Enemy> collisions) {};
 
 }

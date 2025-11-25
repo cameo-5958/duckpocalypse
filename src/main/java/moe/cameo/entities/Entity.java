@@ -1,6 +1,10 @@
 package moe.cameo.entities;
 
 import java.awt.Color;
+import java.util.List;
+
+import moe.cameo.core.GameState;
+import moe.cameo.entities.enemy.Enemy;
 
 public abstract class Entity {
     protected double x;
@@ -10,9 +14,8 @@ public abstract class Entity {
 
     protected double direction; // In degrees
 
-    protected Color entity_color = Color.PINK;
-
-    protected final int ENTITY_SIZE = 32;
+    protected Color COLOR;
+    protected int SIZE;
 
     // Default constructor
     public Entity() {
@@ -21,6 +24,8 @@ public abstract class Entity {
         this.x = 0;
         this.y = 0;
         this.direction = 0;
+        this.SIZE = 32;
+        this.COLOR = Color.PINK;
     }
 
     // x,y constructor
@@ -40,8 +45,8 @@ public abstract class Entity {
     public double getHP() { return this.hp; }
     public double getMaxHP() { return this.max_hp; }
 
-    public int getSize() { return this.ENTITY_SIZE; }
-    public Color getColor() { return this.entity_color; }
+    public int getSize()    { return this.SIZE; }
+    public Color getColor() { return this.COLOR; }
 
     // Setters
     public void changeHP(int amount) {
@@ -63,6 +68,6 @@ public abstract class Entity {
 
     // Abstract methods
     public abstract void renderStepped(double dt); // mirroring RBLX renderstepped event
-    public abstract void onCollide(Entity e);
+    public abstract void onCollide(GameState state, List<Enemy> collisions);
 
 }

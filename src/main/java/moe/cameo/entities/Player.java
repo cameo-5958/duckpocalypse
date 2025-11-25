@@ -6,8 +6,11 @@
 package moe.cameo.entities;
 
 import java.awt.Color;
+import java.util.List;
 
 import moe.cameo.core.Constants;
+import moe.cameo.core.GameState;
+import moe.cameo.entities.enemy.Enemy;
 
 /**
  *
@@ -35,9 +38,9 @@ public class Player extends Entity {
     public Player() {
         super(); 
 
-        entity_color = Color.YELLOW;
         this.x = Constants.SCREEN_X / 2;
         this.y = Constants.SCREEN_Y / 2;
+        this.COLOR = new Color(0, 0, 160);
     } 
 
     // Setter
@@ -104,5 +107,5 @@ public class Player extends Entity {
 
     // Player doesn't need to handle collisions
     @Override
-    public void onCollide(Entity e) { }
+    public void onCollide(GameState state, List<Enemy> collisions) { }
 }
