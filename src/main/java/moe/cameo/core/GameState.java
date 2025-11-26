@@ -5,10 +5,16 @@
 
 package moe.cameo.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import moe.cameo.collision.Collision;
+import moe.cameo.collision.Rect;
 import moe.cameo.entities.Entity;
 import moe.cameo.entities.Goal;
 import moe.cameo.entities.Player;
+import moe.cameo.entities.enemy.Enemy;
+import moe.cameo.entities.enemy.EnemyTypes;
 import moe.cameo.units.Unit;
 import moe.cameo.world.Board;
 
@@ -16,7 +22,7 @@ import moe.cameo.world.Board;
  *
  * @author kunru
  */
-public class GameState {
+public final class GameState {
     // Store board
     private final Board board;
     private boolean gameOver = false;
@@ -45,6 +51,9 @@ public class GameState {
         // Create a new goal and add to board
         goal = new Goal();
         board.addEntity(goal);
+
+        // Create a new enemy
+        spawnEnemy(EnemyTypes.NORMAL, 1, 1, 1);
     }
 
     // Getter
@@ -91,6 +100,12 @@ public class GameState {
         this.selected_y = (int) (fy / Constants.TILE_SIZE);
     }
 
+    // Spawn enemy
+    public void spawnEnemy(EnemyTypes et, int x, int y, int level) {
+        Enemy e = et.spawn(this.board, x, y, level);
+        board.addEntity(e);
+    }
+
     // Handle entity movement
     private void resolveMovement(Entity e) {
         double dx = e.getDX(); double dy = e.getDY();
@@ -117,6 +132,30 @@ public class GameState {
         for (Entity e : this.board.getEntities()) {
             if (e.getDX() != 0 || e.getDY() != 0)
                 this.resolveMovement(e);
+        }
+
+        // Calculate collisions. O(n^2) but whatever
+        // Store immutable list of entities
+        List<Entity> entities = new ArrayList<>(this.board.getEntities());
+        for (Entity e : entities) { // For all non-enemies...
+            Rect r = e.getCollider();
+
+            if (e instanceof Enemy) continue; 
+            List<Enemy> colls = new ArrayList<>();            
+
+            for (Entity f : entities) { // Loop throuhg all entities...
+                if (e == f) continue; // Skip self...
+                if (!(f instanceof Enemy em)) continue; // Skip non-enemies...
+
+                // Check collision
+                if (Collision.intersects(r, em.getCollider())) {
+                    colls.add(em);
+                }
+            }
+
+            // Call onCollide ONLY if necessary
+            if (!colls.isEmpty())
+                e.onCollide(this, colls);
         }
 
         // Refocus player

@@ -42,6 +42,9 @@ public class Player extends Entity {
     // Create animator
     private final Animator animator = new Animator("DuckIdle");
 
+    // Flipped state
+    private boolean isFlipped = false;
+
     // Override Constructor to start near middle
     public Player() {
         super(); 
@@ -109,7 +112,11 @@ public class Player extends Entity {
 
         // Play animation if moving
         if (Math.abs(this.vx) > 0.1 || Math.abs(this.vy) > 0.1) {
-            animator.play("DuckWalk");
+            // Check flipped state
+            if (this.vx < 0) this.isFlipped = true;
+            else if (this.vx > 0) this.isFlipped = false;
+            
+            animator.play("DuckWaddle");
         } else {
             animator.play("DuckIdle");
         }
@@ -130,7 +137,7 @@ public class Player extends Entity {
         BufferedImage frame = animator.getFrame();
 
         // Flip if facing opposite direction
-        if (this.vx < 0) {
+        if (isFlipped) {
             // WHY IS IT SO HARD TO FLIP AN IMAGE IN JAVA?!?!?!?
             BufferedImage flipped = new BufferedImage(
                 frame.getWidth(),

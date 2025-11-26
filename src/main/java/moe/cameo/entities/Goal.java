@@ -49,5 +49,9 @@ public class Goal extends Entity {
             last_collided = System.nanoTime();
             this.hp -= 1;
         }
+
+        // Kill every enemy that touches it
+        for (Enemy e : collisions) 
+            state.getBoard().removeEntity(e);
     }
 }

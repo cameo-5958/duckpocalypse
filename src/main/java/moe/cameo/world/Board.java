@@ -36,9 +36,8 @@ public class Board {
         this.width = width;
         this.height = height;
 
-        // Create tree border
+        // Define unit_locations
         unit_locations = new Unit[height][width];
-        this.defineInitialBorders();
 
         // Colliders
         tile_colliders = new Rect[height][width];
@@ -50,6 +49,9 @@ public class Board {
 
         // Initialize distances
         distances = new int[height][width];
+
+        // Create borders
+        this.defineInitialBorders();
     }
 
     private void defineInitialBorders() {
@@ -73,8 +75,12 @@ public class Board {
 
     private void place(Unit u, int x, int y) {
         // !! DANGER !! doesn't check location occupancy
+        // SUPER version. everyone calls this
         unit_locations[y][x] = u;
         this.units.add(u);
+
+        // Recalculate distance grid
+        this.calculateDistanceArray();
 
         // Call unit's onPlace
         u.onPlace();
@@ -107,6 +113,11 @@ public class Board {
     public int getHeight()  { return this.height; }
     public List<Unit>   getUnits()      { return this.units; }
     public List<Entity> getEntities()   { return this.entities; }
+    public int getDistanceAt(int x, int y) {
+        if (!inBounds(x, y)) return Integer.MAX_VALUE;
+
+        return this.distances[y][x];
+    }
 
     public boolean inBounds(int x, int y) {
         return !(x < 0 || x >= this.width || y < 0 || y >= this.height);
@@ -142,11 +153,8 @@ public class Board {
         // Clear current distance field
         for (int y=0; y < height; y++) 
             for (int x=0; x < width; x++) 
-                if (x != tcx && x != tcx+1 &&
-                    y != tcy && y != tcy+1)
-                    distances[y][x] = Integer.MAX_VALUE;
-                else
-                    distances[y][x] = 0;
+                distances[y][x] =   (x == tcx || x == tcx + 1) &&
+                                    (y == tcy || y == tcy + 1) ? 0 : Integer.MAX_VALUE;
 
         // Create a deque
         ArrayDeque<Point> q = new ArrayDeque<>();
@@ -168,13 +176,12 @@ public class Board {
                 if (!inBounds(nx, ny)) continue;
                 if (getOccupied(nx, ny)) continue;
 
-                if (distances[ny][nx] > d) {
+                if (distances[ny][nx] > d + 1) {
                     distances[ny][nx] = d + 1;
                     q.add(new Point(nx, ny));
                 }
             }
         }
-    
     }
 
     // Manage UNITS (unmoveable; "troops")
@@ -216,8 +223,30 @@ public class Board {
 
     // emulate Z-depth sorting (in reality just compares Y values)
     public void sortEntities() {
-        Collections.sort( this.entities, Comparator.comparing(Entity::getY));
+        Collections.sort(this.entities, Comparator.comparing(Entity::getY));
     }
+
+    // Return all entities in a tile radius 
+    public List<Entity> entitiesInRadius(double cx, double cy, float radiusTiles) {
+        List<Entity> result = new ArrayList<>();
+        float r2 = radiusTiles * radiusTiles;
+
+        // Loop through units
+        for (Entity e : this.entities) {
+            // Calculate pythagorean distance or whatever it's called
+            double dx = (e.getX() * Constants.TILE_SIZE + 0.5) - cx;
+            double dy = (e.getY() * Constants.TILE_SIZE + 0.5) - cy;
+            if (dx*dx + dy*dy <= r2) {
+                // Add to returned list
+                result.add(e);
+            }
+        }
+
+        // Sort list before returning
+        Collections.sort(result, Comparator.comparing(Entity::getY));
+        return result;
+    }
+
 
     // renderStepped
     public void renderStepped(double dt) {
