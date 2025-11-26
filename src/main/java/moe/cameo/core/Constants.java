@@ -3,11 +3,11 @@ package moe.cameo.core;
 import java.awt.Color;
 
 public class Constants {
-    public static final int TILE_SIZE = 32;
-    public static final int TILE_HITBOX_SIZE = 24;
+    public static final int TILE_SIZE = 64;
+    public static final int TILE_HITBOX_SIZE = 48;
 
-    public static final int GAME_COLUMNS = 32;
-    public static final int GAME_ROWS = 24;
+    public static final int GAME_COLUMNS = 16;
+    public static final int GAME_ROWS = 12;
 
     public static final int FPS = 60;
 

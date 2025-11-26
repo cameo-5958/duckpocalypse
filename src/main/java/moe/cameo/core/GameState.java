@@ -10,6 +10,7 @@ import moe.cameo.entities.Entity;
 import moe.cameo.entities.Goal;
 import moe.cameo.entities.Player;
 import moe.cameo.units.Unit;
+import moe.cameo.units.UnitType;
 import moe.cameo.world.Board;
 
 /**
@@ -50,8 +51,7 @@ public class GameState {
         for (int x=0; x<board.getWidth(); x++) {
             for(int y=0; y<board.getHeight(); y++) {
                 if (((x / 5) % 5) == 0 && (y % 5) == 0) {
-                    Unit u = new Unit(x, y);
-                    board.addUnit(u);
+                    board.addUnit(UnitType.TREE, x, y);
                 }
             }
         }
@@ -66,8 +66,10 @@ public class GameState {
     public int getMouseY() { return this.mouse_y; }
 
     public int getFocusedTileX() { return this.selected_x; }
-
     public int getFocusedTileY() { return this.selected_y; }
+    public Unit focusedTile() { 
+        return this.board.getUnitAt(this.selected_x, this.selected_y);
+    }
 
     // Setter
     public void setMouseX(int x) { this.mouse_x = x; }
@@ -85,11 +87,14 @@ public class GameState {
         double uy = dy / mag;
 
         // Look distance
-        double lookMult = Constants.TILE_SIZE;
+        double lookMult = Constants.TILE_SIZE * 1.2;
 
         // World coords
         double fx = px + ux * lookMult;
         double fy = py + uy * lookMult;
+
+        double dir = Math.toDegrees(Math.atan2(uy, ux));
+        this.player.setDirection(dir);
 
         // Convert to tile_index
         this.selected_x = (int) (fx / Constants.TILE_SIZE);

@@ -1,11 +1,14 @@
 package moe.cameo.entities;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import moe.cameo.collision.Rect;
+import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.enemy.Enemy;
+import moe.cameo.render.Sprites;
 
 public abstract class Entity {
     protected double x;
@@ -31,7 +34,7 @@ public abstract class Entity {
         this.x = 0;
         this.y = 0;
         this.direction = 0;
-        this.SIZE = 32;
+        this.SIZE = Constants.TILE_SIZE;
         this.COLOR = Color.PINK;
     }
 
@@ -60,6 +63,10 @@ public abstract class Entity {
 
     public Rect getCollider() { return this.collider; }
 
+    public BufferedImage getSprite() { 
+        return Sprites.get("NULL");
+    };
+
     // Setters
     public void changeHP(int amount) {
         this.hp += amount;
@@ -74,6 +81,11 @@ public abstract class Entity {
 
     public void shiftX(double dx) { this.x += dx; }
     public void shiftY(double dy) { this.y += dy; }
+
+    public void setDirection(double direction) {
+        this.direction = direction % 360;
+        if (this.direction < 0) this.direction += 360;
+    }
 
     // Other
     public void move(double dx, double dy) {

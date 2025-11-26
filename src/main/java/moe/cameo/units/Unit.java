@@ -1,5 +1,9 @@
 package moe.cameo.units;
 
+import java.awt.image.BufferedImage;
+
+import moe.cameo.render.Sprites;
+
 public class Unit {
     private int x;
     private int y;
@@ -23,4 +27,8 @@ public class Unit {
     public double getDirection() { return direction; }
 
     public void onPlace() { }
+
+    public BufferedImage getSprite() { 
+        return Sprites.get("NULL");
+    };
 }

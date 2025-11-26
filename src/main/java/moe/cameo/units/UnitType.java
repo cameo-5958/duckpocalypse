@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
  */
 public enum UnitType {
     // Register legal UnitTypes HERE
-    TREE(Tree::new);
+    TREE(Tree::new), GOAL(Goal::new);
 
     private final BiFunction<Integer, Integer, Unit> factory;
 

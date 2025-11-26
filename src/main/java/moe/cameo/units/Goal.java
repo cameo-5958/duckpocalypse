@@ -14,22 +14,21 @@ import moe.cameo.render.Sprites;
  *
  * @author kunru
  */
-public class Tree extends Unit implements Displayable {
-    public Tree(int x, int y) { super(x, y); }
+public class Goal extends Unit implements Displayable {
+    public Goal(int x, int y) { super(x, y); }
 
     static {
-        Sprites.load("TreeIcon", "/icons/tree");
-        Sprites.load("TreeSprite", "/sprites/trees");
+        Sprites.load("GoalIcon", "/icons/stand");
     }
 
     @Override
     public BufferedImage getImage() {
-        return Sprites.get("TreeIcon");
+        return Sprites.get("GoalIcon");
     }
 
     @Override
     public BufferedImage getSprite() {
-        return Sprites.get("TreeSprite");
+        return Sprites.get("Empty");
     }
 
     @Override

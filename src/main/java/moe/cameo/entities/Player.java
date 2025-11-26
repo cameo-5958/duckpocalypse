@@ -6,11 +6,13 @@
 package moe.cameo.entities;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.enemy.Enemy;
+import moe.cameo.render.Sprites;
 
 /**
  *
@@ -35,12 +37,17 @@ public class Player extends Entity {
     private double vx = 0.0f;
     private double vy = 0.0f;
 
+    // Initialize duck sprite
+    static {
+        Sprites.load("BaseDuck", "/sprites/duck");
+    }
+
     // Override Constructor to start near middle
     public Player() {
         super(); 
 
         this.x = Constants.SCREEN_X / 2;
-        this.y = Constants.SCREEN_Y / 2;
+        this.y = Constants.SCREEN_Y / 2 + Constants.TILE_SIZE;
         this.COLOR = new Color(0, 0, 160);
     } 
 
@@ -113,4 +120,9 @@ public class Player extends Entity {
     // Player doesn't need to handle collisions
     @Override
     public void onCollide(GameState state, List<Enemy> collisions) { }
+
+    @Override
+    public BufferedImage getSprite() {
+        return Sprites.get("BaseDuck");
+    }
 }

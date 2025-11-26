@@ -8,6 +8,7 @@ package moe.cameo.render;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -27,6 +28,7 @@ public class Renderer extends JPanel {
     
     private final GameState state;
     private static final int TILE_SIZE = Constants.TILE_SIZE;
+    private static final int TSS = TILE_SIZE * 4;
 
     private final int SCREEN_X;
     private final int SCREEN_Y;
@@ -83,16 +85,11 @@ public class Renderer extends JPanel {
         int ux = (int) u.getX() * us;
         int uy = (int) u.getY() * us;
 
-        // Main box
-        g.setColor(Color.BLACK);
-        g.fillRect(ux, uy, us, us);
-
-        // Border
-        g.setColor(Color.BLACK);
-        g.drawRect(ux, uy, us, us);
+        // Draw sprite
+        g.drawImage(u.getSprite(), ux, uy, us, us, null);
 
         // Draw directional line
-        drawCenteredDirLine(g, ux + (us / 2), uy + (us / 2), us, u.getDirection());
+        // drawCenteredDirLine(g, ux + (us / 2), uy + (us / 2), us, u.getDirection());
     }
 
     // Drawing entities ----
@@ -113,13 +110,8 @@ public class Renderer extends JPanel {
         int ex = (int) e.getX();
         int ey = (int) e.getY();
 
-        // Main box
-        g.setColor(e.getColor());
-        g.fillRect(ex - es / 2, ey - es / 2, es, es);
-
-        // Border
-        g.setColor(Color.BLACK);
-        g.drawRect(ex - es / 2, ey - es / 2, es, es);
+        // Draw sprite
+        g.drawImage(e.getSprite(), ex - es / 2, ey - es / 2, es, es, null);
 
         // Draw directional line
         drawCenteredDirLine(g, ex, ey, es, e.getDirection());
@@ -161,20 +153,38 @@ public class Renderer extends JPanel {
     // Drawing GUI
     private void drawGui(Graphics g) {
         // Draw the infobox on the top right
-        // (if required)
 
         drawInfobox(g);
     }
 
     // Draw infobox
     private void drawInfobox(Graphics g) {
+        // ONLY draw if state decrees an Unit is
+        // being selected:
+        Unit u = state.focusedTile();
+        if (u == null || !(u instanceof Displayable disp)) { return; }
+
         // Top left corner of infobox:
-        int MARGIN = 5;
-        int LEFT = Constants.TILE_SIZE * (Constants.GAME_ROWS * 2) - (MARGIN * 3);
+        int MARGIN = 10;
+        int LEFT = Constants.SCREEN_X - TSS - MARGIN * 3;
         int TOP = MARGIN;
 
         g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.2f));
-        g.fillRect(LEFT, TOP, (Constants.TILE_SIZE + MARGIN) * 2, (Constants.TILE_SIZE + MARGIN) * 3);
+        g.fillRect(LEFT, TOP, TSS + MARGIN * 2, TSS + MARGIN * 3);
+
+        BufferedImage img = disp.getImage();
+        if (img != null) {
+            int TILE = Constants.TILE_SIZE;
+            int scaled = TILE * 4; 
+
+            g.drawImage(img,
+                LEFT + MARGIN,
+                TOP + MARGIN,
+                scaled,
+                scaled,
+                null
+            );
+        }
     }
 
     // Paint

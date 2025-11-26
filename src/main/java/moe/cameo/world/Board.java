@@ -36,16 +36,9 @@ public class Board {
         this.width = width;
         this.height = height;
 
-        // Create occupied
+        // Create tree border
         unit_locations = new Unit[height][width];
-        for (int x=0; x<width; x++) {
-            this.place(UnitType.TREE, x, 0);
-            this.place(UnitType.TREE, 0, height-1);
-        }
-        for (int y=0; y<height; y++) {
-            this.place(UnitType.TREE, 0, y);
-            this.place(UnitType.TREE, width-1, y);
-        }
+        this.defineInitialBorders();
 
         // Colliders
         tile_colliders = new Rect[height][width];
@@ -58,6 +51,25 @@ public class Board {
         // Initialize distances
         distances = new int[height][width];
     }
+
+    private void defineInitialBorders() {
+        // Create occupied
+        for (int x=0; x<width; x++) {
+            this.place(UnitType.TREE, x, 0);
+            this.place(UnitType.TREE, x, height-1);
+        }
+        for (int y=0; y<height; y++) {
+            this.place(UnitType.TREE, 0, y);
+            this.place(UnitType.TREE, width-1, y);
+        }
+
+        int cx = width/2-1; int cy = height/2-1;
+        this.place(UnitType.GOAL, cx, cy);
+        this.place(UnitType.GOAL, cx+1, cy);
+        this.place(UnitType.GOAL, cx, cy+1);
+        this.place(UnitType.GOAL, cx+1, cy+1);
+    }
+    
 
     private void place(Unit u, int x, int y) {
         // !! DANGER !! doesn't check location occupancy
@@ -72,6 +84,22 @@ public class Board {
         // !! DANGER !! doesn't check location occupancy
         Unit new_unit = ut.create(x, y);
         this.place(new_unit, x, y);
+    }
+
+    public boolean addUnit(Unit u, int x, int y) {
+        // Check location
+        if (this.getOccupied(x, y)) { return false; }
+
+        this.place(u, x, y);
+        return true;
+    }
+
+    public boolean addUnit(UnitType ut, int x, int y) {
+        // Check location
+        if (this.getOccupied(x, y)) { return false; }
+
+        this.place(ut, x, y);
+        return true;
     }
 
     // Getters
