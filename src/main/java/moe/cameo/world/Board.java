@@ -1,5 +1,7 @@
 package moe.cameo.world;
 
+import java.awt.Point;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,22 +21,41 @@ public class Board {
     private final boolean[][] occupied;
     private final Rect[][] tile_colliders;
 
+    // Distance array
+    private final int[][] distances;
+
     private final List<Unit> units      = new ArrayList<>();
     private final List<Entity> entities = new ArrayList<>();
+
+    private static final int[] DX = {0, 1, 0, -1};
+    private static final int[] DY = {1, 0, -1, 0};
 
     public Board(int width, int height) {
         // Initialize board size
         this.width = width;
         this.height = height;
 
-        // Create occupied and colliders
+        // Create occupied
         occupied = new boolean[height][width];
+        for (int x=0; x<width; x++) {
+            occupied[0][x] = true;
+            occupied[height-1][x] = true;
+        }
+        for (int y=0; y<height; y++) {
+            occupied[y][0] = true;
+            occupied[y][width-1] = true;
+        }
+
+        // Colliders
         tile_colliders = new Rect[height][width];
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
                 tile_colliders[y][x] = tileRect(x, y);
             }
         }
+
+        // Initialize distances
+        distances = new int[height][width];
     }
 
     // Getters
@@ -43,9 +64,12 @@ public class Board {
     public List<Unit>   getUnits()      { return this.units; }
     public List<Entity> getEntities()   { return this.entities; }
 
+    public boolean inBounds(int x, int y) {
+        return !(x < 0 || x >= this.width || y < 0 || y >= this.height);
+    }
+
     public boolean getOccupied(int x, int y) {
-        if(x < 0 || x >= this.width) return true;
-        if(y < 0 || y >= this.height) return true;
+        if (!inBounds(x, y)) return true;
 
         return this.occupied[y][x];
     }
@@ -61,6 +85,47 @@ public class Board {
         }
 
         return Rect.NULL;
+    }
+
+    public void calculateDistanceArray() {
+        int tcx = (width / 2) - 1;
+        int tcy = (height / 2) - 1;
+        // Clear current distance field
+        for (int y=0; y < height; y++) 
+            for (int x=0; x < width; x++) 
+                if (x != tcx && x != tcx+1 &&
+                    y != tcy && y != tcy+1)
+                    distances[y][x] = Integer.MAX_VALUE;
+                else
+                    distances[y][x] = 0;
+
+        // Create a deque
+        ArrayDeque<Point> q = new ArrayDeque<>();
+
+        q.add(new Point(tcx, tcy));
+        q.add(new Point(tcx+1, tcy));
+        q.add(new Point(tcx, tcy+1));
+        q.add(new Point(tcx+1, tcy+1));
+
+        // Repeat until distance array is filled
+        while (!q.isEmpty()) {
+            Point p = q.poll();
+            int d = distances[p.y][p.x];
+
+            for (int i=0; i<4; i++) {
+                int nx = p.x + DX[i];
+                int ny = p.y + DY[i];
+
+                if (!inBounds(nx, ny)) continue;
+                if (getOccupied(nx, ny)) continue;
+
+                if (distances[ny][nx] > d) {
+                    distances[ny][nx] = d + 1;
+                    q.add(new Point(nx, ny));
+                }
+            }
+        }
+    
     }
 
     // Manage UNITS (unmoveable; "troops")
