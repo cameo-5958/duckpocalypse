@@ -51,11 +51,11 @@ public class Renderer extends JPanel {
     // Draw ground
     public void drawGround(Graphics g) {
         // Fill with green
-        g.setColor(new Color(0, 155, 0));
+        g.setColor(Constants.GROUND_COLOR);
         g.fillRect(0, 0, SCREEN_X, SCREEN_Y);
 
         // Grid lines
-        g.setColor(new Color(0, 100, 0));
+        g.setColor(Constants.GROUND_STRIP_COLOR);
         for (int x=TILE_SIZE; x<SCREEN_X; x += TILE_SIZE) {
             g.fillRect(x-1, 0, 2, SCREEN_Y);
         }
