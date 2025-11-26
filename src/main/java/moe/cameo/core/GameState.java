@@ -10,7 +10,6 @@ import moe.cameo.entities.Entity;
 import moe.cameo.entities.Goal;
 import moe.cameo.entities.Player;
 import moe.cameo.units.Unit;
-import moe.cameo.units.UnitType;
 import moe.cameo.world.Board;
 
 /**
@@ -46,15 +45,6 @@ public class GameState {
         // Create a new goal and add to board
         goal = new Goal();
         board.addEntity(goal);
-
-        // Create a bunch of units and add to board
-        for (int x=0; x<board.getWidth(); x++) {
-            for(int y=0; y<board.getHeight(); y++) {
-                if (((x / 5) % 5) == 0 && (y % 5) == 0) {
-                    board.addUnit(UnitType.TREE, x, y);
-                }
-            }
-        }
     }
 
     // Getter

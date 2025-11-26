@@ -12,8 +12,8 @@ public class Constants {
     public static final int FPS = 60;
 
     public static final int PLAYER_ACCELERATION = 240;
-    public static final int PLAYER_DECCELERATION = 480;
-    public static final int PLAYER_MAX_SPEED = 120;
+    public static final int PLAYER_DECCELERATION = 600;
+    public static final int PLAYER_MAX_SPEED = 60;
 
     public static final int GRACE_TIME_PER_ATTACK = 3;
 

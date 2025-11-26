@@ -5,10 +5,10 @@ import java.awt.image.BufferedImage;
 import moe.cameo.render.Sprites;
 
 public class Unit {
-    private int x;
-    private int y;
+    protected int x;
+    protected int y;
 
-    private double direction;
+    protected double direction;
 
     public Unit() {
         this.x = 0;

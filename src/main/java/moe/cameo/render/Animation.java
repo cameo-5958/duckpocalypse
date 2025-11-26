@@ -17,28 +17,31 @@ import java.awt.image.BufferedImage;
 public class Animation {
     private final BufferedImage[] frames;
     private final double frameTime;
+    private final int frameCount;
+    private final boolean loop;
+
     private double timer = 0;
     private int index = 0;
 
     // Constructors
-    public Animation(BufferedImage[] frames, double fps) {
+    protected Animation(BufferedImage[] frames, double spf, boolean loops) {
         this.frames = frames;
-        this.frameTime = fps;
+        this.frameTime = spf;
+        this.frameCount = frames.length;
+        this.loop = loops;
     }
-    public Animation(BufferedImage[] frames) {
-        this(frames, Double.POSITIVE_INFINITY);
+
+    protected Animation newAnimation() {
+        return new Animation(this.frames, this.frameTime, this.loop);
     }
 
     public void update(double dt) {
         // Update animation
 
-        // Single frame animation
-        if (frameTime == Double.POSITIVE_INFINITY) return; 
-
         timer += dt;
         while (timer >= frameTime) { 
             timer -= frameTime;
-            index = ++index % frames.length;
+            index = ++index % frameCount;
         }
     }
 
@@ -46,6 +49,11 @@ public class Animation {
     public BufferedImage getFrame() {
         return frames[index];
     }
+    
+    // Get looping status
+    public boolean loops() { return this.loop; }
+    public int getFrameIndex() { return this.index; } 
+    public int getFrameCount() { return this.frameCount; }
 
     // Reset
     public void reset() {
