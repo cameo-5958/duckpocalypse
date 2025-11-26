@@ -5,11 +5,13 @@
 
 package moe.cameo.entities;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.enemy.Enemy;
+import moe.cameo.render.Sprites;
 
 /**
  *
@@ -17,13 +19,22 @@ import moe.cameo.entities.enemy.Enemy;
  */
 public class Goal extends Entity {
     private long last_collided = System.nanoTime();
+
+    static {
+        Sprites.load("GrapeStand", "/sprites/stand");
+    }
     
     public Goal() {
         super();
         this.x = Constants.SCREEN_X / 2;
         this.y = Constants.SCREEN_Y / 2;
         this.hp = 10;
-        this.SIZE = 64;
+        this.SIZE = Constants.TILE_SIZE * 2;
+    }
+
+    @Override
+    public BufferedImage getSprite() {
+        return Sprites.get("GrapeStand");
     }
 
     @Override

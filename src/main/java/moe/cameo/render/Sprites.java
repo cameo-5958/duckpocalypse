@@ -8,13 +8,18 @@ import javax.imageio.ImageIO;
 
 public class Sprites {
     private static final HashMap<String, BufferedImage> sheets = new HashMap<>();
+
+    static {
+        load("NULL", "/icons/placeholder");
+        load("Empty", "/icons/empty");
+    }
     
     public static BufferedImage load(String key, String path) {
         if (sheets.containsKey(key)) 
             return sheets.get(key);
 
         try {
-            BufferedImage img = ImageIO.read(Sprites.class.getResource(path));
+            BufferedImage img = ImageIO.read(Sprites.class.getResource(path + ".png"));
             sheets.put(key, img);
             return img;
         } catch (IOException e) {

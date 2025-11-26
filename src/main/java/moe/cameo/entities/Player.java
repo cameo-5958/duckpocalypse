@@ -6,11 +6,15 @@
 package moe.cameo.entities;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.enemy.Enemy;
+import moe.cameo.render.Animator;
 
 /**
  *
@@ -35,12 +39,15 @@ public class Player extends Entity {
     private double vx = 0.0f;
     private double vy = 0.0f;
 
+    // Create animator
+    private final Animator animator = new Animator("DuckIdle");
+
     // Override Constructor to start near middle
     public Player() {
         super(); 
 
         this.x = Constants.SCREEN_X / 2;
-        this.y = Constants.SCREEN_Y / 2;
+        this.y = Constants.SCREEN_Y / 2 + Constants.TILE_SIZE;
         this.COLOR = new Color(0, 0, 160);
     } 
 
@@ -100,12 +107,16 @@ public class Player extends Entity {
             }
         }
 
+        // Play animation if moving
+        if (Math.abs(this.vx) > 0.1 || Math.abs(this.vy) > 0.1) {
+            animator.play("DuckWalk");
+        } else {
+            animator.play("DuckIdle");
+        }
 
-    
-        // Change direction if vx > 0, etc.
-        if (vx > 0) { this.direction = 0; }
-        else if (vx < 0) { this.direction = 180; }
-        
+        // Update animator
+        animator.update(dt);
+
         // Move by vx, vy
         this.move(vx * dt, vy * dt);
     }   
@@ -113,4 +124,31 @@ public class Player extends Entity {
     // Player doesn't need to handle collisions
     @Override
     public void onCollide(GameState state, List<Enemy> collisions) { }
+
+    @Override
+    public BufferedImage getSprite() {
+        BufferedImage frame = animator.getFrame();
+
+        // Flip if facing opposite direction
+        if (this.vx < 0) {
+            // WHY IS IT SO HARD TO FLIP AN IMAGE IN JAVA?!?!?!?
+            BufferedImage flipped = new BufferedImage(
+                frame.getWidth(),
+                frame.getHeight(),
+                frame.getType()
+            );
+
+            Graphics2D g2d = flipped.createGraphics();
+
+            // Flip horizontally
+            AffineTransform at = AffineTransform.getScaleInstance(-1, 1);
+            at.translate(-frame.getWidth(), 0);
+
+            g2d.drawImage(frame, at, null);
+            g2d.dispose();
+
+            frame = flipped;
+        }
+        return frame;
+    }
 }

@@ -1,10 +1,14 @@
 package moe.cameo.units;
 
-public class Unit {
-    private int x;
-    private int y;
+import java.awt.image.BufferedImage;
 
-    private double direction;
+import moe.cameo.render.Sprites;
+
+public class Unit {
+    protected int x;
+    protected int y;
+
+    protected double direction;
 
     public Unit() {
         this.x = 0;
@@ -21,4 +25,10 @@ public class Unit {
     public int getY() { return y; }
 
     public double getDirection() { return direction; }
+
+    public void onPlace() { }
+
+    public BufferedImage getSprite() { 
+        return Sprites.get("NULL");
+    };
 }
