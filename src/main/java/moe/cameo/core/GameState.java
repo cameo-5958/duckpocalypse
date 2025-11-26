@@ -23,6 +23,10 @@ public class GameState {
     private final Player player;
     private final Goal goal;
 
+    public enum GAME_STATE {
+        MENU, BUILDING, AUTO,
+    };
+
     public GameState(Board board) {
         this.board = board;
 
@@ -37,7 +41,7 @@ public class GameState {
         // Create a bunch of units and add to board
         for (int x=0; x<board.getWidth(); x++) {
             for(int y=0; y<board.getHeight(); y++) {
-                if (((x + (y * 3)) % 5) == 0) {
+                if (((x / 5) % 5) == 0 && (y % 5) == 0) {
                     Unit u = new Unit(x, y);
                     board.addUnit(u);
                 }
