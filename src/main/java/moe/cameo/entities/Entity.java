@@ -83,7 +83,7 @@ public abstract class Entity {
 
     public void _renderStep(double dt) {
         // Recalculate rect
-        collider = new Rect(this.x, this.y, this.SIZE, this.SIZE);
+        recalculateRect();
 
         // Reset dx, dy requests
         dx = 0; dy = 0;
@@ -92,8 +92,12 @@ public abstract class Entity {
         renderStepped(dt);
     }
 
+    // Recalculate rect
+    private void recalculateRect() {
+        collider = new Rect(this.x, this.y, this.SIZE, this.SIZE);
+    }
+
     // Abstract methods
     public abstract void renderStepped(double dt); // mirroring RBLX renderstepped event
     public abstract void onCollide(GameState state, List<Enemy> collisions);
-
 }

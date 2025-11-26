@@ -26,13 +26,14 @@ public class Player extends Entity {
 
     // Store key states
     private final boolean[] key_states = new boolean[4];
-    private final float acceleration = Constants.PLAYER_ACCELERATION;
-    private final float decceleration = Constants.PLAYER_DECCELERATION;
-    private final float max_speed = Constants.PLAYER_MAX_SPEED;
+    private final double acceleration = Constants.PLAYER_ACCELERATION;
+    private final double decceleration = Constants.PLAYER_DECCELERATION;
+    private final double max_speed = Constants.PLAYER_MAX_SPEED;
+    private final double max_diagonal = Constants.PLAYER_MAX_SPEED / Math.sqrt(2.0);
     
     // Store speed
-    private float vx = 0.0f;
-    private float vy = 0.0f;
+    private double vx = 0.0f;
+    private double vy = 0.0f;
 
     // Override Constructor to start near middle
     public Player() {
@@ -51,17 +52,19 @@ public class Player extends Entity {
     // Inherit RenderStepped
     @Override
     public void renderStepped(double dt) {
+        double max_cap = ((key_states[KEY_RIGHT] ^ key_states[KEY_LEFT]) && (key_states[KEY_UP] ^ key_states[KEY_DOWN])) ? max_diagonal : max_speed;
+
         // VERTICAL direction handling
         if (key_states[KEY_UP] ^ key_states[KEY_DOWN]) {
             // Accelerate in one of the two directions
             if (key_states[KEY_UP]) {
                 // DECREASE vy
                 this.vy -= this.acceleration * dt;
-                this.vy = Math.max(this.vy, -this.max_speed);
+                this.vy = Math.max(this.vy, -max_cap);
             } else {
                 // INCREASE vy
                 this.vy += this.acceleration * dt;
-                this.vy = Math.min(this.vy, this.max_speed);
+                this.vy = Math.min(this.vy, max_cap);
             }
         } else {
             // Deccelerate
@@ -80,11 +83,11 @@ public class Player extends Entity {
             if (key_states[KEY_LEFT]) {
                 // DECREASE vx
                 this.vx -= this.acceleration * dt;
-                this.vx = Math.max(this.vx, -this.max_speed);
+                this.vx = Math.max(this.vx, -max_cap);
             } else {
                 // INCREASE vx
                 this.vx += this.acceleration * dt;
-                this.vx = Math.min(this.vx, this.max_speed);
+                this.vx = Math.min(this.vx, max_cap);
             }
         } else {
             // Deccelerate
@@ -96,6 +99,8 @@ public class Player extends Entity {
                 this.vx = Math.min(0, this.vx);
             }
         }
+
+
     
         // Change direction if vx > 0, etc.
         if (vx > 0) { this.direction = 0; }
