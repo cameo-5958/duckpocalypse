@@ -21,4 +21,6 @@ public class Unit {
     public int getY() { return y; }
 
     public double getDirection() { return direction; }
+
+    public void onPlace() { }
 }

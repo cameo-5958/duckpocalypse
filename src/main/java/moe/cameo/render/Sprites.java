@@ -14,7 +14,7 @@ public class Sprites {
             return sheets.get(key);
 
         try {
-            BufferedImage img = ImageIO.read(Sprites.class.getResource(path));
+            BufferedImage img = ImageIO.read(Sprites.class.getResource(path + ".jpg"));
             sheets.put(key, img);
             return img;
         } catch (IOException e) {

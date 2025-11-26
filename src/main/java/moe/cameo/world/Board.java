@@ -11,6 +11,7 @@ import moe.cameo.collision.Rect;
 import moe.cameo.core.Constants;
 import moe.cameo.entities.Entity;
 import moe.cameo.units.Unit;
+import moe.cameo.units.UnitType;
 
 public class Board {
     // Board size
@@ -18,7 +19,7 @@ public class Board {
     private final int height;   
 
     // Occupied
-    private final boolean[][] occupied;
+    private final Unit[][] unit_locations;
     private final Rect[][] tile_colliders;
 
     // Distance array
@@ -36,14 +37,14 @@ public class Board {
         this.height = height;
 
         // Create occupied
-        occupied = new boolean[height][width];
+        unit_locations = new Unit[height][width];
         for (int x=0; x<width; x++) {
-            occupied[0][x] = true;
-            occupied[height-1][x] = true;
+            this.place(UnitType.TREE, x, 0);
+            this.place(UnitType.TREE, 0, height-1);
         }
         for (int y=0; y<height; y++) {
-            occupied[y][0] = true;
-            occupied[y][width-1] = true;
+            this.place(UnitType.TREE, 0, y);
+            this.place(UnitType.TREE, width-1, y);
         }
 
         // Colliders
@@ -56,6 +57,21 @@ public class Board {
 
         // Initialize distances
         distances = new int[height][width];
+    }
+
+    private void place(Unit u, int x, int y) {
+        // !! DANGER !! doesn't check location occupancy
+        unit_locations[y][x] = u;
+        this.units.add(u);
+
+        // Call unit's onPlace
+        u.onPlace();
+    }
+
+    private void place(UnitType ut, int x, int y) {
+        // !! DANGER !! doesn't check location occupancy
+        Unit new_unit = ut.create(x, y);
+        this.place(new_unit, x, y);
     }
 
     // Getters
@@ -71,12 +87,17 @@ public class Board {
     public boolean getOccupied(int x, int y) {
         if (!inBounds(x, y)) return true;
 
-        return this.occupied[y][x];
+        return this.unit_locations[y][x] != null;
+    }
+
+    public Unit getUnitAt(int x, int y) {
+        if (!inBounds(x, y)) return null;
+
+        return this.unit_locations[y][x];
     }
 
     public static Rect tileRect(double tx, double ty) {
-        int r = Constants.TILE_SIZE / 4;
-        return new Rect((tx + 0.5) * Constants.TILE_SIZE, (ty + 0.5) * Constants.TILE_SIZE, r, r);
+        return new Rect((tx + 0.5) * Constants.TILE_SIZE, (ty + 0.5) * Constants.TILE_SIZE, Constants.TILE_HITBOX_SIZE, Constants.TILE_HITBOX_SIZE);
     }
 
     public Rect getTileCollider(int tx, int ty) {
@@ -129,20 +150,14 @@ public class Board {
     }
 
     // Manage UNITS (unmoveable; "troops")
-    public boolean addUnit(Unit u)     { 
-        // Requested square must be available
-        int x = u.getX(); int y = u.getY();
-
-        if (this.getOccupied(x, y)) { return false; }
-
-        this.units.add(u);
-        this.occupied[y][x] = true;
-
-        return true;
-    }
     public void removeUnit(Unit u)  { 
-        this.units.remove(u); 
-        this.occupied[u.getY()][u.getX()] = false;
+        this.removeUnit(u.getX(), u.getY());
+    }
+
+    public void removeUnit(int x, int y) {
+        Unit u = this.getUnitAt(x, y);
+        this.units.remove(u);
+        unit_locations[y][x] = null;
     }
 
     // Return all units in a tile radius 

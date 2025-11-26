@@ -23,6 +23,14 @@ public class GameState {
     private final Player player;
     private final Goal goal;
 
+    // "Select tile" coordinate
+    private int selected_x = 0;
+    private int selected_y = 0;
+
+    // Mouse pos
+    private int mouse_x = 0;
+    private int mouse_y = 0;
+
     public enum GAME_STATE {
         MENU, BUILDING, AUTO,
     };
@@ -54,6 +62,40 @@ public class GameState {
     public boolean isGameOver() { return this.gameOver; }
     public Player getPlayer()   { return this.player; }
 
+    public int getMouseX() { return this.mouse_x; }
+    public int getMouseY() { return this.mouse_y; }
+
+    public int getFocusedTileX() { return this.selected_x; }
+
+    public int getFocusedTileY() { return this.selected_y; }
+
+    // Setter
+    public void setMouseX(int x) { this.mouse_x = x; }
+    public void setMouseY(int y) { this.mouse_y = y; }
+
+    // Calculate "focused" MouseTile
+    public void focus() {
+        // Player pos, deltas
+        double px = this.player.getX(); double py = this.player.getY();
+        double dx = this.mouse_x - px; double dy = this.mouse_y - py;
+
+        // magnitude
+        double mag = Math.sqrt(dx*dx + dy*dy);
+        double ux = dx / mag;
+        double uy = dy / mag;
+
+        // Look distance
+        double lookMult = Constants.TILE_SIZE;
+
+        // World coords
+        double fx = px + ux * lookMult;
+        double fy = py + uy * lookMult;
+
+        // Convert to tile_index
+        this.selected_x = (int) (fx / Constants.TILE_SIZE);
+        this.selected_y = (int) (fy / Constants.TILE_SIZE);
+    }
+
     // Handle entity movement
     private void resolveMovement(Entity e) {
         double dx = e.getDX(); double dy = e.getDY();
@@ -81,6 +123,9 @@ public class GameState {
             if (e.getDX() != 0 || e.getDY() != 0)
                 this.resolveMovement(e);
         }
+
+        // Refocus player
+        this.focus();
 
         // Sort entities
         this.board.sortEntities();

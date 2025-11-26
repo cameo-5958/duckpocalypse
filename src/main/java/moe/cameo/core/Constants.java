@@ -4,6 +4,7 @@ import java.awt.Color;
 
 public class Constants {
     public static final int TILE_SIZE = 32;
+    public static final int TILE_HITBOX_SIZE = 24;
 
     public static final int GAME_COLUMNS = 32;
     public static final int GAME_ROWS = 24;
@@ -11,13 +12,8 @@ public class Constants {
     public static final int FPS = 60;
 
     public static final int PLAYER_ACCELERATION = 240;
-<<<<<<< Updated upstream
     public static final int PLAYER_DECCELERATION = 480;
     public static final int PLAYER_MAX_SPEED = 120;
-=======
-    public static final int PLAYER_DECCELERATION = 360;
-    public static final int PLAYER_MAX_SPEED = 90;
->>>>>>> Stashed changes
 
     public static final int GRACE_TIME_PER_ATTACK = 3;
 

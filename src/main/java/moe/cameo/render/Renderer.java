@@ -142,6 +142,41 @@ public class Renderer extends JPanel {
         g.drawLine(px, py, tx, ty);
     }
 
+    // Draw player selected box
+    private void drawPlayerSelectedBox(Graphics g) {
+        int tx = state.getFocusedTileX();
+        int ty = state.getFocusedTileY();
+        
+        this.drawTilebox(g, tx, ty, Color.WHITE);
+    }
+
+    // Draw outlined tile box
+    private void drawTilebox(Graphics g, int tx, int ty, Color c) {
+        g.setColor(new Color(c.getRed() / 255.0f, c.getGreen() / 255.0f, c.getBlue() / 255.0f, 0.5f));
+        g.drawRect(tx * Constants.TILE_SIZE - 2, ty * Constants.TILE_SIZE - 2, Constants.TILE_SIZE + 4, Constants.TILE_SIZE + 4);
+        g.setColor(new Color(c.getRed() / 255.0f, c.getGreen() / 255.0f, c.getBlue() / 255.0f, 0.3f));
+        g.fillRect(tx * Constants.TILE_SIZE - 2, ty * Constants.TILE_SIZE - 2, Constants.TILE_SIZE + 4, Constants.TILE_SIZE + 4);
+    }
+
+    // Drawing GUI
+    private void drawGui(Graphics g) {
+        // Draw the infobox on the top right
+        // (if required)
+
+        drawInfobox(g);
+    }
+
+    // Draw infobox
+    private void drawInfobox(Graphics g) {
+        // Top left corner of infobox:
+        int MARGIN = 5;
+        int LEFT = Constants.TILE_SIZE * (Constants.GAME_ROWS * 2) - (MARGIN * 3);
+        int TOP = MARGIN;
+
+        g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.2f));
+        g.fillRect(LEFT, TOP, (Constants.TILE_SIZE + MARGIN) * 2, (Constants.TILE_SIZE + MARGIN) * 3);
+    }
+
     // Paint
     @Override
     public void paintComponent(Graphics g) {
@@ -150,10 +185,16 @@ public class Renderer extends JPanel {
         // Draw the ground to begin
         this.drawGround(g);
 
+        // Draw player's selected box box
+        this.drawPlayerSelectedBox(g);
+
         // Then units
         this.drawUnits(g);
 
         // Entities after
         this.drawEntities(g);
+
+        // Draw gui
+        this.drawGui(g);
     }
 }
