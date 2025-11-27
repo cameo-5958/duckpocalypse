@@ -1,5 +1,7 @@
 package moe.cameo.render;
 
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,5 +31,25 @@ public class Sprites {
 
     public static BufferedImage get(String key) {
         return sheets.get(key);
+    }
+
+    public static BufferedImage flip(BufferedImage original) {
+        // WHY IS IT SO HARD TO FLIP AN IMAGE IN JAVA?!?!?!?
+        BufferedImage flipped = new BufferedImage(
+            original.getWidth(),
+            original.getHeight(),
+            original.getType()
+        );
+
+        Graphics2D g2d = flipped.createGraphics();
+
+        // Flip horizontally
+        AffineTransform at = AffineTransform.getScaleInstance(-1, 1);
+        at.translate(-original.getWidth(), 0);
+
+        g2d.drawImage(original, at, null);
+        g2d.dispose();
+
+        return flipped;
     }
 }

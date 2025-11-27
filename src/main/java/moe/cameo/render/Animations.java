@@ -23,6 +23,8 @@ public class Animations {
         load("DuckWalk", "/animations/duck-walk", 0.125, false);
         load("DuckJump", "/animations/duck-jump", 0.4, false);
         load("DuckWaddle", "/animations/duck-waddle", 0.15, false);
+        
+        load("SlimeWalk", "/animations/slime-walk", 0.1, true);
     }
     
     public static Animation load(String key, String path, int frameWidth, double frameTime, boolean loop) {

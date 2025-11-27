@@ -6,8 +6,6 @@
 package moe.cameo.entities;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -15,6 +13,7 @@ import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.render.Animator;
+import moe.cameo.render.Sprites;
 
 /**
  *
@@ -138,23 +137,7 @@ public class Player extends Entity {
 
         // Flip if facing opposite direction
         if (isFlipped) {
-            // WHY IS IT SO HARD TO FLIP AN IMAGE IN JAVA?!?!?!?
-            BufferedImage flipped = new BufferedImage(
-                frame.getWidth(),
-                frame.getHeight(),
-                frame.getType()
-            );
-
-            Graphics2D g2d = flipped.createGraphics();
-
-            // Flip horizontally
-            AffineTransform at = AffineTransform.getScaleInstance(-1, 1);
-            at.translate(-frame.getWidth(), 0);
-
-            g2d.drawImage(frame, at, null);
-            g2d.dispose();
-
-            frame = flipped;
+            frame = Sprites.flip(frame);
         }
         return frame;
     }

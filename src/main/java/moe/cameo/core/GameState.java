@@ -15,6 +15,7 @@ import moe.cameo.entities.Goal;
 import moe.cameo.entities.Player;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.enemy.EnemyTypes;
+import moe.cameo.units.Spawner;
 import moe.cameo.units.Unit;
 import moe.cameo.units.UnitType;
 import moe.cameo.world.Board;
@@ -60,6 +61,7 @@ public final class GameState {
 
         // Create a new enemy
         spawnEnemy(EnemyTypes.TEST, 1, 1, 1);
+        spawnEnemy(EnemyTypes.SLIME, 1, 1, 1);
 
         // Assign unit tile squares
         this.setUnitTileSquares();
@@ -117,7 +119,11 @@ public final class GameState {
 
     // Spawn enemy
     public void spawnEnemy(EnemyTypes et, int x, int y, int level) {
-        Enemy e = et.spawn(this.board, x, y, level);
+        // Rather than spawn at a random location, 
+        // spawn at a random spawner
+        Spawner sp = board.getRandomSpawner();
+
+        Enemy e = et.spawn(this.board, sp.getX(), sp.getY(), level);
         board.addEntity(e);
     }
 

@@ -33,6 +33,8 @@ public class Board {
     private final List<Entity> entities = new ArrayList<>();
     private final List<Spawner> spawners = new ArrayList<>();
 
+    private static final int num_spawners = (int) (Math.random() * 5) + 4;
+
     private static final int[] DX = {0, 1, 0, -1};
     private static final int[] DY = {1, 0, -1, 0};
 
@@ -75,13 +77,10 @@ public class Board {
         // Randomly shuffle border points
         Collections.shuffle(border);
 
-        // Select # of border points to remove
-        int to_keep = (int) (Math.random() * 5) + 4;
-
         // Remove first to_keep points and create spawners
         int removed = 0;
         int i = 0;
-        while (removed < to_keep) {
+        while (removed < num_spawners) {
             Point p = border.get(i);
 
             // Confirm not corner point
@@ -104,6 +103,11 @@ public class Board {
         for (Point p : border) {
             this.place(UnitType.TREE, p.x, p.y);    
         }
+    }
+
+    // Get a random spawner
+    public Spawner getRandomSpawner() {
+        return spawners.get((int) (Math.random() * num_spawners));
     }
 
     private void place(Unit u, int x, int y) {

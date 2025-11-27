@@ -3,7 +3,7 @@ package moe.cameo.entities.enemy;
 import moe.cameo.world.Board;
 
 public enum EnemyTypes {
-    TEST(Test::new);
+    TEST(Test::new), SLIME(Slime::new);
     // Enemy spawner
 
     public interface EnemyFactory {
