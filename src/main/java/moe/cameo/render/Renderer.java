@@ -11,6 +11,9 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JPanel;
 
 import moe.cameo.core.Constants;
@@ -29,7 +32,7 @@ public class Renderer extends JPanel {
     
     private final GameState state;
     private static final int TILE_SIZE = Constants.TILE_SIZE;
-    private static final int TSS = TILE_SIZE * 4;
+    private static final int TSS = TILE_SIZE * 2;
 
     private static final Font FONT;
     
@@ -104,7 +107,8 @@ public class Renderer extends JPanel {
         Board board = state.getBoard();
 
         // Get the list of entities and draw them
-        for (Entity e : board.getEntities()) {
+        List<Entity> entities = new ArrayList<>(board.getEntities());
+        for (Entity e : entities) {
             drawEntity(g, e);
         }
     }
@@ -173,9 +177,8 @@ public class Renderer extends JPanel {
 
         // Top left corner of infobox:
         int MARGIN = 10;
-        int LEFT = Constants.SCREEN_X - TSS - MARGIN * 3;
+        int LEFT = Constants.SCREEN_X - TSS * 2 - MARGIN * 3;
         int TOP = MARGIN;
-        int TILE = Constants.TILE_SIZE * 4;
 
         g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.2f));
         g.fillRect(LEFT, TOP, TSS + MARGIN * 2, TSS + MARGIN * 3);
@@ -185,13 +188,11 @@ public class Renderer extends JPanel {
             g.drawImage(img,
                 LEFT + MARGIN,
                 TOP + MARGIN,
-                TILE,
-                TILE,
-                null
+                TSS, TSS, null
             );
         }
 
-        TOP += TILE + MARGIN;
+        TOP += TSS + MARGIN * 3;
 
         g.setFont(FONT);
         g.setColor(Color.BLACK);
