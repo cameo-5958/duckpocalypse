@@ -7,6 +7,7 @@ package moe.cameo.render;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -29,6 +30,12 @@ public class Renderer extends JPanel {
     private final GameState state;
     private static final int TILE_SIZE = Constants.TILE_SIZE;
     private static final int TSS = TILE_SIZE * 4;
+
+    private static final Font FONT;
+    
+    static {
+        FONT = new Font("DejaVu Sans", Font.PLAIN, 24);
+    }
 
     private final int SCREEN_X;
     private final int SCREEN_Y;
@@ -168,23 +175,27 @@ public class Renderer extends JPanel {
         int MARGIN = 10;
         int LEFT = Constants.SCREEN_X - TSS - MARGIN * 3;
         int TOP = MARGIN;
+        int TILE = Constants.TILE_SIZE * 4;
 
         g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.2f));
         g.fillRect(LEFT, TOP, TSS + MARGIN * 2, TSS + MARGIN * 3);
 
         BufferedImage img = disp.getImage();
         if (img != null) {
-            int TILE = Constants.TILE_SIZE;
-            int scaled = TILE * 4; 
-
             g.drawImage(img,
                 LEFT + MARGIN,
                 TOP + MARGIN,
-                scaled,
-                scaled,
+                TILE,
+                TILE,
                 null
             );
         }
+
+        TOP += TILE + MARGIN;
+
+        g.setFont(FONT);
+        g.setColor(Color.BLACK);
+        g.drawString(disp.getName(), LEFT + MARGIN, TOP + MARGIN);
     }
 
     // Paint

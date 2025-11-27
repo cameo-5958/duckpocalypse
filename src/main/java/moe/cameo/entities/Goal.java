@@ -38,7 +38,7 @@ public class Goal extends Entity {
     }
 
     @Override
-    public void renderStepped(double dt) {}
+    protected void renderStepped(double dt) {}
 
     @Override
     public void onCollide(GameState state, List<Enemy> collisions) {

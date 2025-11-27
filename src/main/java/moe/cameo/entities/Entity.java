@@ -88,7 +88,7 @@ public abstract class Entity {
     }
 
     // Other
-    public void move(double dx, double dy) {
+    protected void move(double dx, double dy) {
         this.dx = dx;
         this.dy = dy;
     }
@@ -110,6 +110,6 @@ public abstract class Entity {
     }
 
     // Abstract methods
-    public abstract void renderStepped(double dt); // mirroring RBLX renderstepped event
+    protected abstract void renderStepped(double dt); // mirroring RBLX renderstepped event
     public abstract void onCollide(GameState state, List<Enemy> collisions);
 }

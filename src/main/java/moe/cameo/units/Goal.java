@@ -33,6 +33,6 @@ public class Goal extends Unit implements Displayable {
 
     @Override
     public String getName() {
-        return "Trees";
+        return "Your grape stand!";
     }
 }

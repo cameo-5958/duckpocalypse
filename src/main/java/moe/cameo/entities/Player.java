@@ -61,7 +61,7 @@ public class Player extends Entity {
 
     // Inherit RenderStepped
     @Override
-    public void renderStepped(double dt) {
+    protected void renderStepped(double dt) {
         double max_cap = ((key_states[KEY_RIGHT] ^ key_states[KEY_LEFT]) && (key_states[KEY_UP] ^ key_states[KEY_DOWN])) ? max_diagonal : max_speed;
 
         // VERTICAL direction handling

@@ -86,11 +86,12 @@ public final class GameState {
         double uy = dy / mag;
 
         // Look distance
-        double lookMult = Constants.TILE_SIZE * 1.2;
+        // If the magnitude is NOT greater than lookMult,
+        // use the mouse as the worldcoord
+        double lookMult = Math.min(mag, Constants.TILE_SIZE * 1.2);
 
-        // World coords
-        double fx = px + ux * lookMult;
-        double fy = py + uy * lookMult;
+        double fx = (mag < lookMult) ? this.mouse_x : px + ux * lookMult;
+        double fy = (mag < lookMult) ? this.mouse_y : py + uy * lookMult;
 
         double dir = Math.toDegrees(Math.atan2(uy, ux));
         this.player.setDirection(dir);
@@ -121,19 +122,8 @@ public final class GameState {
         }
     }
 
-    // Tick updates
-    public void update(double dt) {
-        // RenderStep entities
-        for (Entity e : this.board.getEntities()) {
-            e._renderStep(dt);
-        }
-
-        // Move entities requesting movement
-        for (Entity e : this.board.getEntities()) {
-            if (e.getDX() != 0 || e.getDY() != 0)
-                this.resolveMovement(e);
-        }
-
+    // Collision handler
+    private void collisionEngine() {
         // Calculate collisions. O(n^2) but whatever
         // Store immutable list of entities
         List<Entity> entities = new ArrayList<>(this.board.getEntities());
@@ -143,7 +133,7 @@ public final class GameState {
             if (e instanceof Enemy) continue; 
             List<Enemy> colls = new ArrayList<>();            
 
-            for (Entity f : entities) { // Loop throuhg all entities...
+            for (Entity f : entities) { // Loop through all entities...
                 if (e == f) continue; // Skip self...
                 if (!(f instanceof Enemy em)) continue; // Skip non-enemies...
 
@@ -157,6 +147,24 @@ public final class GameState {
             if (!colls.isEmpty())
                 e.onCollide(this, colls);
         }
+
+    }
+
+    // Tick updates
+    public void update(double dt) {
+        // RenderStep entities
+        for (Entity e : this.board.getEntities()) {
+            e._renderStep(dt);
+        }
+
+        // Move entities requesting movement
+        for (Entity e : this.board.getEntities()) {
+            if (e.getDX() != 0 || e.getDY() != 0)
+                this.resolveMovement(e);
+        }
+ 
+        // Calculate collisions
+        this.collisionEngine();
 
         // Refocus player
         this.focus();

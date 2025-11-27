@@ -25,7 +25,7 @@ public abstract class Projectile extends Entity {
     }
 
     @Override
-    public void renderStepped(double dt) {
+    protected void renderStepped(double dt) {
         // Move by vx, vy
         this.move(vx, vy);
     }

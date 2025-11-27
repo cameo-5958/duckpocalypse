@@ -30,6 +30,7 @@ public class Enemy extends Entity {
         );
         this.board = board;
         this.level = level;
+        this.SIZE = 32;
     }
 
     protected void scaleStats() {
@@ -38,7 +39,7 @@ public class Enemy extends Entity {
     }
 
     @Override
-    public void renderStepped(double dt) {
+    protected void renderStepped(double dt) {
 
         if (stopTimer > 0) {
             stopTimer -= dt;
