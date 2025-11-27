@@ -173,7 +173,6 @@ public class Renderer extends JPanel {
             } else {
                 this.drawTilebox(g, tx, ty, Color.RED);
             }
-            return;
         } else {
             this.drawTilebox(g, tx, ty, Color.WHITE);
         }
