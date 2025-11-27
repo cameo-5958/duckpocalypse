@@ -158,7 +158,7 @@ public final class GameState {
 
     // Attempt to place a Unit
     private void queryPlace(UnitType ut, int x, int y) {
-        Unit u = ut.create(x, y);
+        Unit u = board.addUnit(ut, x, y);
 
         if (u instanceof RequestsGamestates rsu) {
             rsu.setGameState(this);
