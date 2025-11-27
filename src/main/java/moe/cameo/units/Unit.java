@@ -2,6 +2,7 @@ package moe.cameo.units;
 
 import java.awt.image.BufferedImage;
 
+import moe.cameo.core.Constants;
 import moe.cameo.render.Sprites;
 
 public class Unit {
@@ -23,6 +24,9 @@ public class Unit {
 
     public int getX() { return x; }
     public int getY() { return y; }
+
+    public double getSX() { return x * Constants.TILE_SIZE; }
+    public double getSY() { return y * Constants.TILE_SIZE;}
 
     public double getDirection() { return direction; }
 

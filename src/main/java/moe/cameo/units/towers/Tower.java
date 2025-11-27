@@ -8,6 +8,7 @@ package moe.cameo.units.towers;
 import java.awt.image.BufferedImage;
 
 import moe.cameo.core.GameState;
+import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.render.Displayable;
 import moe.cameo.render.Sprites;
 import moe.cameo.units.RequestsGamestates;
@@ -62,6 +63,7 @@ RequestsGamestates {
     // Store the GameState to request
     // nearest enemy queries
     GameState state;
+    @Override
     public void setGameState(GameState state) { this.state = state; }
 
     // Displayable interfaced methods
@@ -118,13 +120,25 @@ RequestsGamestates {
         // Check if we're allowed to shoot
         cooldown -= dt;
         if (cooldown <= 0) {
-            this.shoot();
+            this._shoot();
+            cooldown = this.getFirerate();
         }
     }
 
     // SHOOTING!
-    private void shoot() {
+    private void _shoot() {
         // Find an enemy
+        Enemy e = state.getBoard().closestEnemyInRadius(
+            getSX(), getSY(), getRange()
+        );
 
+        // Face the enemy
+        this.direction = Math.toDegrees(Math.atan2(
+            e.getY() - getSY(), e.getX() - getSX()
+        ));
+
+        onShoot();
     }
+
+    protected void onShoot() {}
 }

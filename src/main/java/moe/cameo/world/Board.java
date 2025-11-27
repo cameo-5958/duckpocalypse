@@ -10,6 +10,7 @@ import java.util.List;
 import moe.cameo.collision.Rect;
 import moe.cameo.core.Constants;
 import moe.cameo.entities.Entity;
+import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.units.Spawner;
 import moe.cameo.units.Unit;
 import moe.cameo.units.UnitType;
@@ -278,15 +279,15 @@ public class Board {
     }
 
     // Return all units in a tile radius 
-    public List<Unit> unitsInRadius(float cx, float cy, float radiusTiles) {
+    public List<Unit> unitsInRadius(double cx, double cy, double radiusTiles) {
         List<Unit> result = new ArrayList<>();
-        float r2 = radiusTiles * radiusTiles;
+        double r2 = radiusTiles * radiusTiles;
 
         // Loop through units
         for (Unit u : this.units) {
             // Calculate pythagorean distance or whatever it's called
-            float dx = (u.getX() * Constants.TILE_SIZE + 0.5f) - cx;
-            float dy = (u.getY() * Constants.TILE_SIZE + 0.5f) - cy;
+            double dx = (u.getX() * Constants.TILE_SIZE + 0.5f) - cx;
+            double dy = (u.getY() * Constants.TILE_SIZE + 0.5f) - cy;
             if (dx*dx + dy*dy <= r2) {
                 // Add to returned list
                 result.add(u);
@@ -309,9 +310,9 @@ public class Board {
     }
 
     // Return all entities in a tile radius 
-    public List<Entity> entitiesInRadius(double cx, double cy, float radiusTiles) {
+    public List<Entity> entitiesInRadius(double cx, double cy, double radiusTiles) {
         List<Entity> result = new ArrayList<>();
-        float r2 = radiusTiles * radiusTiles;
+        double r2 = radiusTiles * radiusTiles;
 
         // Loop through units
         for (Entity e : this.entities) {
@@ -329,23 +330,32 @@ public class Board {
         return result;
     }
 
+    // Return all entities in a tile radius 
+    public Enemy closestEnemyInRadius(double cx, double cy, double radiusTiles) {
+        Enemy result = null;
+        double distance = radiusTiles * radiusTiles;
+
+        // Loop through units
+        for (Entity e : this.entities) {
+            if (!(e instanceof Enemy enem)) continue;
+
+            // Calculate pythagorean distance or whatever it's called
+            double dx = (e.getX() * Constants.TILE_SIZE + 0.5) - cx;
+            double dy = (e.getY() * Constants.TILE_SIZE + 0.5) - cy;
+            double dm = dx * dx + dy * dy;
+            if (dm < distance) {
+                // In range, or closer
+                result = enem;                
+            }
+        }
+
+        // Return closest enemy
+        return result;
+    }
+
     // boardChanged updates everything
     public void boardChanged() {
         this.calculateDistanceArray();
         this.calculateLegalPlacementPositions();
-    }
-
-
-    // renderStepped
-    public void renderStepped(double dt) {
-        // Update entities first
-        for (Entity e : this.entities) {
-            e._renderStep(dt);
-        }
-
-        // Move each entity
-
-        // Sort the entities list
-        this.sortEntities();
     }
 }
