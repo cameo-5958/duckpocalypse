@@ -6,7 +6,6 @@
 package moe.cameo.render;
 
 import java.awt.image.BufferedImage;
-import java.util.Map;
 
 /**
  *
@@ -32,6 +31,6 @@ public interface Displayable {
     }
 
     interface HasStats {
-        public Map<String, Integer> getStats();
+        public double[] getStats();
     }
 }

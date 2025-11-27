@@ -10,7 +10,7 @@ public class Slime extends Enemy {
         super(board, x, y, level);
 
         this.max_hp = 5;
-        this.baseSpeed = 180;
+        this.baseSpeed = 60;
 
         scaleStats();
     }

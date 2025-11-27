@@ -31,4 +31,12 @@ public class Unit {
     public BufferedImage getSprite() { 
         return Sprites.get("NULL");
     };
+
+    // Renderstepped
+    public void _renderStep(double dt) {
+        this.renderStepped(dt);
+    }
+
+    // Renderstep but overridable
+    protected void renderStepped(double dt) { }
 }

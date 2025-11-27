@@ -33,7 +33,7 @@ public class Board {
     private final List<Entity> entities = new ArrayList<>();
     private final List<Spawner> spawners = new ArrayList<>();
 
-    private static final int num_spawners = (int) (Math.random() * 5) + 4;
+    private static final int NUM_SPAWNERS = (int) (Math.random() * 5) + 4;
 
     private static final int[] DX = {0, 1, 0, -1};
     private static final int[] DY = {1, 0, -1, 0};
@@ -80,14 +80,13 @@ public class Board {
         // Remove first to_keep points and create spawners
         int removed = 0;
         int i = 0;
-        while (removed < num_spawners) {
+        while (removed < NUM_SPAWNERS) {
             Point p = border.get(i);
 
             // Confirm not corner point
-            if ((p.x == 0 || p.x == width) && (p.y == 0 || p.y == height)) { i++; continue; }
+            if ((p.x == 0 || p.x == width-1) && (p.y == 0 || p.y == height-1)) { i++; continue; }
 
-            // Remove unit and place spawner
-            this.removeUnit(p.x, p.y);
+            // Place a spawner
             this.place(UnitType.SPAWNER, p.x, p.y);
             spawners.add((Spawner) this.getUnitAt(p.x, p.y));
             
@@ -107,10 +106,10 @@ public class Board {
 
     // Get a random spawner
     public Spawner getRandomSpawner() {
-        return spawners.get((int) (Math.random() * num_spawners));
+        return spawners.get((int) (Math.random() * NUM_SPAWNERS));
     }
 
-    private void place(Unit u, int x, int y) {
+    private Unit place(Unit u, int x, int y) {
         // !! DANGER !! doesn't check location occupancy
         // SUPER version. everyone calls this
         unit_locations[y][x] = u;
@@ -121,28 +120,28 @@ public class Board {
 
         // Call unit's onPlace
         u.onPlace();
+
+        return u;
     }
 
-    private void place(UnitType ut, int x, int y) {
+    private Unit place(UnitType ut, int x, int y) {
         // !! DANGER !! doesn't check location occupancy
         Unit new_unit = ut.create(x, y);
-        this.place(new_unit, x, y);
+        return this.place(new_unit, x, y);
     }
 
-    public boolean addUnit(Unit u, int x, int y) {
+    public Unit addUnit(Unit u, int x, int y) {
         // Check location
-        if (this.getOccupied(x, y)) { return false; }
+        if (this.getOccupied(x, y)) { return null; }
 
-        this.place(u, x, y);
-        return true;
+        return this.place(u, x, y);
     }
 
-    public boolean addUnit(UnitType ut, int x, int y) {
+    public Unit addUnit(UnitType ut, int x, int y) {
         // Check location
-        if (this.getOccupied(x, y)) { return false; }
+        if (this.getOccupied(x, y)) { return null; }
 
-        this.place(ut, x, y);
-        return true;
+        return this.place(ut, x, y);
     }
 
     // Getters
@@ -242,7 +241,6 @@ public class Board {
                 }
 
                 // Temporarily block tile
-                Unit temp = unit_locations[y][x];
                 unit_locations[y][x] = UnitType.NULL.create(x, y);
 
                 // Recalculate distances
@@ -260,7 +258,7 @@ public class Board {
                 legalPlacement[y][x] = valid;
 
                 // Restore tile
-                unit_locations[y][x] = temp;
+                unit_locations[y][x] = null;
             }
         }
 
