@@ -15,6 +15,7 @@ import moe.cameo.entities.Goal;
 import moe.cameo.entities.Player;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.enemy.EnemyTypes;
+import moe.cameo.units.RequestsGamestates;
 import moe.cameo.units.Spawner;
 import moe.cameo.units.Unit;
 import moe.cameo.units.UnitType;
@@ -101,7 +102,7 @@ public final class GameState {
         // Look distance
         // If the magnitude is NOT greater than lookMult,
         // use the mouse as the worldcoord
-        double lookMult = Math.min(mag, Constants.TILE_SIZE * 1.2);
+        double lookMult = Math.min(mag, Constants.TILE_SIZE * 2.0);
 
         double fx = (mag < lookMult) ? this.mouse_x : px + ux * lookMult;
         double fy = (mag < lookMult) ? this.mouse_y : py + uy * lookMult;
@@ -114,7 +115,12 @@ public final class GameState {
         this.selected_y = (int) (fy / Constants.TILE_SIZE);
 
         // Set "canPlace" to its given status
-        this.canPlace = board.isLegalPlacement(this.selected_x, this.selected_y);
+        this.canPlace = board.isLegalPlacement(this.selected_x, this.selected_y) &&
+                        // Can't collide with player or we get softlocked
+                        !Collision.intersects(
+                            this.player.getCollider(), 
+                            Board.tileRect(this.selected_x, this.selected_y)
+                        );
     }
 
     // Spawn enemy
@@ -146,8 +152,16 @@ public final class GameState {
     private void setUnitTileSquares() {
         int cx = board.getWidth()/2-1; int cy = board.getHeight()/2-1;
         for (int i=0; i<2; i++) for (int j=0; j<2; j++){
-            board.addUnit(UnitType.GOAL, cx+i, cy+j);
-            ((moe.cameo.units.Goal) board.getUnitAt(cx+i, cy+j)).assignGameState(this);
+            queryPlace(UnitType.GOAL, cx+i, cy+j);
+        }
+    }
+
+    // Attempt to place a Unit
+    private void queryPlace(UnitType ut, int x, int y) {
+        Unit u = ut.create(x, y);
+
+        if (u instanceof RequestsGamestates rsu) {
+            rsu.setGameState(this);
         }
     }
 
@@ -176,7 +190,6 @@ public final class GameState {
             if (!colls.isEmpty())
                 e.onCollide(this, colls);
         }
-
     }
 
     // Handle unit placement
@@ -197,11 +210,40 @@ public final class GameState {
         this.gameState = GAME_STATE.BUILDING;
     }
 
+    // Click handler
+    public void click() {
+        switch (gameState) {
+            case PLACING_UNIT -> click_place_object();
+            case BUILDING -> check_gui_clicks();
+            default -> check_gui_clicks();
+        }
+    }
+
+    // Click with state as PLACING_UNIT
+    private void click_place_object() {
+        // No placement if can't place
+        if (!canPlace) { return; }
+
+        // Create a new unit of type placingType
+        // at the focused point
+        this.board.addUnit(placingType, selected_x, selected_y);
+
+        // Cancel the placement
+        cancelPlacing();
+    }
+
+    // Check GUI clicked
+    private void check_gui_clicks() {}
+
     // Get canPlace
     public boolean canPlace() { return this.canPlace; }
 
     // Tick updates
     public void update(double dt) {
+        // DEBUG: Set type to Tree, mode to PLACING_UNIT
+        this.gameState = GAME_STATE.PLACING_UNIT;
+        this.placingType = UnitType.TREE;
+
         // RenderStep entities
         for (Entity e : this.board.getEntities()) {
             e._renderStep(dt);

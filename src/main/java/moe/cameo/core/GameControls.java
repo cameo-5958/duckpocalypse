@@ -7,6 +7,7 @@ package moe.cameo.core;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.AbstractAction;
@@ -27,6 +28,7 @@ public class GameControls {
         // ENABLE methods for registration
         registerPlayerMovementControls(state, renderer);
         enablePlayerMousePosition(state, renderer);
+        mouseClickHandler(state, renderer);
     }
 
     // Player Movement Controls
@@ -75,6 +77,31 @@ public class GameControls {
 
             @Override
             public void mouseDragged(MouseEvent e) {}
+        });
+    }
+
+    // Mouse clicks
+    private static void mouseClickHandler(GameState state, Renderer renderer) {
+        renderer.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                state.click();
+            }
+
         });
     }
 }
