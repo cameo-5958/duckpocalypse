@@ -13,26 +13,25 @@ import java.util.Map;
  * @author kunru
  */
 public interface Displayable {
-    BufferedImage getImage();
-    String getName();
-    
+    public BufferedImage getImage();
+    public String getName();
 
     interface HasHealth {
         int getHP();
-        int getMaxHP();
+        public int getMaxHP();
     }
 
     interface HasLevel {
-        int getLevel();
-        int getMaxLevel();
+        public int getLevel();
+        public int getMaxLevel();
     }
 
     interface HasCards {
-        int getCards();
-        int getMaxCards();
+        public int getCards();
+        public int getMaxCards();
     }
 
     interface HasStats {
-        Map<String, Integer> getStats();
+        public Map<String, Integer> getStats();
     }
 }

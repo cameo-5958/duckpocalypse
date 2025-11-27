@@ -64,14 +64,7 @@ public class Board {
             this.place(UnitType.TREE, 0, y);
             this.place(UnitType.TREE, width-1, y);
         }
-
-        int cx = width/2-1; int cy = height/2-1;
-        this.place(UnitType.GOAL, cx, cy);
-        this.place(UnitType.GOAL, cx+1, cy);
-        this.place(UnitType.GOAL, cx, cy+1);
-        this.place(UnitType.GOAL, cx+1, cy+1);
     }
-    
 
     private void place(Unit u, int x, int y) {
         // !! DANGER !! doesn't check location occupancy

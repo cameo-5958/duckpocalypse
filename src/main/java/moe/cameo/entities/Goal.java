@@ -29,6 +29,7 @@ public class Goal extends Entity {
         this.x = Constants.SCREEN_X / 2;
         this.y = Constants.SCREEN_Y / 2;
         this.hp = 10;
+        this.max_hp = 10;
         this.SIZE = Constants.TILE_SIZE * 2;
     }
 

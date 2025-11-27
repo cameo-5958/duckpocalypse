@@ -16,6 +16,7 @@ import moe.cameo.entities.Player;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.enemy.EnemyTypes;
 import moe.cameo.units.Unit;
+import moe.cameo.units.UnitType;
 import moe.cameo.world.Board;
 
 /**
@@ -44,6 +45,12 @@ public final class GameState {
     public GameState(Board board) {
         this.board = board;
 
+        int cx = board.getWidth()/2-1; int cy = board.getHeight()/2-1;
+        for (int i=0; i<2; i++) for (int j=0; j<2; j++){
+            board.addUnit(UnitType.GOAL, cx+i, cy+j);
+            ((moe.cameo.units.Goal) board.getUnitAt(cx+i, cy+j)).assignGameState(this);
+        }
+        
         // Create a player and add to board
         player = new Player();
         board.addEntity(player);
@@ -69,6 +76,7 @@ public final class GameState {
     public Unit focusedTile() { 
         return this.board.getUnitAt(this.selected_x, this.selected_y);
     }
+    public Goal getGoal() { return this.goal; }
 
     // Setter
     public void setMouseX(int x) { this.mouse_x = x; }

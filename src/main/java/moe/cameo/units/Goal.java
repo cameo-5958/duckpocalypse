@@ -7,6 +7,7 @@ package moe.cameo.units;
 
 import java.awt.image.BufferedImage;
 
+import moe.cameo.core.GameState;
 import moe.cameo.render.Displayable;
 import moe.cameo.render.Sprites;
 
@@ -14,11 +15,19 @@ import moe.cameo.render.Sprites;
  *
  * @author kunru
  */
-public class Goal extends Unit implements Displayable {
-    public Goal(int x, int y) { super(x, y); }
+public class Goal extends Unit implements Displayable, Displayable.HasHealth {
+    private GameState state;
+
+    public Goal(int x, int y) { 
+        super(x, y);
+        }
 
     static {
         Sprites.load("GoalIcon", "/icons/stand");
+    }
+
+    public void assignGameState(GameState state) {
+        this.state = state;
     }
 
     @Override
@@ -34,5 +43,15 @@ public class Goal extends Unit implements Displayable {
     @Override
     public String getName() {
         return "Your grape stand!";
+    }
+
+    @Override
+    public int getHP() {
+        return (int) state.getGoal().getHP();
+    }
+
+    @Override 
+    public int getMaxHP() {
+        return (int) state.getGoal().getMaxHP();
     }
 }

@@ -12,7 +12,9 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -33,11 +35,24 @@ public class Renderer extends JPanel {
     private final GameState state;
     private static final int TILE_SIZE = Constants.TILE_SIZE;
     private static final int TSS = TILE_SIZE * 2;
+    private static final int FONT_SIZE = 24;
+
+    private static final int MARGIN = 10;
 
     private static final Font FONT;
+    private static final Font NORMAL_FONT;
+
+        // interfaceHeightMap stores heights required for displayables
+    private static final Map<Class<?>, Integer> interfaceHeightMap = new HashMap<>();
     
     static {
-        FONT = new Font("DejaVu Sans", Font.PLAIN, 24);
+        FONT = new Font("DejaVu Sans", Font.PLAIN, FONT_SIZE);
+        NORMAL_FONT = new Font("DejaVu Sans", Font.PLAIN, FONT_SIZE / 2);   
+
+        interfaceHeightMap.put(Displayable.class, TSS + FONT.getSize() + MARGIN); 
+        interfaceHeightMap.put(Displayable.HasHealth.class, FONT_SIZE);
+        interfaceHeightMap.put(Displayable.HasLevel.class, FONT_SIZE);
+        interfaceHeightMap.put(Displayable.HasCards.class, FONT_SIZE);
     }
 
     private final int SCREEN_X;
@@ -58,6 +73,16 @@ public class Renderer extends JPanel {
 
         // Enable double buffering
         setDoubleBuffered(true);
+    }
+
+    // Calculate height required
+    private int calculateHeightRequired(Unit u) {
+        int total = 0;
+        for (Class<?> iface : u.getClass().getInterfaces()) {
+            total += interfaceHeightMap.getOrDefault(iface, -MARGIN) + MARGIN;
+        }
+
+        return total + MARGIN;
     }
 
     // Draw ground
@@ -161,6 +186,32 @@ public class Renderer extends JPanel {
         g.fillRect(tx * Constants.TILE_SIZE - 2, ty * Constants.TILE_SIZE - 2, Constants.TILE_SIZE + 4, Constants.TILE_SIZE + 4);
     }
 
+    // Draw a progress bar
+    private void drawProgressBar(Graphics g, int left, int top, int sx, int sy, 
+                                 int progress, int max, int spacing)
+    { 
+        // Set the color to black to draw the background
+        g.setColor(Color.DARK_GRAY);
+        g.fillRect(left, top, sx, sy);
+
+        // Decrease the bounds
+        top += 2;   left += 2;
+        sx -= 4;    sy -= 4;
+
+        // Draw the filled in part
+        g.setColor(Color.LIGHT_GRAY);
+        g.fillRect(left, top, (int) (sx * ((double) progress / max)), sy);
+
+        // Max dx
+        int spaces = max / spacing;
+        int pixels_per_space = sx / spaces;
+
+        g.setColor(Color.DARK_GRAY);
+        for (int i=1; i<spaces; i++) {
+            g.fillRect(left + (pixels_per_space * i), top, 2, sy);
+        }
+    }
+
     // Drawing GUI
     private void drawGui(Graphics g) {
         // Draw the infobox on the top right
@@ -176,12 +227,11 @@ public class Renderer extends JPanel {
         if (u == null || !(u instanceof Displayable disp)) { return; }
 
         // Top left corner of infobox:
-        int MARGIN = 10;
         int LEFT = Constants.SCREEN_X - TSS * 2 - MARGIN * 3;
         int TOP = MARGIN;
 
         g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.2f));
-        g.fillRect(LEFT, TOP, TSS + MARGIN * 2, TSS + MARGIN * 3);
+        g.fillRect(LEFT, TOP, TSS + MARGIN * 2, this.calculateHeightRequired(u));
 
         BufferedImage img = disp.getImage();
         if (img != null) {
@@ -192,11 +242,20 @@ public class Renderer extends JPanel {
             );
         }
 
-        TOP += TSS + MARGIN * 3;
+        TOP += TSS + MARGIN * 2;
 
         g.setFont(FONT);
         g.setColor(Color.BLACK);
         g.drawString(disp.getName(), LEFT + MARGIN, TOP + MARGIN);
+
+        TOP += FONT_SIZE + MARGIN;
+
+        if (disp instanceof Displayable.HasHealth d) {
+            g.setColor(Color.BLACK);
+            g.setFont(NORMAL_FONT);
+            g.drawString("HP:", LEFT + MARGIN, TOP + MARGIN + 2);
+            this.drawProgressBar(g, LEFT + MARGIN, TOP + MARGIN + 2 + FONT_SIZE / 2, TSS, FONT_SIZE / 2 - 4, d.getHP(), d.getMaxHP(), 1);
+        }
     }
 
     // Paint
