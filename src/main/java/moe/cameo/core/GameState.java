@@ -44,12 +44,6 @@ public final class GameState {
 
     public GameState(Board board) {
         this.board = board;
-
-        int cx = board.getWidth()/2-1; int cy = board.getHeight()/2-1;
-        for (int i=0; i<2; i++) for (int j=0; j<2; j++){
-            board.addUnit(UnitType.GOAL, cx+i, cy+j);
-            ((moe.cameo.units.Goal) board.getUnitAt(cx+i, cy+j)).assignGameState(this);
-        }
         
         // Create a player and add to board
         player = new Player();
@@ -60,7 +54,10 @@ public final class GameState {
         board.addEntity(goal);
 
         // Create a new enemy
-        spawnEnemy(EnemyTypes.NORMAL, 1, 1, 1);
+        spawnEnemy(EnemyTypes.TEST, 1, 1, 1);
+
+        // Assign unit tile squares
+        this.setUnitTileSquares();
     }
 
     // Getter
@@ -127,6 +124,15 @@ public final class GameState {
         // Try Y axis
         if (!Collision.tileCollision(board, e.getCollider().shift( dx, dy))) {
             e.shiftY(dy);
+        }
+    }
+
+    // Set goal unit squares
+    private void setUnitTileSquares() {
+        int cx = board.getWidth()/2-1; int cy = board.getHeight()/2-1;
+        for (int i=0; i<2; i++) for (int j=0; j<2; j++){
+            board.addUnit(UnitType.GOAL, cx+i, cy+j);
+            ((moe.cameo.units.Goal) board.getUnitAt(cx+i, cy+j)).assignGameState(this);
         }
     }
 

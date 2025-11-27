@@ -42,7 +42,7 @@ public class Goal extends Unit implements Displayable, Displayable.HasHealth {
 
     @Override
     public String getName() {
-        return "Your grape stand!";
+        return "Grape Stand";
     }
 
     @Override

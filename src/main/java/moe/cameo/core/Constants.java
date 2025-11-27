@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class Constants {
     public static final int TILE_SIZE = 64;
-    public static final int TILE_HITBOX_SIZE = 48;
+    public static final int TILE_HITBOX_SIZE = 36;
 
     public static final int GAME_COLUMNS = 16;
     public static final int GAME_ROWS = 12;

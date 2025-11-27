@@ -50,7 +50,7 @@ public class Player extends Entity {
         super(); 
 
         this.x = Constants.SCREEN_X / 2;
-        this.y = Constants.SCREEN_Y / 2 + Constants.TILE_SIZE;
+        this.y = Constants.SCREEN_Y / 2 + Constants.TILE_SIZE * 2;
         this.COLOR = new Color(0, 0, 160);
     } 
 

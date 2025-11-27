@@ -13,13 +13,20 @@ public class Collision {
 
     public static boolean tileCollision(Board board, Rect r) {
         // Calculate "centerpoint" of Rect r in world-sized units
-        double wx = r.centerx / Constants.TILE_SIZE;
-        double wy = r.centery / Constants.TILE_SIZE;
+        int left   = (int) Math.floor(r.left   / Constants.TILE_SIZE);
+        int right  = (int) Math.floor((r.right  - 0.0001) / Constants.TILE_SIZE);
+        int top    = (int) Math.floor(r.top    / Constants.TILE_SIZE);
+        int bottom = (int) Math.floor((r.bottom - 0.0001) / Constants.TILE_SIZE);
 
-        int wxl = (int) wx; int wyt = (int) wy;
-        for(int dx=0;dx<2;dx++) {
-            for (int dy=0; dy<2;dy++) {
-                if (intersects(board.getTileCollider(wxl+dx,wyt+dy), r)) { return true; }
+        for (int tx = left; tx <= right; tx++) {
+            for (int ty = top; ty <= bottom; ty++) {
+
+                if (!board.inBounds(tx, ty)) continue;
+                if (!board.getOccupied(tx, ty)) continue;
+
+                if (intersects(board.getTileCollider(tx, ty), r)) {
+                    return true;
+                }
             }
         }
 

@@ -9,8 +9,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -73,16 +73,6 @@ public class Renderer extends JPanel {
 
         // Enable double buffering
         setDoubleBuffered(true);
-    }
-
-    // Calculate height required
-    private int calculateHeightRequired(Unit u) {
-        int total = 0;
-        for (Class<?> iface : u.getClass().getInterfaces()) {
-            total += interfaceHeightMap.getOrDefault(iface, -MARGIN) + MARGIN;
-        }
-
-        return total + MARGIN;
     }
 
     // Draw ground
@@ -190,25 +180,40 @@ public class Renderer extends JPanel {
     private void drawProgressBar(Graphics g, int left, int top, int sx, int sy, 
                                  int progress, int max, int spacing)
     { 
+        // Draw a roudned rectangle with progress filled in
+        Graphics2D g2d = (Graphics2D) g;
+
         // Set the color to black to draw the background
-        g.setColor(Color.DARK_GRAY);
-        g.fillRect(left, top, sx, sy);
+        g2d.setColor(new Color(0f, 0f, 0f, 0.35f));
+        g2d.fillRoundRect(left, top, sx, sy, sy, sy);
 
         // Decrease the bounds
         top += 2;   left += 2;
         sx -= 4;    sy -= 4;
 
-        // Draw the filled in part
-        g.setColor(Color.LIGHT_GRAY);
-        g.fillRect(left, top, (int) (sx * ((double) progress / max)), sy);
-
-        // Max dx
+        // Calculate pixels_per_space
         int spaces = max / spacing;
-        int pixels_per_space = sx / spaces;
+        float pixels_per_space = (float) sx / spaces;
 
-        g.setColor(Color.DARK_GRAY);
+        // Inner rect
+        g2d.setColor(new Color(.8f, .8f, .8f, 0.9f));
+
+        int cap = 20;
+
+        if (progress == max) {
+            g2d.fillRoundRect(left, top, sx, sy, sy, sy);
+        } else if (progress > 0) {
+            // Flat middle body (clips the right curve)
+            g2d.fillRect(left + cap, top, (int) (pixels_per_space * progress - cap), sy);
+
+            // Left rounded cap (always visible)
+            g2d.fillRoundRect(left, top, cap * 2, sy, sy, sy);
+        }
+
+        g2d.setColor(new Color(0f, 0f, 0f, 0.35f));
         for (int i=1; i<spaces; i++) {
-            g.fillRect(left + (pixels_per_space * i), top, 2, sy);
+            int p = left + (int) (pixels_per_space * i);
+            g2d.drawLine(p, top, p, top + sy);
         }
     }
 
@@ -219,43 +224,99 @@ public class Renderer extends JPanel {
         drawInfobox(g);
     }
 
-    // Draw infobox
+    // The infobox
+    private final class InfoboxLayout {
+        final int left; 
+        final int width; final int height;
+        final int top;
+
+        int current_y;
+
+        public InfoboxLayout(Displayable d) {
+            this(d, Constants.SCREEN_X - TSS - MARGIN * 3, MARGIN);
+        }       
+        
+        public InfoboxLayout(Displayable d, int left, int top) {
+            this.width = TSS;
+            this.left = left;
+            this.height = calculateHeight(d);
+            this.top = top;
+
+            this.current_y = 0;
+        }     
+
+        public int calculateHeight(Displayable d) {
+            int h = 0;
+            for (Class<?> iface : d.getClass().getInterfaces()) {
+                h += interfaceHeightMap.getOrDefault(iface, -MARGIN) + MARGIN;
+            }
+
+            return h;
+        }
+
+        public int nextLine(int dy) { 
+            int ret = this.top + this.current_y;
+            this.current_y += dy + MARGIN + MARGIN;
+            return ret;
+        }
+    }
+
+    // Drawing the infobox
     private void drawInfobox(Graphics g) {
         // ONLY draw if state decrees an Unit is
         // being selected:
         Unit u = state.focusedTile();
         if (u == null || !(u instanceof Displayable disp)) { return; }
 
-        // Top left corner of infobox:
-        int LEFT = Constants.SCREEN_X - TSS * 2 - MARGIN * 3;
-        int TOP = MARGIN;
+        // Create an infobox layout
+        InfoboxLayout layout = new InfoboxLayout(disp);
 
-        g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.2f));
-        g.fillRect(LEFT, TOP, TSS + MARGIN * 2, this.calculateHeightRequired(u));
+        // Draw guaranteed items
+        this.drawInfoboxBackground(g, layout);
+        this.drawInfoboxImage(g, layout, disp.getImage());
+        this.drawInfoboxText(g, layout, disp.getName());
 
-        BufferedImage img = disp.getImage();
-        if (img != null) {
-            g.drawImage(img,
-                LEFT + MARGIN,
-                TOP + MARGIN,
-                TSS, TSS, null
-            );
+        if (disp instanceof Displayable.HasHealth dhl) {
+            this.drawLabeledBar(g, layout, "HP:", dhl.getHP(), dhl.getMaxHP(), 1);
         }
+    }
 
-        TOP += TSS + MARGIN * 2;
+    // Infobox background
+    private void drawInfoboxBackground(Graphics g, InfoboxLayout layout) {
+        g.setColor(new Color(0.2f, 0.2f, 0.2f, 0.4f));
+        g.fillRect(layout.left - MARGIN, layout.top, layout.width + MARGIN * 2, layout.height);
+    }
 
+    // Infobox text
+    private void drawInfoboxText(Graphics g, InfoboxLayout layout, String text) {
         g.setFont(FONT);
         g.setColor(Color.BLACK);
-        g.drawString(disp.getName(), LEFT + MARGIN, TOP + MARGIN);
+        g.drawString(text,
+            layout.left,
+            layout.nextLine(FONT_SIZE)
+        ); 
+    } 
 
-        TOP += FONT_SIZE + MARGIN;
+    // Stamp image
+    private void drawInfoboxImage(Graphics g, InfoboxLayout layout, BufferedImage img) {
+        g.drawImage(img,
+            layout.left,
+            layout.nextLine(TSS),
+            TSS, TSS, null
+        );
+    }
 
-        if (disp instanceof Displayable.HasHealth d) {
-            g.setColor(Color.BLACK);
-            g.setFont(NORMAL_FONT);
-            g.drawString("HP:", LEFT + MARGIN, TOP + MARGIN + 2);
-            this.drawProgressBar(g, LEFT + MARGIN, TOP + MARGIN + 2 + FONT_SIZE / 2, TSS, FONT_SIZE / 2 - 4, d.getHP(), d.getMaxHP(), 1);
-        }
+    // Draw a labelled bar
+    private void drawLabeledBar(Graphics g, InfoboxLayout layout, String label, int progress, int max, int spacing)
+    {
+        // Get the top y
+        int top = layout.nextLine(FONT_SIZE / 2) - FONT_SIZE;
+
+        g.setFont(NORMAL_FONT);
+        g.setColor(Color.BLACK);
+        g.drawString(label, layout.left, top);
+
+        this.drawProgressBar(g, layout.left, top + 4, layout.width, FONT_SIZE / 2 - 4, progress, max, spacing);
     }
 
     // Paint
