@@ -249,6 +249,14 @@ public final class GameState {
             e._renderStep(dt);
         }
 
+        // RenderStep units
+        // Do this after in case a tower creates a 
+        // projectile (so first tick doesn't immediately)
+        // move the projectile
+        for (Unit u : this.board.getUnits()) {
+            u._renderStep(dt);
+        }
+
         // Move entities requesting movement
         for (Entity e : this.board.getEntities()) {
             if (e.getDX() != 0 || e.getDY() != 0)
