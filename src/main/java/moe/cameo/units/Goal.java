@@ -18,7 +18,7 @@ import moe.cameo.render.Sprites;
 public class Goal extends Unit implements Displayable, Displayable.HasHealth {
     private GameState state;
 
-    public Goal(int x, int y) { 
+    protected Goal(int x, int y) { 
         super(x, y);
         }
 

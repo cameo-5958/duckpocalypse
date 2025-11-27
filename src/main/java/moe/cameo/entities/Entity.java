@@ -62,6 +62,7 @@ public abstract class Entity {
     public double getDY() { return this.dy; }
 
     public Rect getCollider() { return this.collider; }
+    public boolean collideable() { return this.collides_with_tiles; }
 
     public BufferedImage getSprite() { 
         return Sprites.get("NULL");

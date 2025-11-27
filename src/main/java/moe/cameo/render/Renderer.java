@@ -49,7 +49,7 @@ public class Renderer extends JPanel {
         FONT = new Font("DejaVu Sans", Font.PLAIN, FONT_SIZE);
         NORMAL_FONT = new Font("DejaVu Sans", Font.PLAIN, FONT_SIZE / 2);   
 
-        interfaceHeightMap.put(Displayable.class, TSS + FONT.getSize() + MARGIN); 
+        interfaceHeightMap.put(Displayable.class, TSS + FONT.getSize()); 
         interfaceHeightMap.put(Displayable.HasHealth.class, FONT_SIZE);
         interfaceHeightMap.put(Displayable.HasLevel.class, FONT_SIZE);
         interfaceHeightMap.put(Displayable.HasCards.class, FONT_SIZE);
@@ -165,7 +165,18 @@ public class Renderer extends JPanel {
         int tx = state.getFocusedTileX();
         int ty = state.getFocusedTileY();
         
-        this.drawTilebox(g, tx, ty, Color.WHITE);
+        // Check the state of the game:
+        if (state.getGameState() == GameState.GAME_STATE.PLACING_UNIT) {
+            // Check if can place
+            if (state.canPlace()) {
+                this.drawTilebox(g, tx, ty, Color.GREEN);
+            } else {
+                this.drawTilebox(g, tx, ty, Color.RED);
+            }
+            return;
+        } else {
+            this.drawTilebox(g, tx, ty, Color.WHITE);
+        }
     }
 
     // Draw outlined tile box

@@ -30,6 +30,9 @@ public final class GameState {
     private final Player player;
     private final Goal goal;
 
+    // Store initial state
+    private GAME_STATE gameState = GAME_STATE.PLACING_UNIT;
+
     // "Select tile" coordinate
     private int selected_x = 0;
     private int selected_y = 0;
@@ -40,6 +43,8 @@ public final class GameState {
 
     public enum GAME_STATE {
         MENU, BUILDING, AUTO,
+
+        PLACING_UNIT,
     };
 
     public GameState(Board board) {
@@ -74,6 +79,7 @@ public final class GameState {
         return this.board.getUnitAt(this.selected_x, this.selected_y);
     }
     public Goal getGoal() { return this.goal; }
+    public GAME_STATE getGameState() { return this.gameState; }
 
     // Setter
     public void setMouseX(int x) { this.mouse_x = x; }
@@ -104,6 +110,9 @@ public final class GameState {
         // Convert to tile_index
         this.selected_x = (int) (fx / Constants.TILE_SIZE);
         this.selected_y = (int) (fy / Constants.TILE_SIZE);
+
+        // Set "canPlace" to its given status
+        this.canPlace = board.isLegalPlacement(this.selected_x, this.selected_y);
     }
 
     // Spawn enemy
@@ -117,12 +126,12 @@ public final class GameState {
         double dx = e.getDX(); double dy = e.getDY();
 
         // Try X axis
-        if (!Collision.tileCollision(board, e.getCollider().shift(dx, 0))) {
+        if (!e.collideable() || !Collision.tileCollision(board, e.getCollider().shift(dx, 0))) {
             e.shiftX(dx);
         } else { dx = 0;}
 
         // Try Y axis
-        if (!Collision.tileCollision(board, e.getCollider().shift( dx, dy))) {
+        if (!e.collideable() || !Collision.tileCollision(board, e.getCollider().shift( dx, dy))) {
             e.shiftY(dy);
         }
     }
@@ -163,6 +172,27 @@ public final class GameState {
         }
 
     }
+
+    // Handle unit placement
+    private UnitType placingType = null;
+    private boolean canPlace = false;
+
+    // Set a placing type
+    public void setPlacingType(UnitType ut) {
+        // Only possible if building / placing
+        if (this.gameState != GAME_STATE.BUILDING && this.gameState != GAME_STATE.PLACING_UNIT) return;
+        this.placingType = ut;
+        this.gameState = GAME_STATE.PLACING_UNIT;
+    }
+
+    // Cancel placement type
+    public void cancelPlacing() {
+        this.placingType = null;
+        this.gameState = GAME_STATE.BUILDING;
+    }
+
+    // Get canPlace
+    public boolean canPlace() { return this.canPlace; }
 
     // Tick updates
     public void update(double dt) {

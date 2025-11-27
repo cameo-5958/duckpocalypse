@@ -10,13 +10,13 @@ public class Unit {
 
     protected double direction;
 
-    public Unit() {
+    protected Unit() {
         this.x = 0;
         this.y = 0;
         this.direction = 0;
     }
 
-    public Unit(int x, int y) {
+    protected Unit(int x, int y) {
         this();
         this.x = x; this.y = y;
     }
