@@ -342,7 +342,7 @@ public final class GameState {
         if (this.paused) return;
 
         // RenderStep entities
-        for (Entity e : this.board.getEntities()) {
+        for (Entity e : new ArrayList<>(this.board.getEntities())) {
             e._renderStep(dt);
         }
 
@@ -372,7 +372,7 @@ public final class GameState {
         }
 
         // Move entities requesting movement
-        for (Entity e : this.board.getEntities()) {
+        for (Entity e : new ArrayList<>(this.board.getEntities())) {
             if (e.getDX() != 0 || e.getDY() != 0)
                 this.resolveMovement(e);
         }
