@@ -8,6 +8,8 @@ package moe.cameo.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import moe.cameo.cards.Card;
+import moe.cameo.cards.TowerCard;
 import moe.cameo.collision.Collision;
 import moe.cameo.collision.Rect;
 import moe.cameo.entities.Entity;
@@ -52,6 +54,9 @@ public final class GameState {
     private int wave = 0;
     private Wave current_wave = null;
 
+    // Store held cards
+    private final List<Card> held_cards = new ArrayList<>();
+
     public enum State {
         MENU, BUILDING, AUTO,
 
@@ -77,6 +82,9 @@ public final class GameState {
 
         // Set initial state
         setState(State.BUILDING);
+
+        // Deal cards
+        redealCards();
     }
 
     // Getter
@@ -94,6 +102,7 @@ public final class GameState {
     public Goal getGoal() { return this.goal; }
     public State getState() { return this.state; }
     public int getLevel() { return this.wave; }
+    public List<Card> heldCards() { return this.held_cards; }
 
     // Setter
     public void setMouseX(int x) { this.mouse_x = x; }
@@ -247,6 +256,15 @@ public final class GameState {
 
         if (u instanceof RequestsGamestates rsu) {
             rsu.setGameState(this);
+        }
+    }
+
+    // Reroll the current held cards
+    private void redealCards() {
+        this.held_cards.clear();
+
+        for (int i=0; i<Constants.MAX_CARDS_HELD; i++) {
+            this.held_cards.add(new TowerCard(TowerType.ARCHER));
         }
     }
 

@@ -18,6 +18,7 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
+import moe.cameo.cards.Card;
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.Entity;
@@ -226,6 +227,21 @@ public class Renderer extends JPanel {
         // Draw the infobox on the top right
 
         drawInfobox(g);
+
+        // Draw the cards if the state is 
+        // building
+        if (state.getState() == GameState.State.BUILDING) {
+            // Draw the cards
+            for (Card c : state.heldCards()) {
+                if (c == null) {
+
+                } else {
+                    // Get the rendered image
+                    BufferedImage card = c.getRender();
+                    g.drawImage(card, 0, 0, null);
+                }
+            }
+        }
     }
 
     // The infobox

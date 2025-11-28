@@ -12,10 +12,15 @@ public class Archer extends Tower {
     private static final BufferedImage arrowImage = Sprites.load("Arrow", "/projectiles/arrow");;
     private static final BufferedImage bowImage   = Sprites.load("Bow", "/towers/bow");
 
+    static {
+        Sprites.load("Archer", "/sprites/archer");
+    }
+
     protected Archer(int x, int y) {
         super(x, y);
 
         this.name = "Archer";
+        this.desc = "A low-cost, low-damage tower.";
 
         this.base_damages = new double[] {1, 3, 12, 25, 35};
         this.base_range = new double[] {240.0, 240.0, 320.0, 320.0, 320.0};
@@ -61,5 +66,10 @@ public class Archer extends Tower {
         BufferedImage bow = Sprites.rotate(bowImage, this.direction);
 
         return Sprites.overlay(underlay, bow);
+    }
+
+    @Override
+    public BufferedImage getImage() {
+        return Sprites.get("Archer");
     }
 }

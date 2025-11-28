@@ -20,6 +20,8 @@ public class Constants {
     public static final Color GROUND_COLOR = new Color(0, 155, 0);
     public static final Color GROUND_STRIP_COLOR = new Color(0, 130, 0);
 
+    public static final int MAX_CARDS_HELD = 3;
+
     // Calculate other data ---- DON'T CHANGE PAST THESE
     // POINTS AS THEY'RE NOT CONFIGURATIONS
     public static final int SCREEN_X = GAME_COLUMNS * TILE_SIZE;

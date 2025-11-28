@@ -9,6 +9,6 @@ package moe.cameo.cards;
  *
  * @author kunru
  */
-public class CardType {
+public enum CardType {
 
 }

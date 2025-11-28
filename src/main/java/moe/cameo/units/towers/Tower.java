@@ -27,6 +27,7 @@ extends Unit
 implements Displayable, Displayable.HasCards, Displayable.HasLevel, Displayable.HasStats,
 RequestsGamestates {
     protected String name = "Tower";
+    protected String desc = "The default, abstracted Tower.";
     // Cards required: 1 (unlock), 2 (+1), 5 (+3), 12 (+7), 32 (+17)
     protected int level = 1; // it's defaulted to one since you must
                             // place the tower
@@ -134,6 +135,9 @@ RequestsGamestates {
     public double getRange() {
         return this.base_range[level-1];
     }
+
+    public int getCost() { return this.base_cost; }
+    public String getDesc() { return this.desc; }
 
     // RenderStepped
     @Override
