@@ -6,9 +6,13 @@
 package moe.cameo.units.towers;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 import moe.cameo.core.GameState;
 import moe.cameo.entities.enemy.Enemy;
+import moe.cameo.entities.projectile.Projectile;
+import moe.cameo.render.Animator;
 import moe.cameo.render.Displayable;
 import moe.cameo.render.Sprites;
 import moe.cameo.units.RequestsGamestates;
@@ -39,7 +43,7 @@ RequestsGamestates {
     protected long cash_earnt   = 0;
 
     // Cost
-    protected final int base_cost = 1;
+    protected int base_cost = 1;
 
     // Tower stats
     protected double damage;
@@ -47,14 +51,18 @@ RequestsGamestates {
     protected double range;
 
     // Damages, firerates, ranges
-    protected final double[] base_damages  = {1, 2, 5, 12, 32};
-    protected final double[] base_firerate = {0.2, 0.2, 0.2, 0.2, 0.2};
-    protected final double[] base_range    = {4.0, 4.0, 4.0, 4.0, 4.0};
+    protected double[] base_damages  = {1, 2, 5, 12, 32};
+    protected double[] base_firerate = {0.2, 0.2, 0.2, 0.2, 0.2};
+    protected double[] base_range    = {4.0, 4.0, 4.0, 4.0, 4.0};
 
     // For attacking
     protected double cooldown = 0.0;
 
-    // MUST create a projectile
+    // For instantiating Projectiles
+    protected final List<Projectile> queued = new ArrayList<>();
+
+    // Animator
+    protected final Animator animator = new Animator("TowerIdle");
 
     protected Tower(int x, int y) {
         super(x, y);
@@ -69,13 +77,26 @@ RequestsGamestates {
     // Displayable interfaced methods
     @Override public String getName()           { return this.name; }
     @Override public int getCards()             { return this.cards; }
-    @Override public int getMaxCards()          { return this.max_cards; }
+    @Override public int getMaxCards()          { return this.upgrades_at[level]; }
     @Override public int getLevel()             { return this.level; }
     @Override public int getMaxLevel()          { return this.max_level; }
     @Override public BufferedImage getImage()   { return Sprites.get("NULL"); }
     @Override public double[] getStats() {
         double[] stats = { this.getDamage(), this.getFirerate(), this.getRange() };
         return stats;
+    }
+
+    // Get the projectile queue
+    public List<Projectile> getQueuedProjectiles() {
+        // Return this.queued, and clear it
+        List<Projectile> copy = new ArrayList<>(this.queued);
+        this.queued.clear();
+        return copy;
+    }
+
+    // Add a new projectile
+    protected final void fire(Projectile p) {
+        this.queued.add(p);
     }
     
     // Public API
@@ -120,25 +141,44 @@ RequestsGamestates {
         // Check if we're allowed to shoot
         cooldown -= dt;
         if (cooldown <= 0) {
-            this._shoot();
-            cooldown = this.getFirerate();
+            if (this._shoot()) cooldown = this.getFirerate();
         }
+
+        // Update 
+        this.animator.update(dt);
     }
 
     // SHOOTING!
-    private void _shoot() {
+    private boolean _shoot() {
         // Find an enemy
         Enemy e = state.getBoard().closestEnemyInRadius(
             getSX(), getSY(), getRange()
         );
 
+        if (e == null) { return false; }
+
         // Face the enemy
-        this.direction = Math.toDegrees(Math.atan2(
+        this.setDirection(Math.toDegrees(Math.atan2(
             e.getY() - getSY(), e.getX() - getSX()
-        ));
+        )));
+
+        // Play tower shooting animation
+        this.animator.play("TowerShoot");
 
         onShoot();
+
+        return true;
     }
 
     protected void onShoot() {}
+
+    @Override public BufferedImage getSprite() {
+        BufferedImage frame = this.animator.getFrame();
+                
+        // Flip the frame if necessary
+        if (this.direction >= 90 && this.direction <= 270) {
+            return Sprites.flip(frame);
+        } 
+        return frame;
+    }
 }

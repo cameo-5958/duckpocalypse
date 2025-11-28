@@ -21,7 +21,9 @@ import javax.swing.JPanel;
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.Entity;
+import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.units.Unit;
+import moe.cameo.units.towers.Tower;
 import moe.cameo.world.Board;
 
 /**
@@ -53,6 +55,7 @@ public class Renderer extends JPanel {
         interfaceHeightMap.put(Displayable.HasHealth.class, FONT_SIZE);
         interfaceHeightMap.put(Displayable.HasLevel.class, FONT_SIZE);
         interfaceHeightMap.put(Displayable.HasCards.class, FONT_SIZE);
+        interfaceHeightMap.put(Displayable.HasStats.class, FONT_SIZE);
     }
 
     private final int SCREEN_X;
@@ -112,7 +115,7 @@ public class Renderer extends JPanel {
 
         // Draw sprite
         g.drawImage(u.getSprite(), ux, uy, us, us, null);
-
+        
         // Draw directional line
         // drawCenteredDirLine(g, ux + (us / 2), uy + (us / 2), us, u.getDirection());
     }
@@ -129,8 +132,7 @@ public class Renderer extends JPanel {
     }
 
     private void drawEntity(Graphics g, Entity e) {
-        // FOR NOW, just draw placeholder for 
-        // entity location
+        // Draw all sprites
 
         int es = e.getSize();
         int ex = (int) e.getX();
@@ -138,6 +140,18 @@ public class Renderer extends JPanel {
 
         // Draw sprite
         g.drawImage(e.getSprite(), ex - es / 2, ey - es / 2, es, es, null);
+
+        // If its an enemy, draw its HP
+        if (e instanceof Enemy enem) {
+            double hp = enem.getHP();
+            double max_hp = enem.getMaxHP();
+
+            // Draw the HP
+            g.setColor(Color.BLACK);
+            g.fillRect(ex - es / 2, ey - es / 2, es, 6);
+            g.setColor(Color.GREEN);
+            g.fillRect(ex - es / 2 + 1, ey - es / 2 + 1, (int) ((es - 2.0) * hp / max_hp), 4);
+        }
     }
 
     // Draw player selected box
@@ -188,7 +202,7 @@ public class Renderer extends JPanel {
         // Inner rect
         g2d.setColor(new Color(.8f, .8f, .8f, 0.9f));
 
-        int cap = 20;
+        int cap = 5;
 
         if (progress == max) {
             g2d.fillRoundRect(left, top, sx, sy, sy, sy);
@@ -232,16 +246,20 @@ public class Renderer extends JPanel {
             this.height = calculateHeight(d);
             this.top = top;
 
-            this.current_y = 0;
+            this.current_y = MARGIN;
         }     
 
         public int calculateHeight(Displayable d) {
-            int h = 0;
+            int totalHeight = 0;
+            // Check all directly-implemented interfaces
             for (Class<?> iface : d.getClass().getInterfaces()) {
-                h += interfaceHeightMap.getOrDefault(iface, -MARGIN) + MARGIN;
+                Integer ifaceHeight = interfaceHeightMap.get(iface);
+                if (ifaceHeight != null) {
+                    totalHeight += ifaceHeight + MARGIN;
+                }
             }
-
-            return h;
+            // Ensure minimum height (at least the base Displayable height)
+            return Math.max(totalHeight, interfaceHeightMap.get(Displayable.class));
         }
 
         public int nextLine(int dy) { 
@@ -268,6 +286,14 @@ public class Renderer extends JPanel {
 
         if (disp instanceof Displayable.HasHealth dhl) {
             this.drawLabeledBar(g, layout, "HP:", dhl.getHP(), dhl.getMaxHP(), 1);
+        }
+
+        if (disp instanceof Displayable.HasLevel dhl) {
+            this.drawLabeledBar(g, layout, "Level:", dhl.getLevel(), dhl.getMaxLevel(), 1);
+        }
+
+        if (disp instanceof Displayable.HasCards dhc) {
+            this.drawLabeledBar(g, layout, "Cards to Upgrade:", dhc.getCards(), dhc.getMaxCards(), 1);
         }
     }
 
@@ -309,6 +335,21 @@ public class Renderer extends JPanel {
         this.drawProgressBar(g, layout.left, top + 4, layout.width, FONT_SIZE / 2 - 4, progress, max, spacing);
     }
 
+    // Draw a selected tower's range
+    private void drawTowerRange(Graphics g, Tower t) {
+        int range = (int) t.getRange() * 2;
+        int x = (int) t.getSX();
+        int y = (int) t.getSY();
+
+        // Draw a circle centered at 
+        // x, y with given range:
+        g.setColor(new Color(0.5f, 0.5f, 1.0f, 0.2f));
+        g.fillOval(x - range / 2, y - range / 2, range, range);
+
+        g.setColor(new Color(0.5f, 0.5f, 1.0f, 0.5f));
+        g.drawOval(x - range / 2, y - range / 2, range, range);
+    }
+
     // Paint
     @Override
     public void paintComponent(Graphics g) {
@@ -319,6 +360,11 @@ public class Renderer extends JPanel {
 
         // Draw player's selected box box
         this.drawPlayerSelectedBox(g);
+
+        // Draw a tower's range if selected
+        if (state.focusedTile() instanceof Tower t) {
+            this.drawTowerRange(g, t);
+        }
 
         // Then units
         this.drawUnits(g);

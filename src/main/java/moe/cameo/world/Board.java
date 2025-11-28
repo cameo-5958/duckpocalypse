@@ -317,8 +317,8 @@ public class Board {
         // Loop through units
         for (Entity e : this.entities) {
             // Calculate pythagorean distance or whatever it's called
-            double dx = (e.getX() * Constants.TILE_SIZE + 0.5) - cx;
-            double dy = (e.getY() * Constants.TILE_SIZE + 0.5) - cy;
+            double dx = e.getX() - cx;
+            double dy = e.getY() - cy;
             if (dx*dx + dy*dy <= r2) {
                 // Add to returned list
                 result.add(e);
@@ -340,12 +340,13 @@ public class Board {
             if (!(e instanceof Enemy enem)) continue;
 
             // Calculate pythagorean distance or whatever it's called
-            double dx = (e.getX() * Constants.TILE_SIZE + 0.5) - cx;
-            double dy = (e.getY() * Constants.TILE_SIZE + 0.5) - cy;
+            double dx = e.getX() - cx;
+            double dy = e.getY() - cy;
             double dm = dx * dx + dy * dy;
             if (dm < distance) {
                 // In range, or closer
-                result = enem;                
+                result = enem;  
+                distance = dm;              
             }
         }
 

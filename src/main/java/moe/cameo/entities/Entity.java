@@ -36,10 +36,15 @@ public abstract class Entity {
         this.direction = 0;
         this.SIZE = Constants.TILE_SIZE;
         this.COLOR = Color.PINK;
+
+        // Since entities with less than 
+        // 1 HP are dead, start with 1 HP
+        this.max_hp = 1;
+        this.hp = 1;
     }
 
     // x,y constructor
-    public Entity(float x, float y) {
+    public Entity(double x, double y) {
         this();
 
         this.x = x;
@@ -112,6 +117,9 @@ public abstract class Entity {
     private void recalculateRect() {
         collider = new Rect(this.x, this.y, this.SIZE, this.SIZE);
     }
+
+    // All collisions are allowed on default
+    public boolean mayICollide(Enemy e) { return true; };
 
     // Abstract methods
     protected abstract void renderStepped(double dt); // mirroring RBLX renderstepped event

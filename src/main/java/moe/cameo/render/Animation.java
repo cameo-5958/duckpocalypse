@@ -22,6 +22,7 @@ public class Animation {
 
     private double timer = 0;
     private int index = 0;
+    private boolean finished = false;
 
     // Constructors
     protected Animation(BufferedImage[] frames, double spf, boolean loops) {
@@ -37,11 +38,22 @@ public class Animation {
 
     public void update(double dt) {
         // Update animation
+        if (finished && !loop) return; // Stop updating if non-looping animation is done
 
         timer += dt;
         while (timer >= frameTime) { 
             timer -= frameTime;
-            index = ++index % frameCount;
+            index++;
+            
+            // For non-looping animations, clamp to last frame and mark as finished
+            if (!loop && index >= frameCount) {
+                index = frameCount - 1;
+                finished = true;
+                return;
+            }
+            
+            // For looping animations, wrap around
+            index = index % frameCount;
         }
     }
 
@@ -52,6 +64,7 @@ public class Animation {
     
     // Get looping status
     public boolean loops() { return this.loop; }
+    public boolean isFinished() { return this.finished; }
     public int getFrameIndex() { return this.index; } 
     public int getFrameCount() { return this.frameCount; }
 
@@ -59,5 +72,6 @@ public class Animation {
     public void reset() {
         timer = 0;
         index = 0;
+        finished = false;
     }
 }

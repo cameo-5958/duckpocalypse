@@ -25,8 +25,8 @@ public class Unit {
     public int getX() { return x; }
     public int getY() { return y; }
 
-    public double getSX() { return x * Constants.TILE_SIZE; }
-    public double getSY() { return y * Constants.TILE_SIZE;}
+    public double getSX() { return (x + 0.5) * Constants.TILE_SIZE; }
+    public double getSY() { return (y + 0.5) * Constants.TILE_SIZE;}
 
     public double getDirection() { return direction; }
 
@@ -43,4 +43,10 @@ public class Unit {
 
     // Renderstep but overridable
     protected void renderStepped(double dt) { }
+
+    // Direction setter
+    public void setDirection(double direction) {
+        this.direction = direction % 360;
+        if (this.direction < 0) this.direction += 360;
+    }
 }
