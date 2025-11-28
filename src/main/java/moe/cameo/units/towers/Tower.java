@@ -158,9 +158,9 @@ RequestsGamestates {
         if (e == null) { return false; }
 
         // Face the enemy
-        this.direction = Math.toDegrees(Math.atan2(
+        this.setDirection(Math.toDegrees(Math.atan2(
             e.getY() - getSY(), e.getX() - getSX()
-        ));
+        )));
 
         // Play tower shooting animation
         this.animator.play("TowerShoot");
@@ -173,6 +173,12 @@ RequestsGamestates {
     protected void onShoot() {}
 
     @Override public BufferedImage getSprite() {
-        return this.animator.getFrame();
+        BufferedImage frame = this.animator.getFrame();
+                
+        // Flip the frame if necessary
+        if (this.direction >= 90 && this.direction <= 270) {
+            return Sprites.flip(frame);
+        } 
+        return frame;
     }
 }

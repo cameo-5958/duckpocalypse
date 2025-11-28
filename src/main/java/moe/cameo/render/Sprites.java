@@ -89,4 +89,26 @@ public class Sprites {
 
         return rotated;
     }
+
+    public static BufferedImage overlay(BufferedImage base, BufferedImage top) {
+        // Overlays one sprite with another
+        int w = base.getWidth();
+        int h = base.getHeight();
+
+        BufferedImage combined = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = combined.createGraphics();
+
+        // Draw base
+        g.drawImage(base, 0, 0, null);
+
+        // Draw overlay AT CENTER
+        int topW = top.getWidth();
+        int topH = top.getHeight();
+        int x = (w - topW) / 2;
+        int y = (h - topH) / 2;
+        g.drawImage(top, x, y, null);
+
+        g.dispose();
+        return combined;
+    }
 }

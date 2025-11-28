@@ -10,6 +10,7 @@ import moe.cameo.render.Sprites;
 public class Archer extends Tower {
     // Store the arrow's image here
     private static final BufferedImage arrowImage = Sprites.load("Arrow", "/projectiles/arrow");;
+    private static final BufferedImage bowImage   = Sprites.load("Bow", "/towers/bow");
 
     protected Archer(int x, int y) {
         super(x, y);
@@ -52,5 +53,13 @@ public class Archer extends Tower {
         // Create an arrow that fires 
         // in my direction
         fire(new Arrow(((double) this.x + 0.5) * Constants.TILE_SIZE, ((double) this.y + 0.5) * Constants.TILE_SIZE, this.direction));
+    }
+
+    @Override
+    public BufferedImage getSprite() {
+        BufferedImage underlay = super.getSprite();
+        BufferedImage bow = Sprites.rotate(bowImage, this.direction);
+
+        return Sprites.overlay(underlay, bow);
     }
 }

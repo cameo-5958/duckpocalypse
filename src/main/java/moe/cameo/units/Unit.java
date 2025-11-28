@@ -43,4 +43,10 @@ public class Unit {
 
     // Renderstep but overridable
     protected void renderStepped(double dt) { }
+
+    // Direction setter
+    public void setDirection(double direction) {
+        this.direction = direction % 360;
+        if (this.direction < 0) this.direction += 360;
+    }
 }
