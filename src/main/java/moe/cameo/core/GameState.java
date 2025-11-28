@@ -42,6 +42,7 @@ public final class GameState {
     // "Select tile" coordinate
     private int selected_x = 0;
     private int selected_y = 0;
+    private Unit selected_unit = null;
 
     // Mouse pos
     private int mouse_x = 0;
@@ -90,9 +91,7 @@ public final class GameState {
 
     public int getFocusedTileX() { return this.selected_x; }
     public int getFocusedTileY() { return this.selected_y; }
-    public Unit focusedTile() { 
-        return this.board.getUnitAt(this.selected_x, this.selected_y);
-    }
+    public Unit focusedTile() { return this.selected_unit; }
     public Goal getGoal() { return this.goal; }
     public State getState() { return this.state; }
     public int getLevel() { return this.wave; }
@@ -189,6 +188,9 @@ public final class GameState {
         // Convert to tile_index
         this.selected_x = (int) (fx / Constants.TILE_SIZE);
         this.selected_y = (int) (fy / Constants.TILE_SIZE);
+        
+        // Store selected unit
+        this.selected_unit = this.board.getUnitAt(selected_x, selected_y);
 
         // Set "canPlace" to its given status
         this.canPlace = board.isLegalPlacement(this.selected_x, this.selected_y) &&

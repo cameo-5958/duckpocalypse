@@ -73,7 +73,7 @@ RequestsGamestates {
     // Displayable interfaced methods
     @Override public String getName()           { return this.name; }
     @Override public int getCards()             { return this.cards; }
-    @Override public int getMaxCards()          { return this.max_cards; }
+    @Override public int getMaxCards()          { return this.upgrades_at[level]; }
     @Override public int getLevel()             { return this.level; }
     @Override public int getMaxLevel()          { return this.max_level; }
     @Override public BufferedImage getImage()   { return Sprites.get("NULL"); }

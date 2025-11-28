@@ -17,18 +17,18 @@ public class Archer extends Tower {
         this.name = "Archer";
 
         this.base_damages = new double[] {1, 3, 12, 25, 50};
-        this.base_range = new double[] {200.0, 200.0, 200.0, 200.0, 200.0};
+        this.base_range = new double[] {320.0, 320.0, 320.0, 320.0, 320.0};
         this.base_firerate = new double[] {1.0, 0.95, 0.9, 0.85, 0.8};
     }
 
     // Create an arrow
     private class Arrow extends Projectile {
         private final BufferedImage rotatedArrow;
-        public Arrow(double x, double y, double vmag, double angle) {
-            super(x, y, vmag, angle);
+        public Arrow(double x, double y, double angle) {
+            super(x, y, 10, angle);
             this.x = x;
             this.y = y;
-            this.SIZE = 12;
+            this.SIZE = 16;
 
             this.pierce = 1;
             this.damage = (int) getDamage();
@@ -51,6 +51,6 @@ public class Archer extends Tower {
     protected void onShoot() {
         // Create an arrow that fires 
         // in my direction
-        fire(new Arrow(((double) this.x + 0.5) * Constants.TILE_SIZE, ((double) this.y + 0.5) * Constants.TILE_SIZE, 8, this.direction));
+        fire(new Arrow(((double) this.x + 0.5) * Constants.TILE_SIZE, ((double) this.y + 0.5) * Constants.TILE_SIZE, this.direction));
     }
 }

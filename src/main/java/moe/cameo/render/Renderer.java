@@ -22,6 +22,7 @@ import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.Entity;
 import moe.cameo.units.Unit;
+import moe.cameo.units.towers.Tower;
 import moe.cameo.world.Board;
 
 /**
@@ -188,7 +189,7 @@ public class Renderer extends JPanel {
         // Inner rect
         g2d.setColor(new Color(.8f, .8f, .8f, 0.9f));
 
-        int cap = 20;
+        int cap = 5;
 
         if (progress == max) {
             g2d.fillRoundRect(left, top, sx, sy, sy, sy);
@@ -269,6 +270,14 @@ public class Renderer extends JPanel {
         if (disp instanceof Displayable.HasHealth dhl) {
             this.drawLabeledBar(g, layout, "HP:", dhl.getHP(), dhl.getMaxHP(), 1);
         }
+
+        if (disp instanceof Displayable.HasLevel dhl) {
+            this.drawLabeledBar(g, layout, "Level:", dhl.getLevel(), dhl.getMaxLevel(), 1);
+        }
+
+        if (disp instanceof Displayable.HasCards dhc) {
+            this.drawLabeledBar(g, layout, "Cards to Upgrade:", dhc.getCards(), dhc.getMaxCards(), 1);
+        }
     }
 
     // Infobox background
@@ -309,6 +318,18 @@ public class Renderer extends JPanel {
         this.drawProgressBar(g, layout.left, top + 4, layout.width, FONT_SIZE / 2 - 4, progress, max, spacing);
     }
 
+    // Draw a selected tower's range
+    private void drawTowerRange(Graphics g, Tower t) {
+        int range = (int) t.getRange() * 2;
+        int x = (int) t.getSX();
+        int y = (int) t.getSY();
+
+        // Draw a circle centered at 
+        // x, y with given range:
+        g.setColor(new Color(0.5f, 0.5f, 0.5f, 0.5f));
+        g.fillOval(x - range / 2, y - range / 2, range, range);
+    }
+
     // Paint
     @Override
     public void paintComponent(Graphics g) {
@@ -319,6 +340,11 @@ public class Renderer extends JPanel {
 
         // Draw player's selected box box
         this.drawPlayerSelectedBox(g);
+
+        // Draw a tower's range if selected
+        if (state.focusedTile() instanceof Tower t) {
+            this.drawTowerRange(g, t);
+        }
 
         // Then units
         this.drawUnits(g);
