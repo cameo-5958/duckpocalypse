@@ -33,7 +33,7 @@ public final class GameState {
     private final Goal goal;
 
     // Store initial state
-    private State gameState = State.PLACING_UNIT;
+    private State state = State.PLACING_UNIT;
 
     // "Select tile" coordinate
     private int selected_x = 0;
@@ -45,7 +45,6 @@ public final class GameState {
 
     // Current game level and wave
     private int wave = 0;
-    private int level = 1;
     private Wave current_wave = null;
 
     public enum State {
@@ -73,7 +72,10 @@ public final class GameState {
         this.setUnitTileSquares();
 
         // Set initial state
-        setGameState(State.BUILDING);
+        setState(State.BUILDING);
+
+        // Set to Auto to begin wave
+        setState(State.AUTO);
     }
 
     // Getter
@@ -90,21 +92,21 @@ public final class GameState {
         return this.board.getUnitAt(this.selected_x, this.selected_y);
     }
     public Goal getGoal() { return this.goal; }
-    public State getGameState() { return this.gameState; }
-    public int getLevel() { return this.level; }
+    public State getState() { return this.state; }
+    public int getLevel() { return this.wave; }
 
     // Setter
     public void setMouseX(int x) { this.mouse_x = x; }
     public void setMouseY(int y) { this.mouse_y = y; }
 
     // State changers
-    private void setGameState(State state) {
-        if (this.gameState == state) { return; }
+    private void setState(State state) {
+        if (this.state == state) { return; }
 
         // Exit hook
-        onExitState(this.gameState);
-        this.gameState = state;
-        onEnterState(this.gameState);
+        onExitState(this.state);
+        this.state = state;
+        onEnterState(this.state);
     }
 
     private void onExitState(State state) {
@@ -150,7 +152,12 @@ public final class GameState {
                 // Set the wave
                 this.current_wave = Wave.requestWave(wt);
             }
-
+            case AUTO -> {
+                // Start the wave
+                this.current_wave.start(this);
+                // Hide cancelButton, show CardGUI
+                
+            }
             default -> {}
         }
     }
@@ -196,7 +203,7 @@ public final class GameState {
         // spawn at a random spawner
         Spawner sp = board.getRandomSpawner();
 
-        Enemy e = et.spawn(this.board, sp.getX(), sp.getY(), this.level);
+        Enemy e = et.spawn(this.board, sp.getX(), sp.getY(), this.wave);
         board.addEntity(e);
     }
 
@@ -266,21 +273,21 @@ public final class GameState {
     // Begin placement of a unit
     public void setPlacingType(UnitType ut) {
         // Only possible if building / placing
-        if (this.gameState != State.BUILDING && this.gameState != State.PLACING_UNIT) return;
+        if (this.state != State.BUILDING && this.state != State.PLACING_UNIT) return;
 
         // Set state first as it overrides then
-        this.setGameState(State.PLACING_UNIT);
+        this.setState(State.PLACING_UNIT);
         this.placingType = ut;
     }
 
     // Cancel placement type
     public void cancelPlacing() {
-        this.setGameState(State.BUILDING);
+        this.setState(State.BUILDING);
     }
 
     // Click handler
     public void click() {
-        switch (gameState) {
+        switch (state) {
             case PLACING_UNIT -> click_place_object();
             case BUILDING -> check_gui_clicks();
             default -> check_gui_clicks();
@@ -309,8 +316,8 @@ public final class GameState {
     // Tick updates
     public void update(double dt) {
         // DEBUG: Set type to Tree, mode to PLACING_UNIT
-        this.gameState = State.PLACING_UNIT;
-        this.placingType = UnitType.TREE;
+        // this.gameState = State.PLACING_UNIT;
+        // this.placingType = UnitType.TREE;
 
         // RenderStep entities
         for (Entity e : this.board.getEntities()) {
@@ -333,7 +340,7 @@ public final class GameState {
 
         // Attempt to spawn enemies from spawners
         // if state is correct
-        if (this.gameState == State.AUTO) {
+        if (this.state == State.AUTO) {
             // Check if wave can still spawn
             if (this.current_wave.stillGoing()) {
                 this.current_wave.update(dt, this);

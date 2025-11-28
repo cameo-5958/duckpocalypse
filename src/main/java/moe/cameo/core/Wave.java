@@ -19,6 +19,7 @@ import moe.cameo.entities.enemy.EnemyTypes;
 public class Wave {
     // Global wave registry & Getters
     public static final Map<WaveTypes, List<Wave>> waves = new HashMap<>();
+    public static final Wave DEFAULT_WAVE;
 
     public enum WaveTypes {
         NORMAL,     // Regular wave
@@ -33,6 +34,12 @@ public class Wave {
     public static Wave requestWave(WaveTypes type) {
         // Randomly select a wave from the options
         List<Wave> wvs = waves.get(type);
+
+        // There MUST be at least one option
+        if (wvs.isEmpty()) {
+            // Spawn default wave for now
+            return DEFAULT_WAVE;
+        }
         int selected_index = (int)(Math.random() * wvs.size());
         return wvs.get(selected_index);
     }
@@ -62,7 +69,10 @@ public class Wave {
 
     // Register a wave
     private static void registerWave(WaveTypes type, EnemyTypes... enemies) {
-        Wave wave = new Wave(type, enemies);
+        registerWave(new Wave(type, enemies));
+    }
+
+    private static void registerWave(Wave wave) {
         List<Wave> wvs = waves.get(wave.type);
         wvs.add(wave);
     }
@@ -88,21 +98,15 @@ public class Wave {
     }
 
     // Start a wave
-    public void startWave(GameState gs) {
+    public void start(GameState gs) {
         // Reset index and spawn cooldown
         currentEnemyIndex = 0;
-        spawnCooldown = 0.5;
+        spawnCooldown = enemies.get(currentEnemyIndex).getSpawnCooldown();
         going = true;
     }
 
     // Update wave (spawning enemies) 
     public void update(double dt, GameState gs) {
-        // If all enemies spawned, do nothing
-        if (currentEnemyIndex >= enemies.size()) {
-            going = false;
-            return;
-        }
-
         // Update spawn cooldown
         spawnCooldown -= dt;
         if (spawnCooldown <= 0) {
@@ -113,13 +117,19 @@ public class Wave {
             // Increment index
             currentEnemyIndex += 1;
 
-            // Reset spawn cooldown
-            spawnCooldown = 1.0; // 1 second between spawns
+            if (currentEnemyIndex >= enemies.size()) 
+                going = false;
+            else
+                // Reset spawn cooldown
+                spawnCooldown = enemies.get(currentEnemyIndex).getSpawnCooldown(); // 1 second between spawns
         }
     }
 
     static {
         // Define waves HERE
+
+        DEFAULT_WAVE = new Wave(WaveTypes.NORMAL, EnemyTypes.SLIME, EnemyTypes.SLIME);
+        registerWave(DEFAULT_WAVE);
 
         // NORMAL WAVES
         registerWave(WaveTypes.NORMAL, EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME);
