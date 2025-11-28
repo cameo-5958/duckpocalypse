@@ -2,9 +2,9 @@ package moe.cameo.units.towers;
 
 import java.util.function.BiFunction;
 
-public class TowerType {
+public enum TowerType {
     // UNITS BABYYYYY
-    ;
+    ARCHER(Archer::new);
 
     private final BiFunction<Integer, Integer, Tower> factory;
 

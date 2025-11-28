@@ -15,10 +15,13 @@ import moe.cameo.entities.Goal;
 import moe.cameo.entities.Player;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.enemy.EnemyTypes;
+import moe.cameo.entities.projectile.Projectile;
 import moe.cameo.units.RequestsGamestates;
 import moe.cameo.units.Spawner;
 import moe.cameo.units.Unit;
 import moe.cameo.units.UnitType;
+import moe.cameo.units.towers.Tower;
+import moe.cameo.units.towers.TowerType;
 import moe.cameo.world.Board;
 
 /**
@@ -29,6 +32,7 @@ public final class GameState {
     // Store board
     private final Board board;
     private boolean gameOver = false;
+    private boolean paused = false;
     private final Player player;
     private final Goal goal;
 
@@ -73,14 +77,12 @@ public final class GameState {
 
         // Set initial state
         setState(State.BUILDING);
-
-        // Set to Auto to begin wave
-        setState(State.AUTO);
     }
 
     // Getter
     public Board getBoard()     { return this.board; }
     public boolean isGameOver() { return this.gameOver; }
+    public boolean isPaused()   { return this.paused; }
     public Player getPlayer()   { return this.player; }
 
     public int getMouseX() { return this.mouse_x; }
@@ -125,7 +127,7 @@ public final class GameState {
         switch (state) {
             case PLACING_UNIT -> {
                 // Default to tree
-                this.placingType = UnitType.TREE;
+
 
                 // Hide CardGUI, show cancelButton
 
@@ -239,6 +241,14 @@ public final class GameState {
         }
     }
 
+    private void queryPlace(TowerType tt, int x, int y) {
+        Unit u = board.addUnit(tt.create(x, y), x, y);
+
+        if (u instanceof RequestsGamestates rsu) {
+            rsu.setGameState(this);
+        }
+    }
+
     // Collision handler
     private void collisionEngine() {
         // Calculate collisions. O(n^2) but whatever
@@ -253,6 +263,7 @@ public final class GameState {
             for (Entity f : entities) { // Loop through all entities...
                 if (e == f) continue; // Skip self...
                 if (!(f instanceof Enemy em)) continue; // Skip non-enemies...
+                if (!e.mayICollide(em)) continue; // Skip if you may NOT collide...
 
                 // Check collision
                 if (Collision.intersects(r, em.getCollider())) {
@@ -267,17 +278,17 @@ public final class GameState {
     }
 
     // Handle unit placement
-    private UnitType placingType = null;
+    private TowerType placingType = null;
     private boolean canPlace = false;
 
     // Begin placement of a unit
-    public void setPlacingType(UnitType ut) {
+    public void setPlacingType(TowerType tt) {
         // Only possible if building / placing
         if (this.state != State.BUILDING && this.state != State.PLACING_UNIT) return;
 
         // Set state first as it overrides then
         this.setState(State.PLACING_UNIT);
-        this.placingType = ut;
+        this.placingType = tt;
     }
 
     // Cancel placement type
@@ -294,6 +305,11 @@ public final class GameState {
         }
     }
 
+    // Debug: toggle pause state
+    public void togglePause() {
+        this.paused = !this.paused;
+    }
+
     // Click with state as PLACING_UNIT
     private void click_place_object() {
         // No placement if can't place
@@ -301,7 +317,7 @@ public final class GameState {
 
         // Create a new unit of type placingType
         // at the focused point
-        this.board.addUnit(placingType, selected_x, selected_y);
+        this.queryPlace(placingType, selected_x, selected_y);
 
         // Cancel the placement
         cancelPlacing();
@@ -319,6 +335,9 @@ public final class GameState {
         // this.gameState = State.PLACING_UNIT;
         // this.placingType = UnitType.TREE;
 
+        // Skip update if paused
+        if (this.paused) return;
+
         // RenderStep entities
         for (Entity e : this.board.getEntities()) {
             e._renderStep(dt);
@@ -328,14 +347,38 @@ public final class GameState {
         // Do this after in case a tower creates a 
         // projectile (so first tick doesn't immediately)
         // move the projectile
+
+        // Also force RequestGamestates to accept a GameState
         for (Unit u : this.board.getUnits()) {
-            u._renderStep(dt);
+            if (u instanceof RequestsGamestates rsu) {
+                rsu.setGameState(this);
+            }
+
+            if (u != null) {
+                u._renderStep(dt);
+            }
+        }
+
+        // Create projetiles requested by towers
+        for (Unit u : this.board.getUnits()) {
+            if (u instanceof Tower t) {
+                for (Projectile p : t.getQueuedProjectiles()) {
+                    this.board.addEntity(p);
+                }
+            }
         }
 
         // Move entities requesting movement
         for (Entity e : this.board.getEntities()) {
             if (e.getDX() != 0 || e.getDY() != 0)
                 this.resolveMovement(e);
+        }
+
+        // Destroy entities that are dead
+        for (Entity e : new ArrayList<>(this.board.getEntities())) {
+            if (e.getHP() <= 0 && !(e instanceof Goal)) {
+                this.board.removeEntity(e);
+            }
         }
 
         // Attempt to spawn enemies from spawners

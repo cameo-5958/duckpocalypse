@@ -112,7 +112,7 @@ public class Renderer extends JPanel {
 
         // Draw sprite
         g.drawImage(u.getSprite(), ux, uy, us, us, null);
-
+        
         // Draw directional line
         // drawCenteredDirLine(g, ux + (us / 2), uy + (us / 2), us, u.getDirection());
     }

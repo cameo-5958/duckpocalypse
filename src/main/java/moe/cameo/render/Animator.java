@@ -76,4 +76,5 @@ public class Animator {
     }
 
     public String getCurrentKey() { return currentKey; }
+    public Animation getCurrentAnimation() { return current; }
 }
