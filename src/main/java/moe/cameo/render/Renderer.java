@@ -231,16 +231,24 @@ public class Renderer extends JPanel {
         // Draw the cards if the state is 
         // building
         if (state.getState() == GameState.State.BUILDING) {
-            // Draw the cards
-            for (Card c : state.heldCards()) {
-                if (c == null) {
+            drawCards(g);
+        }
+    }
 
-                } else {
-                    // Get the rendered image
-                    BufferedImage card = c.getRender();
-                    g.drawImage(card, 0, 0, null);
-                }
+    private void drawCards(Graphics g) {
+        // Draw the cards
+        int x = 10;
+        int y = Constants.SCREEN_Y - 160 - 10;
+        for (Card c : state.heldCards()) {
+            if (c == null) {
+                g.drawImage(Card.emptyCardSlot(), x, y, null);
+            } else {
+                // Get the rendered image
+                BufferedImage card = c.getRender();
+                g.drawImage(card, x, y, null);
             }
+
+            x += 170;   
         }
     }
 

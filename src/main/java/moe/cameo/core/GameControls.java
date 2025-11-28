@@ -30,6 +30,7 @@ public class GameControls {
         registerPlayerMovementControls(state, renderer);
         enablePlayerMousePosition(state, renderer);
         mouseClickHandler(state, renderer);
+        registerCardPurchaseControls(state, renderer);
                 
         registerDebugControls(state, renderer);
     }
@@ -106,6 +107,25 @@ public class GameControls {
             }
 
         });
+    }
+
+    private static void registerCardPurchaseControls(GameState state, Renderer renderer) {
+        for (int i=0; i < Constants.MAX_CARDS_HELD; i++) {
+            // Pull context from maps
+            final String key = Integer.toString(i+1);
+            final int j = i;
+
+            // Register input on InputMap
+            renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed " + key), "Select" + key);
+
+            // Register actions on ActionMap
+            renderer.getActionMap().put("Select" + key, new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    state.nums_pressed(j);
+                }
+            });
+        }
     }
 
     private static void registerDebugControls(GameState state, Renderer renderer) {

@@ -4,6 +4,8 @@ import moe.cameo.units.towers.Tower;
 import moe.cameo.units.towers.TowerType;
 
 public class TowerCard extends Card {
+    private final TowerType tt;
+
     public TowerCard(TowerType tt) {
         this(tt, 1);
     }
@@ -15,5 +17,8 @@ public class TowerCard extends Card {
         this.name = template.getName();
         this.desc = template.getDesc();
         this.sprite = template.getImage();
+        this.tt = tt;
     }
+
+    public TowerType getTowerType() { return this.tt; }
 }

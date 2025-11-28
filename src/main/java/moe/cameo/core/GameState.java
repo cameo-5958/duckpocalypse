@@ -54,8 +54,9 @@ public final class GameState {
     private int wave = 0;
     private Wave current_wave = null;
 
-    // Store held cards
+    // Store held cards and currently selected card
     private final List<Card> held_cards = new ArrayList<>();
+    private int selected_card = -1;
 
     public enum State {
         MENU, BUILDING, AUTO,
@@ -340,8 +341,27 @@ public final class GameState {
         // at the focused point
         this.queryPlace(placingType, selected_x, selected_y);
 
+        // Remove the selected_card
+        this.held_cards.set(selected_card, null);
+        selected_card = -1;
+
         // Cancel the placement
         cancelPlacing();
+    }
+
+    // Handle 1, 2, 3 pressed
+    public void nums_pressed(int num) {
+        // Must be building
+        if (this.state != State.BUILDING) return;
+
+        // Confirm current card isn't null
+        if (this.held_cards.get(num) == null) return;
+
+        // Place a tower of this type
+        if (this.held_cards.get(num) instanceof TowerCard tc) {
+            setPlacingType(tc.getTowerType());
+            selected_card = num;
+        }
     }
 
     // Check GUI clicked
