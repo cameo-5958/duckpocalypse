@@ -33,7 +33,7 @@ public final class GameState {
     private final Goal goal;
 
     // Store initial state
-    private GAME_STATE gameState = GAME_STATE.PLACING_UNIT;
+    private State state = State.PLACING_UNIT;
 
     // "Select tile" coordinate
     private int selected_x = 0;
@@ -43,7 +43,11 @@ public final class GameState {
     private int mouse_x = 0;
     private int mouse_y = 0;
 
-    public enum GAME_STATE {
+    // Current game level and wave
+    private int wave = 0;
+    private Wave current_wave = null;
+
+    public enum State {
         MENU, BUILDING, AUTO,
 
         PLACING_UNIT,
@@ -61,11 +65,17 @@ public final class GameState {
         board.addEntity(goal);
 
         // Create a new enemy
-        spawnEnemy(EnemyTypes.TEST, 1, 1, 1);
-        spawnEnemy(EnemyTypes.SLIME, 1, 1, 1);
+        spawnEnemy(EnemyTypes.TEST);
+        spawnEnemy(EnemyTypes.SLIME);
 
         // Assign unit tile squares
         this.setUnitTileSquares();
+
+        // Set initial state
+        setState(State.BUILDING);
+
+        // Set to Auto to begin wave
+        setState(State.AUTO);
     }
 
     // Getter
@@ -82,11 +92,75 @@ public final class GameState {
         return this.board.getUnitAt(this.selected_x, this.selected_y);
     }
     public Goal getGoal() { return this.goal; }
-    public GAME_STATE getGameState() { return this.gameState; }
+    public State getState() { return this.state; }
+    public int getLevel() { return this.wave; }
 
     // Setter
     public void setMouseX(int x) { this.mouse_x = x; }
     public void setMouseY(int y) { this.mouse_y = y; }
+
+    // State changers
+    private void setState(State state) {
+        if (this.state == state) { return; }
+
+        // Exit hook
+        onExitState(this.state);
+        this.state = state;
+        onEnterState(this.state);
+    }
+
+    private void onExitState(State state) {
+        switch (state) {
+            case PLACING_UNIT -> {
+                // Deselect the current placingType
+                this.placingType = null;
+            }
+            default -> {
+                // Increase wave by one
+            }
+        }
+    }
+
+    private void onEnterState(State state) {
+        switch (state) {
+            case PLACING_UNIT -> {
+                // Default to tree
+                this.placingType = UnitType.TREE;
+
+                // Hide CardGUI, show cancelButton
+
+            }
+            case BUILDING -> {
+                // Increase wave by one
+                this.wave++;
+
+                // Select a wave for next round
+                Wave.WaveTypes wt;
+                if (wave % 25 == 0) // Select a boss wave
+                    wt = Wave.WaveTypes.BOSS;
+                else if (wave % 5 == 0) // Select a miniboss wave
+                    wt = Wave.WaveTypes.MINI_BOSS;
+                else {
+                    // Select another wave. 50% normal, 25% others
+                    double r = Math.random();
+                    if (r < 0.5) 
+                        wt = Wave.WaveTypes.NORMAL;
+                    else 
+                        wt = Wave.requestNonSpecialWave();
+                }
+
+                // Set the wave
+                this.current_wave = Wave.requestWave(wt);
+            }
+            case AUTO -> {
+                // Start the wave
+                this.current_wave.start(this);
+                // Hide cancelButton, show CardGUI
+                
+            }
+            default -> {}
+        }
+    }
 
     // Calculate "focused" MouseTile
     public void focus() {
@@ -124,12 +198,12 @@ public final class GameState {
     }
 
     // Spawn enemy
-    public void spawnEnemy(EnemyTypes et, int x, int y, int level) {
+    public void spawnEnemy(EnemyTypes et) {
         // Rather than spawn at a random location, 
         // spawn at a random spawner
         Spawner sp = board.getRandomSpawner();
 
-        Enemy e = et.spawn(this.board, sp.getX(), sp.getY(), level);
+        Enemy e = et.spawn(this.board, sp.getX(), sp.getY(), this.wave);
         board.addEntity(e);
     }
 
@@ -196,23 +270,24 @@ public final class GameState {
     private UnitType placingType = null;
     private boolean canPlace = false;
 
-    // Set a placing type
+    // Begin placement of a unit
     public void setPlacingType(UnitType ut) {
         // Only possible if building / placing
-        if (this.gameState != GAME_STATE.BUILDING && this.gameState != GAME_STATE.PLACING_UNIT) return;
+        if (this.state != State.BUILDING && this.state != State.PLACING_UNIT) return;
+
+        // Set state first as it overrides then
+        this.setState(State.PLACING_UNIT);
         this.placingType = ut;
-        this.gameState = GAME_STATE.PLACING_UNIT;
     }
 
     // Cancel placement type
     public void cancelPlacing() {
-        this.placingType = null;
-        this.gameState = GAME_STATE.BUILDING;
+        this.setState(State.BUILDING);
     }
 
     // Click handler
     public void click() {
-        switch (gameState) {
+        switch (state) {
             case PLACING_UNIT -> click_place_object();
             case BUILDING -> check_gui_clicks();
             default -> check_gui_clicks();
@@ -241,8 +316,8 @@ public final class GameState {
     // Tick updates
     public void update(double dt) {
         // DEBUG: Set type to Tree, mode to PLACING_UNIT
-        this.gameState = GAME_STATE.PLACING_UNIT;
-        this.placingType = UnitType.TREE;
+        // this.gameState = State.PLACING_UNIT;
+        // this.placingType = UnitType.TREE;
 
         // RenderStep entities
         for (Entity e : this.board.getEntities()) {
@@ -261,6 +336,15 @@ public final class GameState {
         for (Entity e : this.board.getEntities()) {
             if (e.getDX() != 0 || e.getDY() != 0)
                 this.resolveMovement(e);
+        }
+
+        // Attempt to spawn enemies from spawners
+        // if state is correct
+        if (this.state == State.AUTO) {
+            // Check if wave can still spawn
+            if (this.current_wave.stillGoing()) {
+                this.current_wave.update(dt, this);
+            }
         }
  
         // Calculate collisions

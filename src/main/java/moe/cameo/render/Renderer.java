@@ -138,26 +138,6 @@ public class Renderer extends JPanel {
 
         // Draw sprite
         g.drawImage(e.getSprite(), ex - es / 2, ey - es / 2, es, es, null);
-
-        // Draw directional line
-        drawCenteredDirLine(g, ex, ey, es, e.getDirection());
-    }
-
-    // Draw DirLine. Mostly used for debug
-    private void drawCenteredDirLine(Graphics g, int px, int py, int size, double dir) {
-        // Convert to radians
-        double ang = dir / 180 * Math.PI;
-
-        // Arrow length
-        int len = size / 3;
-
-        // Tip of line
-        int tx = px + (int) (Math.cos(ang) * len);
-        int ty = py + (int) (Math.sin(ang) * len);
-
-        // Draw line
-        g.setColor(Color.RED);
-        g.drawLine(px, py, tx, ty);
     }
 
     // Draw player selected box
@@ -166,7 +146,7 @@ public class Renderer extends JPanel {
         int ty = state.getFocusedTileY();
         
         // Check the state of the game:
-        if (state.getGameState() == GameState.GAME_STATE.PLACING_UNIT) {
+        if (state.getState() == GameState.State.PLACING_UNIT) {
             // Check if can place
             if (state.canPlace()) {
                 this.drawTilebox(g, tx, ty, Color.GREEN);
