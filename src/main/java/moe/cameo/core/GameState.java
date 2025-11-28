@@ -33,7 +33,7 @@ public final class GameState {
     private final Goal goal;
 
     // Store initial state
-    private GAME_STATE gameState = GAME_STATE.PLACING_UNIT;
+    private State gameState = State.PLACING_UNIT;
 
     // "Select tile" coordinate
     private int selected_x = 0;
@@ -48,7 +48,7 @@ public final class GameState {
     private int level = 1;
     private Wave current_wave = null;
 
-    public enum GAME_STATE {
+    public enum State {
         MENU, BUILDING, AUTO,
 
         PLACING_UNIT,
@@ -71,6 +71,9 @@ public final class GameState {
 
         // Assign unit tile squares
         this.setUnitTileSquares();
+
+        // Set initial state
+        setGameState(State.BUILDING);
     }
 
     // Getter
@@ -87,7 +90,7 @@ public final class GameState {
         return this.board.getUnitAt(this.selected_x, this.selected_y);
     }
     public Goal getGoal() { return this.goal; }
-    public GAME_STATE getGameState() { return this.gameState; }
+    public State getGameState() { return this.gameState; }
     public int getLevel() { return this.level; }
 
     // Setter
@@ -95,16 +98,16 @@ public final class GameState {
     public void setMouseY(int y) { this.mouse_y = y; }
 
     // State changers
-    private void setGameState(GameState state) {
-        if (this.gameState == state.gameState) { return; }
+    private void setGameState(State state) {
+        if (this.gameState == state) { return; }
 
         // Exit hook
         onExitState(this.gameState);
-        this.gameState = state.gameState;
+        this.gameState = state;
         onEnterState(this.gameState);
     }
 
-    private void onExitState(GAME_STATE state) {
+    private void onExitState(State state) {
         switch (state) {
             case PLACING_UNIT -> {
                 // Deselect the current placingType
@@ -116,7 +119,7 @@ public final class GameState {
         }
     }
 
-    private void onEnterState(GAME_STATE state) {
+    private void onEnterState(State state) {
         switch (state) {
             case PLACING_UNIT -> {
                 // Default to tree
@@ -130,16 +133,16 @@ public final class GameState {
                 this.wave++;
 
                 // Select a wave for next round
-                Wave.WAVE_TYPES wt;
+                Wave.WaveTypes wt;
                 if (wave % 25 == 0) // Select a boss wave
-                    wt = Wave.WAVE_TYPES.BOSS;
+                    wt = Wave.WaveTypes.BOSS;
                 else if (wave % 5 == 0) // Select a miniboss wave
-                    wt = Wave.WAVE_TYPES.MINI_BOSS;
+                    wt = Wave.WaveTypes.MINI_BOSS;
                 else {
                     // Select another wave. 50% normal, 25% others
                     double r = Math.random();
                     if (r < 0.5) 
-                        wt = Wave.WAVE_TYPES.NORMAL;
+                        wt = Wave.WaveTypes.NORMAL;
                     else 
                         wt = Wave.requestNonSpecialWave();
                 }
@@ -260,18 +263,19 @@ public final class GameState {
     private UnitType placingType = null;
     private boolean canPlace = false;
 
-    // Set a placing type
+    // Begin placement of a unit
     public void setPlacingType(UnitType ut) {
         // Only possible if building / placing
-        if (this.gameState != GAME_STATE.BUILDING && this.gameState != GAME_STATE.PLACING_UNIT) return;
+        if (this.gameState != State.BUILDING && this.gameState != State.PLACING_UNIT) return;
+
+        // Set state first as it overrides then
+        this.setGameState(State.PLACING_UNIT);
         this.placingType = ut;
-        this.gameState = GAME_STATE.PLACING_UNIT;
     }
 
     // Cancel placement type
     public void cancelPlacing() {
-        this.placingType = null;
-        this.gameState = GAME_STATE.BUILDING;
+        this.setGameState(State.BUILDING);
     }
 
     // Click handler
@@ -305,7 +309,7 @@ public final class GameState {
     // Tick updates
     public void update(double dt) {
         // DEBUG: Set type to Tree, mode to PLACING_UNIT
-        this.gameState = GAME_STATE.PLACING_UNIT;
+        this.gameState = State.PLACING_UNIT;
         this.placingType = UnitType.TREE;
 
         // RenderStep entities
@@ -329,7 +333,7 @@ public final class GameState {
 
         // Attempt to spawn enemies from spawners
         // if state is correct
-        if (this.gameState == GAME_STATE.AUTO) {
+        if (this.gameState == State.AUTO) {
             // Check if wave can still spawn
             if (this.current_wave.stillGoing()) {
                 this.current_wave.update(dt, this);

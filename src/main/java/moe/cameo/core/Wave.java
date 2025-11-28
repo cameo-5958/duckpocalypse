@@ -18,9 +18,9 @@ import moe.cameo.entities.enemy.EnemyTypes;
  */
 public class Wave {
     // Global wave registry & Getters
-    public static final Map<WAVE_TYPES, List<Wave>> waves = new HashMap<>();
+    public static final Map<WaveTypes, List<Wave>> waves = new HashMap<>();
 
-    public enum WAVE_TYPES {
+    public enum WaveTypes {
         NORMAL,     // Regular wave
         RUSH,       // Fast enemies
         CLUMP,      // "AoE is king" waves
@@ -28,9 +28,9 @@ public class Wave {
         BOSS;       // Spawns a boss
     }
 
-    public static final WAVE_TYPES[] NON_SPECIAL_TYPES;
+    public static final WaveTypes[] NON_SPECIAL_TYPES;
 
-    public static Wave requestWave(WAVE_TYPES type) {
+    public static Wave requestWave(WaveTypes type) {
         // Randomly select a wave from the options
         List<Wave> wvs = waves.get(type);
         int selected_index = (int)(Math.random() * wvs.size());
@@ -39,29 +39,36 @@ public class Wave {
 
     // Initialize the registry
     static {
-        waves.put(WAVE_TYPES.NORMAL, new java.util.ArrayList<>());
-        waves.put(WAVE_TYPES.RUSH, new java.util.ArrayList<>());
-        waves.put(WAVE_TYPES.CLUMP, new java.util.ArrayList<>());
-        waves.put(WAVE_TYPES.MINI_BOSS, new java.util.ArrayList<>());
-        waves.put(WAVE_TYPES.BOSS, new java.util.ArrayList<>());
+        waves.put(WaveTypes.NORMAL, new java.util.ArrayList<>());
+        waves.put(WaveTypes.RUSH, new java.util.ArrayList<>());
+        waves.put(WaveTypes.CLUMP, new java.util.ArrayList<>());
+        waves.put(WaveTypes.MINI_BOSS, new java.util.ArrayList<>());
+        waves.put(WaveTypes.BOSS, new java.util.ArrayList<>());
 
         // Set the NON_SPECIAL_TYPES array
         NON_SPECIAL_TYPES = waves.keySet().stream()
             .filter(t -> 
-                t != WAVE_TYPES.MINI_BOSS && 
-                t != WAVE_TYPES.BOSS      &&  
-                t != WAVE_TYPES.NORMAL)
-            .toArray(WAVE_TYPES[]::new);
+                t != WaveTypes.MINI_BOSS && 
+                t != WaveTypes.BOSS      &&  
+                t != WaveTypes.NORMAL)
+            .toArray(WaveTypes[]::new);
     }
 
     // Randomly select a non-special wave
-    public static WAVE_TYPES requestNonSpecialWave() {
+    public static WaveTypes requestNonSpecialWave() {
         // Randomly select a wave from the options
         return NON_SPECIAL_TYPES[(int)(Math.random() * NON_SPECIAL_TYPES.length)];
     }
 
+    // Register a wave
+    private static void registerWave(WaveTypes type, EnemyTypes... enemies) {
+        Wave wave = new Wave(type, enemies);
+        List<Wave> wvs = waves.get(wave.type);
+        wvs.add(wave);
+    }
+
     // Normal wave
-    private final WAVE_TYPES type;
+    private final WaveTypes type;
     private final List<EnemyTypes> enemies = new ArrayList<>();
 
     private int currentEnemyIndex = 0;
@@ -69,20 +76,10 @@ public class Wave {
     private boolean going = false;
 
     // Constructor
-    public Wave(WAVE_TYPES type, EnemyTypes... enemies) {
+    public Wave(WaveTypes type, EnemyTypes... enemies) {
         // Add enemies to enemies list
         this.enemies.addAll(List.of(enemies));
         this.type = type;
-
-        // Register self
-        register();
-    }
-
-    // Register a wave
-    private void register() {
-        // Get the ArrayList for this type
-        List<Wave> wvs = waves.get(this.type);
-        wvs.add(this);
     }
 
     // Get wave state
@@ -119,5 +116,12 @@ public class Wave {
             // Reset spawn cooldown
             spawnCooldown = 1.0; // 1 second between spawns
         }
+    }
+
+    static {
+        // Define waves HERE
+
+        // NORMAL WAVES
+        registerWave(WaveTypes.NORMAL, EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME);
     }
 }
