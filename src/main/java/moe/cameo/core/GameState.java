@@ -202,12 +202,34 @@ public final class GameState {
         this.selected_unit = this.board.getUnitAt(selected_x, selected_y);
 
         // Set "canPlace" to its given status
-        this.canPlace = board.isLegalPlacement(this.selected_x, this.selected_y) &&
+        // A bit complicated:
+        // If the space is open, defer logic to 
+        // old logic:
+        if (!board.getOccupied(this.selected_x, this.selected_y))
+            this.canPlace = board.isLegalPlacement(this.selected_x, this.selected_y) &&
                         // Can't collide with player or we get softlocked
                         !Collision.intersects(
                             this.player.getCollider(), 
                             Board.tileRect(this.selected_x, this.selected_y)
                         );
+        else {
+            this.canPlace = false;
+
+            // If the TowerType of this and 
+            // my currently selected TowerCard
+            // are the same AND the Status is correct
+            if (state != State.BUILDING || selected_card == -1) return;
+
+            Unit u = board.getUnitAt(selected_x, selected_y);
+            if (!(u instanceof Tower t)) return; 
+
+            Card c = this.held_cards.get(selected_card);
+            if (!(c instanceof TowerCard tc))  return;
+
+            // If they're the same type of card
+            // it's legal
+            this.canPlace = t.getTowerType() == tc.getTowerType();
+        }
     }
 
     // Spawn enemy

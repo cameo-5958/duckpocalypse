@@ -65,6 +65,9 @@ RequestsGamestates {
     // Animator
     protected final Animator animator = new Animator("TowerIdle");
 
+    // Self tower type
+    protected TowerType self_tower_type = TowerType.ARCHER;
+
     protected Tower(int x, int y) {
         super(x, y);
     }      
@@ -138,6 +141,7 @@ RequestsGamestates {
 
     public int getCost() { return this.base_cost; }
     public String getDesc() { return this.desc; }
+    public TowerType getTowerType() { return this.self_tower_type; }
 
     // RenderStepped
     @Override

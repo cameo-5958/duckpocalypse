@@ -190,6 +190,7 @@ public class Board {
 
     public boolean isLegalPlacement(int x, int y) {
         if (!inBounds(x, y)) return false;
+    
         return legalPlacement[y][x];
     }
 

@@ -25,6 +25,8 @@ public class Archer extends Tower {
         this.base_damages = new double[] {1, 3, 12, 25, 35};
         this.base_range = new double[] {240.0, 240.0, 320.0, 320.0, 320.0};
         this.base_firerate = new double[] {2.5, 2.5, 3.5, 3.5, 1.2};
+
+        this.self_tower_type = TowerType.ARCHER;
     }
 
     // Create an arrow
