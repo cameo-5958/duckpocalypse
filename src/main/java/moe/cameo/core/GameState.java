@@ -43,6 +43,11 @@ public final class GameState {
     private int mouse_x = 0;
     private int mouse_y = 0;
 
+    // Current game level and wave
+    private int wave = 0;
+    private int level = 1;
+    private Wave current_wave = null;
+
     public enum GAME_STATE {
         MENU, BUILDING, AUTO,
 
@@ -61,8 +66,8 @@ public final class GameState {
         board.addEntity(goal);
 
         // Create a new enemy
-        spawnEnemy(EnemyTypes.TEST, 1, 1, 1);
-        spawnEnemy(EnemyTypes.SLIME, 1, 1, 1);
+        spawnEnemy(EnemyTypes.TEST);
+        spawnEnemy(EnemyTypes.SLIME);
 
         // Assign unit tile squares
         this.setUnitTileSquares();
@@ -83,10 +88,69 @@ public final class GameState {
     }
     public Goal getGoal() { return this.goal; }
     public GAME_STATE getGameState() { return this.gameState; }
+    public int getLevel() { return this.level; }
 
     // Setter
     public void setMouseX(int x) { this.mouse_x = x; }
     public void setMouseY(int y) { this.mouse_y = y; }
+
+    // State changers
+    private void setGameState(GameState state) {
+        if (this.gameState == state.gameState) { return; }
+
+        // Exit hook
+        onExitState(this.gameState);
+        this.gameState = state.gameState;
+        onEnterState(this.gameState);
+    }
+
+    private void onExitState(GAME_STATE state) {
+        switch (state) {
+            case PLACING_UNIT -> {
+                // Deselect the current placingType
+                this.placingType = null;
+            }
+            default -> {
+                // Increase wave by one
+            }
+        }
+    }
+
+    private void onEnterState(GAME_STATE state) {
+        switch (state) {
+            case PLACING_UNIT -> {
+                // Default to tree
+                this.placingType = UnitType.TREE;
+
+                // Hide CardGUI, show cancelButton
+
+            }
+            case BUILDING -> {
+                // Increase wave by one
+                this.wave++;
+
+                // Select a wave for next round
+                Wave.WAVE_TYPES wt;
+                if (wave % 25 == 0) // Select a boss wave
+                    wt = Wave.WAVE_TYPES.BOSS;
+                else if (wave % 5 == 0) // Select a miniboss wave
+                    wt = Wave.WAVE_TYPES.MINI_BOSS;
+                else {
+                    // Select another wave. 50% normal, 25% others
+                    double r = Math.random();
+                    if (r < 0.5) 
+                        wt = Wave.WAVE_TYPES.NORMAL;
+                    else 
+                        wt = Wave.requestNonSpecialWave();
+                }
+
+                // Set the wave
+                this.current_wave = Wave.requestWave(wt);
+            }
+
+            default -> {}
+        }
+    }
 
     // Calculate "focused" MouseTile
     public void focus() {
@@ -124,12 +188,12 @@ public final class GameState {
     }
 
     // Spawn enemy
-    public void spawnEnemy(EnemyTypes et, int x, int y, int level) {
+    public void spawnEnemy(EnemyTypes et) {
         // Rather than spawn at a random location, 
         // spawn at a random spawner
         Spawner sp = board.getRandomSpawner();
 
-        Enemy e = et.spawn(this.board, sp.getX(), sp.getY(), level);
+        Enemy e = et.spawn(this.board, sp.getX(), sp.getY(), this.level);
         board.addEntity(e);
     }
 
@@ -261,6 +325,15 @@ public final class GameState {
         for (Entity e : this.board.getEntities()) {
             if (e.getDX() != 0 || e.getDY() != 0)
                 this.resolveMovement(e);
+        }
+
+        // Attempt to spawn enemies from spawners
+        // if state is correct
+        if (this.gameState == GAME_STATE.AUTO) {
+            // Check if wave can still spawn
+            if (this.current_wave.stillGoing()) {
+                this.current_wave.update(dt, this);
+            }
         }
  
         // Calculate collisions
