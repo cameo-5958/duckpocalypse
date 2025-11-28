@@ -12,6 +12,7 @@ import java.util.List;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.projectile.Projectile;
+import moe.cameo.render.Animator;
 import moe.cameo.render.Displayable;
 import moe.cameo.render.Sprites;
 import moe.cameo.units.RequestsGamestates;
@@ -59,6 +60,9 @@ RequestsGamestates {
 
     // For instantiating Projectiles
     protected final List<Projectile> queued = new ArrayList<>();
+
+    // Animator
+    protected final Animator animator = new Animator("TowerIdle");
 
     protected Tower(int x, int y) {
         super(x, y);
@@ -139,6 +143,9 @@ RequestsGamestates {
         if (cooldown <= 0) {
             if (this._shoot()) cooldown = this.getFirerate();
         }
+
+        // Update 
+        this.animator.update(dt);
     }
 
     // SHOOTING!
@@ -155,10 +162,17 @@ RequestsGamestates {
             e.getY() - getSY(), e.getX() - getSX()
         ));
 
+        // Play tower shooting animation
+        this.animator.play("TowerShoot");
+
         onShoot();
 
         return true;
     }
 
     protected void onShoot() {}
+
+    @Override public BufferedImage getSprite() {
+        return this.animator.getFrame();
+    }
 }

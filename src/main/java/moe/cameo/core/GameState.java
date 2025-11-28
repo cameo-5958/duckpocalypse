@@ -70,7 +70,6 @@ public final class GameState {
         board.addEntity(goal);
 
         // Create a new enemy
-        spawnEnemy(EnemyTypes.TEST);
         spawnEnemy(EnemyTypes.SLIME);
 
         // Assign unit tile squares
@@ -305,6 +304,8 @@ public final class GameState {
             case BUILDING -> check_gui_clicks();
             default -> check_gui_clicks();
         }
+
+        spawnEnemy(EnemyTypes.SLIME);
     }
 
     // Debug: toggle pause state

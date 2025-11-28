@@ -16,9 +16,9 @@ public class Archer extends Tower {
 
         this.name = "Archer";
 
-        this.base_damages = new double[] {1, 3, 12, 25, 50};
-        this.base_range = new double[] {320.0, 320.0, 320.0, 320.0, 320.0};
-        this.base_firerate = new double[] {1.0, 0.95, 0.9, 0.85, 0.8};
+        this.base_damages = new double[] {1, 3, 12, 25, 35};
+        this.base_range = new double[] {240.0, 240.0, 320.0, 320.0, 320.0};
+        this.base_firerate = new double[] {2.5, 2.5, 3.5, 3.5, 1.2};
     }
 
     // Create an arrow

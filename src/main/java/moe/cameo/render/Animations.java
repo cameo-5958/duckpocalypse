@@ -25,6 +25,9 @@ public class Animations {
         load("DuckWaddle", "/animations/duck-waddle", 0.15, false);
         
         load("SlimeWalk", "/animations/slime-walk", 0.1, true);
+
+        load("TowerIdle", "/animations/tower-idle", 0.4, true);
+        load("TowerShoot", "/animations/tower-fire", 0.12, false);
     }
     
     public static Animation load(String key, String path, int frameWidth, double frameTime, boolean loop) {
