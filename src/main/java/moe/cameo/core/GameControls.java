@@ -7,6 +7,7 @@ package moe.cameo.core;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import javax.swing.AbstractAction;
@@ -14,6 +15,7 @@ import javax.swing.KeyStroke;
 
 import moe.cameo.entities.Player;
 import moe.cameo.render.Renderer;
+import moe.cameo.units.towers.TowerType;
 
 /**
  *
@@ -27,6 +29,9 @@ public class GameControls {
         // ENABLE methods for registration
         registerPlayerMovementControls(state, renderer);
         enablePlayerMousePosition(state, renderer);
+        mouseClickHandler(state, renderer);
+                
+        registerDebugControls(state, renderer);
     }
 
     // Player Movement Controls
@@ -75,6 +80,51 @@ public class GameControls {
 
             @Override
             public void mouseDragged(MouseEvent e) {}
+        });
+    }
+
+    // Mouse clicks
+    private static void mouseClickHandler(GameState state, Renderer renderer) {
+        renderer.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                state.click();
+            }
+
+        });
+    }
+
+    private static void registerDebugControls(GameState state, Renderer renderer) {
+        renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed C"), "DEBUG_PLACE_ARCHER");
+
+        renderer.getActionMap().put("DEBUG_PLACE_ARCHER", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                state.setPlacingType(TowerType.ARCHER);
+            }
+        });
+
+        // Spacebar to pause/unpause
+        renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed SPACE"), "DEBUG_PAUSE");
+        renderer.getActionMap().put("DEBUG_PAUSE", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                state.togglePause();
+            }
         });
     }
 }

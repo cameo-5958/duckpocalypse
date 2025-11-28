@@ -1,0 +1,60 @@
+package moe.cameo.entities.enemy;
+
+import java.awt.image.BufferedImage;
+
+import moe.cameo.render.Animator;
+import moe.cameo.render.Animation;
+import moe.cameo.render.Sprites;
+
+public class Slime extends Enemy {
+    public Slime(moe.cameo.world.Board board, int x, int y, int level) {
+        super(board, x, y, level);
+
+        this.max_hp = 5;
+        this.baseSpeed = 60;
+
+        scaleStats();
+    }
+    
+    // Give fresh new drip
+    private final Animator animator = new Animator("SlimeWalk");
+
+    // Calculate speed based on animation progress
+    private double getAnimationSyncedSpeed() {
+        // Get current animation
+        Animation anim = animator.getCurrentAnimation();
+        if (anim == null) return this.baseSpeed;
+        
+        // Get progress through animation cycle (0 to 1)
+        double progress = (double) anim.getFrameIndex() / anim.getFrameCount();
+        
+        // Use sin to create a smooth curve: slow -> fast -> slow
+        // sin(π * progress) goes from 0 at start, to 1 at middle, back to 0 at end
+        double speedMultiplier = Math.sin(Math.PI * progress);
+        
+        return this.baseSpeed * speedMultiplier;
+    }
+
+    // Animate
+    @Override
+    protected void renderStepped(double dt) {
+        // Update speed based on animation cycle
+        this.speed = getAnimationSyncedSpeed();
+        
+        super.renderStepped(dt);
+
+        // Advance animator
+        animator.update(dt);
+    }
+
+    @Override
+    public BufferedImage getSprite() {
+        BufferedImage frame = animator.getFrame();
+
+        // Flip if facing opposite direction
+        if (dx < 0) {
+            frame = Sprites.flip(frame);
+        }
+        return frame;
+    }
+}

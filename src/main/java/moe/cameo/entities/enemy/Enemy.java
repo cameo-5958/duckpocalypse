@@ -35,7 +35,14 @@ public class Enemy extends Entity {
 
     protected void scaleStats() {
         this.hp = this.max_hp;
-        this.speed = this.baseSpeed * (1.0 + 0.1 * (level - 1));
+    }
+
+    public void damage(int amt) {
+        this.hp -= amt;
+        if (this.hp <= 0) {
+            this.hp = 0;
+            onDeath();
+        }
     }
 
     @Override

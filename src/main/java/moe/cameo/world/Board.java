@@ -10,6 +10,8 @@ import java.util.List;
 import moe.cameo.collision.Rect;
 import moe.cameo.core.Constants;
 import moe.cameo.entities.Entity;
+import moe.cameo.entities.enemy.Enemy;
+import moe.cameo.units.Spawner;
 import moe.cameo.units.Unit;
 import moe.cameo.units.UnitType;
 
@@ -25,8 +27,14 @@ public class Board {
     // Distance array
     private final int[][] distances;
 
+    // Legality array
+    private final boolean[][] legalPlacement;
+
     private final List<Unit> units      = new ArrayList<>();
     private final List<Entity> entities = new ArrayList<>();
+    private final List<Spawner> spawners = new ArrayList<>();
+
+    private static final int NUM_SPAWNERS = (int) (Math.random() * 5) + 4;
 
     private static final int[] DX = {0, 1, 0, -1};
     private static final int[] DY = {1, 0, -1, 0};
@@ -49,56 +57,92 @@ public class Board {
 
         // Initialize distances
         distances = new int[height][width];
+        legalPlacement = new boolean[height][width];
 
         // Create borders
         this.defineInitialBorders();
     }
 
     private void defineInitialBorders() {
-        // Create occupied
+        // Create list of all points
+        List<Point> border = new ArrayList<>();
         for (int x=0; x<width; x++) {
-            this.place(UnitType.TREE, x, 0);
-            this.place(UnitType.TREE, x, height-1);
+            border.add(new Point(x, 0));
+            border.add(new Point(x, height-1));
         }
         for (int y=0; y<height; y++) {
-            this.place(UnitType.TREE, 0, y);
-            this.place(UnitType.TREE, width-1, y);
+            border.add(new Point(0, y));
+            border.add(new Point(width-1, y));
+        }
+
+        // Randomly shuffle border points
+        Collections.shuffle(border);
+
+        // Remove first to_keep points and create spawners
+        int removed = 0;
+        int i = 0;
+        while (removed < NUM_SPAWNERS) {
+            Point p = border.get(i);
+
+            // Confirm not corner point
+            if ((p.x == 0 || p.x == width-1) && (p.y == 0 || p.y == height-1)) { i++; continue; }
+
+            // Place a spawner
+            this.place(UnitType.SPAWNER, p.x, p.y);
+            spawners.add((Spawner) this.getUnitAt(p.x, p.y));
+            
+            // Obliterate the collider
+            this.tile_colliders[p.y][p.x] = Rect.NULL;
+
+            removed++;
+            border.remove(i);
+            i++;
+        }
+
+        // Add trees everywhere else
+        for (Point p : border) {
+            this.place(UnitType.TREE, p.x, p.y);    
         }
     }
 
-    private void place(Unit u, int x, int y) {
+    // Get a random spawner
+    public Spawner getRandomSpawner() {
+        return spawners.get((int) (Math.random() * NUM_SPAWNERS));
+    }
+
+    private Unit place(Unit u, int x, int y) {
         // !! DANGER !! doesn't check location occupancy
         // SUPER version. everyone calls this
         unit_locations[y][x] = u;
         this.units.add(u);
 
         // Recalculate distance grid
-        this.calculateDistanceArray();
+        this.boardChanged();
 
         // Call unit's onPlace
         u.onPlace();
+
+        return u;
     }
 
-    private void place(UnitType ut, int x, int y) {
+    private Unit place(UnitType ut, int x, int y) {
         // !! DANGER !! doesn't check location occupancy
         Unit new_unit = ut.create(x, y);
-        this.place(new_unit, x, y);
+        return this.place(new_unit, x, y);
     }
 
-    public boolean addUnit(Unit u, int x, int y) {
+    public Unit addUnit(Unit u, int x, int y) {
         // Check location
-        if (this.getOccupied(x, y)) { return false; }
+        if (this.getOccupied(x, y)) { return null; }
 
-        this.place(u, x, y);
-        return true;
+        return this.place(u, x, y);
     }
 
-    public boolean addUnit(UnitType ut, int x, int y) {
+    public Unit addUnit(UnitType ut, int x, int y) {
         // Check location
-        if (this.getOccupied(x, y)) { return false; }
+        if (this.getOccupied(x, y)) { return null; }
 
-        this.place(ut, x, y);
-        return true;
+        return this.place(ut, x, y);
     }
 
     // Getters
@@ -133,6 +177,10 @@ public class Board {
     }
 
     public Rect getTileCollider(int tx, int ty) {
+        if (!this.inBounds(tx, ty)) {
+            return tileRect(tx, ty);
+        }
+
         if (this.getOccupied(tx, ty)) {
             return this.tile_colliders[ty][tx];
         }
@@ -140,6 +188,12 @@ public class Board {
         return Rect.NULL;
     }
 
+    public boolean isLegalPlacement(int x, int y) {
+        if (!inBounds(x, y)) return false;
+        return legalPlacement[y][x];
+    }
+
+    // Recalculating methods
     public void calculateDistanceArray() {
         int tcx = (width / 2) - 1;
         int tcy = (height / 2) - 1;
@@ -167,7 +221,7 @@ public class Board {
                 int ny = p.y + DY[i];
 
                 if (!inBounds(nx, ny)) continue;
-                if (getOccupied(nx, ny)) continue;
+                if (getOccupied(nx, ny) && !(getUnitAt(nx, ny) instanceof Spawner)) continue;
 
                 if (distances[ny][nx] > d + 1) {
                     distances[ny][nx] = d + 1;
@@ -175,6 +229,42 @@ public class Board {
                 }
             }
         }
+    }
+
+    // Calculate legal placement positions
+    private void calculateLegalPlacementPositions() {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                // Must be empty to place
+                if (getOccupied(x, y)) {
+                    legalPlacement[y][x] = false;
+                    continue;
+                }
+
+                // Temporarily block tile
+                unit_locations[y][x] = UnitType.NULL.create(x, y);
+
+                // Recalculate distances
+                calculateDistanceArray();
+
+                boolean valid = true;
+
+                // All enemies must still reach the goal
+                for (Spawner s : spawners) {
+                    if (getDistanceAt(s.getX(), s.getY()) == Integer.MAX_VALUE) {
+                        valid = false;
+                    }
+                }
+
+                legalPlacement[y][x] = valid;
+
+                // Restore tile
+                unit_locations[y][x] = null;
+            }
+        }
+
+        // Restore real distance field
+        calculateDistanceArray();
     }
 
     // Manage UNITS (unmoveable; "troops")
@@ -189,15 +279,15 @@ public class Board {
     }
 
     // Return all units in a tile radius 
-    public List<Unit> unitsInRadius(float cx, float cy, float radiusTiles) {
+    public List<Unit> unitsInRadius(double cx, double cy, double radiusTiles) {
         List<Unit> result = new ArrayList<>();
-        float r2 = radiusTiles * radiusTiles;
+        double r2 = radiusTiles * radiusTiles;
 
         // Loop through units
         for (Unit u : this.units) {
             // Calculate pythagorean distance or whatever it's called
-            float dx = (u.getX() * Constants.TILE_SIZE + 0.5f) - cx;
-            float dy = (u.getY() * Constants.TILE_SIZE + 0.5f) - cy;
+            double dx = (u.getX() * Constants.TILE_SIZE + 0.5f) - cx;
+            double dy = (u.getY() * Constants.TILE_SIZE + 0.5f) - cy;
             if (dx*dx + dy*dy <= r2) {
                 // Add to returned list
                 result.add(u);
@@ -220,15 +310,15 @@ public class Board {
     }
 
     // Return all entities in a tile radius 
-    public List<Entity> entitiesInRadius(double cx, double cy, float radiusTiles) {
+    public List<Entity> entitiesInRadius(double cx, double cy, double radiusTiles) {
         List<Entity> result = new ArrayList<>();
-        float r2 = radiusTiles * radiusTiles;
+        double r2 = radiusTiles * radiusTiles;
 
         // Loop through units
         for (Entity e : this.entities) {
             // Calculate pythagorean distance or whatever it's called
-            double dx = (e.getX() * Constants.TILE_SIZE + 0.5) - cx;
-            double dy = (e.getY() * Constants.TILE_SIZE + 0.5) - cy;
+            double dx = e.getX() - cx;
+            double dy = e.getY() - cy;
             if (dx*dx + dy*dy <= r2) {
                 // Add to returned list
                 result.add(e);
@@ -240,17 +330,33 @@ public class Board {
         return result;
     }
 
+    // Return all entities in a tile radius 
+    public Enemy closestEnemyInRadius(double cx, double cy, double radiusTiles) {
+        Enemy result = null;
+        double distance = radiusTiles * radiusTiles;
 
-    // renderStepped
-    public void renderStepped(double dt) {
-        // Update entities first
+        // Loop through units
         for (Entity e : this.entities) {
-            e._renderStep(dt);
+            if (!(e instanceof Enemy enem)) continue;
+
+            // Calculate pythagorean distance or whatever it's called
+            double dx = e.getX() - cx;
+            double dy = e.getY() - cy;
+            double dm = dx * dx + dy * dy;
+            if (dm < distance) {
+                // In range, or closer
+                result = enem;  
+                distance = dm;              
+            }
         }
 
-        // Move each entity
+        // Return closest enemy
+        return result;
+    }
 
-        // Sort the entities list
-        this.sortEntities();
+    // boardChanged updates everything
+    public void boardChanged() {
+        this.calculateDistanceArray();
+        this.calculateLegalPlacementPositions();
     }
 }

@@ -15,10 +15,10 @@ import moe.cameo.render.Sprites;
  *
  * @author kunru
  */
-public class Goal extends Unit implements Displayable, Displayable.HasHealth {
+public class Goal extends Unit implements Displayable, Displayable.HasHealth, RequestsGamestates {
     private GameState state;
 
-    public Goal(int x, int y) { 
+    protected Goal(int x, int y) { 
         super(x, y);
         }
 
@@ -26,7 +26,8 @@ public class Goal extends Unit implements Displayable, Displayable.HasHealth {
         Sprites.load("GoalIcon", "/icons/stand");
     }
 
-    public void assignGameState(GameState state) {
+    @Override
+    public void setGameState(GameState state) {
         this.state = state;
     }
 

@@ -2,6 +2,7 @@ package moe.cameo.units;
 
 import java.awt.image.BufferedImage;
 
+import moe.cameo.core.Constants;
 import moe.cameo.render.Sprites;
 
 public class Unit {
@@ -10,19 +11,22 @@ public class Unit {
 
     protected double direction;
 
-    public Unit() {
+    protected Unit() {
         this.x = 0;
         this.y = 0;
         this.direction = 0;
     }
 
-    public Unit(int x, int y) {
+    protected Unit(int x, int y) {
         this();
         this.x = x; this.y = y;
     }
 
     public int getX() { return x; }
     public int getY() { return y; }
+
+    public double getSX() { return (x + 0.5) * Constants.TILE_SIZE; }
+    public double getSY() { return (y + 0.5) * Constants.TILE_SIZE;}
 
     public double getDirection() { return direction; }
 
@@ -31,4 +35,18 @@ public class Unit {
     public BufferedImage getSprite() { 
         return Sprites.get("NULL");
     };
+
+    // Renderstepped
+    public void _renderStep(double dt) {
+        this.renderStepped(dt);
+    }
+
+    // Renderstep but overridable
+    protected void renderStepped(double dt) { }
+
+    // Direction setter
+    public void setDirection(double direction) {
+        this.direction = direction % 360;
+        if (this.direction < 0) this.direction += 360;
+    }
 }

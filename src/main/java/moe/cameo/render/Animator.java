@@ -58,9 +58,7 @@ public class Animator {
         current.update(dt);
 
         // If non-looping animation finishes, fallback to default
-        if (!current.loops() &&
-            current.getFrameIndex() == current.getFrameCount() - 1) {
-            
+        if (!current.loops() && current.isFinished()) {
             // If a default is set, return to it
             if (defaultAnim != null) {
                 currentKey = defaultKey;
@@ -76,4 +74,5 @@ public class Animator {
     }
 
     public String getCurrentKey() { return currentKey; }
+    public Animation getCurrentAnimation() { return current; }
 }

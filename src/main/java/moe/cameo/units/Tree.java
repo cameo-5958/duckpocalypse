@@ -15,7 +15,7 @@ import moe.cameo.render.Sprites;
  * @author kunru
  */
 public class Tree extends Unit implements Displayable {
-    public Tree(int x, int y) { super(x, y); }
+    protected Tree(int x, int y) { super(x, y); }
 
     static {
         Sprites.load("TreeIcon", "/icons/tree");

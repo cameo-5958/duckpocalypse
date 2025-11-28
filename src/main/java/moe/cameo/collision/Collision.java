@@ -21,7 +21,6 @@ public class Collision {
         for (int tx = left; tx <= right; tx++) {
             for (int ty = top; ty <= bottom; ty++) {
 
-                if (!board.inBounds(tx, ty)) continue;
                 if (!board.getOccupied(tx, ty)) continue;
 
                 if (intersects(board.getTileCollider(tx, ty), r)) {
