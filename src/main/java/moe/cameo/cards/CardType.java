@@ -10,5 +10,5 @@ package moe.cameo.cards;
  * @author kunru
  */
 public enum CardType {
-
+    
 }

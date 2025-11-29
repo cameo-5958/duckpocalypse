@@ -4,6 +4,13 @@ import moe.cameo.core.Constants;
 import moe.cameo.world.Board;
 
 public class Collision {
+    public static boolean intersects(Rect r, int x, int y) {
+        return  x < r.right &&
+                x > r.left &&
+                x < r.bottom && 
+                x > r.top;
+    }
+
     public static boolean intersects(Rect a, Rect b) {
         return  a.left < b.right &&
                 a.right > b.left &&

@@ -228,10 +228,19 @@ public class Renderer extends JPanel {
 
         drawInfobox(g);
 
-        // Draw the cards if the state is 
-        // building
-        if (state.getState() == GameState.State.BUILDING) {
-            drawCards(g);
+        // Check the state for non-globa
+        // state-based GUI
+        switch (state.getState()) {
+            case GameState.State.BUILDING -> {
+                drawCards(g);
+            }
+            case GameState.State.PLACING_UNIT -> {
+                g.drawImage(Cancel.render(state, 10, 10), 10, 10, null);
+            }
+
+            default -> {
+
+            }
         }
     }
 
