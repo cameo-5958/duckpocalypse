@@ -9,17 +9,34 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.function.IntConsumer;
+
+import moe.cameo.core.Constants;
+import moe.cameo.render.Widget;
 
 /**
  *
  * @author kunru
  */
-public abstract class Card {
+public abstract class Card extends Widget {
     // SIZE
     private static final int WIDTH = 160;
     private static final int HEIGHT = 160;
+    private static final int Y_POS = Constants.SCREEN_Y - HEIGHT - 10;
+    private static final Font TITLE_FONT = new Font("DejaVu Sans", Font.PLAIN, 16);
+    private static final Font DEFAULT_FONT = new Font("DejaVu Sans", Font.PLAIN, 12);
+
+    // Hook + index
+    private final IntConsumer callPlayCard;
+    private final int index;
+
+    // EMPTY CARDS
+    public static final class EmptyCard extends Card {
+        EmptyCard(int x) { super(x); }
+
+        @Override public void draw(Graphics2D g) {};        
+    }
 
     // Simpler class
     protected int cost;
@@ -28,48 +45,46 @@ public abstract class Card {
     protected String desc;
     protected int that_one_caption_number_at_the_top_right_corner_that_represents_how_many_cards_are_gained;
 
+    // Constructor
+    public Card(IntConsumer play_card, int x, int level) {
+        super(10 + (170 * x), Y_POS, WIDTH, HEIGHT, 
+            new Color(128, 30, 30, 200),
+            new Color(160, 42, 42, 200),
+            new Color(100, 30, 30, 200)
+        );
+
+        this.callPlayCard = play_card;
+        this.index = x;
+    }
+
+    // Secret constructor for EmptyCards
+    private Card(int x) {
+        super(10 + (170 * x), Y_POS, WIDTH, HEIGHT, new Color(60, 60, 60, 60), new Color(10,10,10,60));
+
+        this.callPlayCard = (int ooga_booga) -> {};
+        this.index = -67;
+    }
+
     // Draw self
-    public BufferedImage getRender() {
-        BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g2d = canvas.createGraphics();
-
-        // Enable antialiasing
-        g2d.setRenderingHint(
-            RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB
-        );
-
-
-        // Background
-        g2d.setColor(new Color(100, 0, 0, 100));
-        g2d.fillRect(0, 0, WIDTH, HEIGHT);
-        g2d.setColor(new Color(128, 0, 0, 100));
-        g2d.fillRect(5, 5, WIDTH-10, HEIGHT-10);
-
-        // Sprite
-        int sx = 8;
-        int sy = 8;
-
+    @Override
+    protected void draw(Graphics2D g) {
         // Draw sprite
-        g2d.drawImage(sprite, sx, sy, 64, 64, null);
+        g.drawImage(sprite, 8, 8, 64, 64, null);
 
-        // Draw its name and some data
-        g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("DejaVu Sans", Font.PLAIN, 12));
-        g2d.drawString(cost + "Ð", 80, sy+10);
+        // Draw name and data
+        g.setColor(Color.WHITE);
+        g.setFont(DEFAULT_FONT);
 
-        g2d.drawString("x" + that_one_caption_number_at_the_top_right_corner_that_represents_how_many_cards_are_gained,
-            126, sy+10
+        // Cost
+        g.drawString(cost + "Ð", 80, 18);
+        g.drawString("x" + that_one_caption_number_at_the_top_right_corner_that_represents_how_many_cards_are_gained,
+            126, 18
         );
-        
-        wrapString(g2d, desc, sx, 80);
+        wrapString(g, desc, 8, 80);
 
-        g2d.setFont(new Font("DejaVu Sans", Font.PLAIN, 16));
-        g2d.drawString(name, 80, sy+30);
-        g2d.dispose();
-
-        return canvas;
+        // Title
+        g.setFont(TITLE_FONT);
+        g.drawString(name, 80, 38);
     }
 
     public static void wrapString(Graphics2D g, String text, int x, int yTop){
@@ -97,25 +112,12 @@ public abstract class Card {
         }
     }
 
-    public static BufferedImage emptyCardSlot() {
-        BufferedImage canvas = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g2d = canvas.createGraphics();
-
-        // Enable antialiasing
-        g2d.setRenderingHint(
-            RenderingHints.KEY_TEXT_ANTIALIASING,
-            RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB
-        );
-
-        // Background
-        g2d.setColor(new Color(60, 60, 60, 60));
-        g2d.fillRect(0, 0, WIDTH, HEIGHT);
-        g2d.setColor(new Color(10, 10, 10, 60));
-        g2d.fillRect(5, 5, WIDTH-10, HEIGHT-10);
-
-        g2d.dispose();
-
-        return canvas;
+    // Get empty card
+    public static EmptyCard getEmptyCard(int x) {
+        return new EmptyCard(x);
     }
+
+    // OnPress
+    @Override
+    public void onClick() { this.callPlayCard.accept(this.index); }
 }

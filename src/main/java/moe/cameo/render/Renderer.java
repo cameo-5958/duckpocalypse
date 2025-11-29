@@ -18,7 +18,6 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import moe.cameo.cards.Card;
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.Entity;
@@ -45,13 +44,15 @@ public class Renderer extends JPanel {
     private static final Font FONT;
     private static final Font NORMAL_FONT;
 
-        // interfaceHeightMap stores heights required for displayables
+    // interfaceHeightMap stores heights required for displayables
     private static final Map<Class<?>, Integer> interfaceHeightMap = new HashMap<>();
     
     static {
+        // Initialize fonts
         FONT = new Font("DejaVu Sans", Font.PLAIN, FONT_SIZE);
         NORMAL_FONT = new Font("DejaVu Sans", Font.PLAIN, FONT_SIZE / 2);   
 
+        // Set heights for displayable classes
         interfaceHeightMap.put(Displayable.class, TSS + FONT.getSize()); 
         interfaceHeightMap.put(Displayable.HasHealth.class, FONT_SIZE);
         interfaceHeightMap.put(Displayable.HasLevel.class, FONT_SIZE);
@@ -226,40 +227,31 @@ public class Renderer extends JPanel {
     private void drawGui(Graphics g) {
         // Draw the infobox on the top right
 
+        Graphics2D g2d = (Graphics2D) g;
+
         drawInfobox(g);
 
-        // Check the state for non-globa
-        // state-based GUI
-        switch (state.getState()) {
-            case GameState.State.BUILDING -> {
-                drawCards(g);
-            }
-            case GameState.State.PLACING_UNIT -> {
-                g.drawImage(Cancel.render(state, 10, 10), 10, 10, null);
-            }
-
-            default -> {
-
-            }
-        }
+        // Draw all active widgets
+        for (Widget w : state.getActiveWidgets())
+            w.render(g2d);
     }
 
-    private void drawCards(Graphics g) {
-        // Draw the cards
-        int x = 10;
-        int y = Constants.SCREEN_Y - 160 - 10;
-        for (Card c : state.heldCards()) {
-            if (c == null) {
-                g.drawImage(Card.emptyCardSlot(), x, y, null);
-            } else {
-                // Get the rendered image
-                BufferedImage card = c.getRender();
-                g.drawImage(card, x, y, null);
-            }
+    // private void drawCards(Graphics g) {
+    //     // Draw the cards
+    //     int x = 10;
+    //     int y = Constants.SCREEN_Y - 160 - 10;
+    //     for (Card c : state.heldCards()) {
+    //         if (c == null) {
+    //             g.drawImage(Card.emptyCardSlot(), x, y, null);
+    //         } else {
+    //             // Get the rendered image
+    //             BufferedImage card = c.getRender();
+    //             g.drawImage(card, x, y, null);
+    //         }
 
-            x += 170;   
-        }
-    }
+    //         x += 170;   
+    //     }
+    // }
 
     // The infobox
     private final class InfoboxLayout {

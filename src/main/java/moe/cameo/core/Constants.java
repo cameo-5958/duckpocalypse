@@ -1,6 +1,7 @@
 package moe.cameo.core;
 
 import java.awt.Color;
+import java.awt.Font;
 
 public class Constants {
     public static final int TILE_SIZE = 64;
@@ -21,6 +22,8 @@ public class Constants {
     public static final Color GROUND_STRIP_COLOR = new Color(0, 130, 0);
 
     public static final int MAX_CARDS_HELD = 3;
+
+    public static final Font BUTTON_FONT = new Font("DejaVu Sans", Font.BOLD, 14);
 
     // Calculate other data ---- DON'T CHANGE PAST THESE
     // POINTS AS THEY'RE NOT CONFIGURATIONS

@@ -18,6 +18,7 @@ import moe.cameo.entities.Player;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.enemy.EnemyTypes;
 import moe.cameo.entities.projectile.Projectile;
+import moe.cameo.render.Widget;
 import moe.cameo.units.RequestsGamestates;
 import moe.cameo.units.Spawner;
 import moe.cameo.units.Unit;
@@ -39,7 +40,7 @@ public final class GameState {
     private final Goal goal;
 
     // Store initial state
-    private State state = State.PLACING_UNIT;
+    private State state;
 
     // "Select tile" coordinate
     private int selected_x = 0;
@@ -58,10 +59,29 @@ public final class GameState {
     private final List<Card> held_cards = new ArrayList<>();
     private int selected_card = -1;
 
-    public enum State {
-        MENU, BUILDING, AUTO,
+    // Click queued? 
+    // true = not handled, false = handled
+    private boolean queued_click = false;
 
-        PLACING_UNIT,
+    // Active widgets
+    // DO NOT DIRECTLY TRY AND GET 
+    // active_widgets. ALWAYS USE THE
+    // GETTER
+    private final List<Widget> active_widgets = new ArrayList<>();
+
+    public enum State {
+        MENU(), 
+        BUILDING(), 
+        AUTO(),
+
+        PLACING_UNIT();
+
+        private final List<Widget> reserved_widgets = new ArrayList<>();
+
+        public void addWidget(Widget w) { reserved_widgets.add(w); }
+        public List<Widget> getWidgets() { 
+            return reserved_widgets; 
+        }
     };
 
     public GameState(Board board) {
@@ -82,10 +102,18 @@ public final class GameState {
         this.setUnitTileSquares();
 
         // Set initial state
-        setState(State.BUILDING);
+        setState(State.BUILDING); // This will auto set widgets
 
         // Deal cards
         redealCards();
+
+        // Register GUI
+        registerGUI();
+    }
+
+    // GUI Registerer
+    public void registerGUI() {
+        GameGUI.register(this);
     }
 
     // Getter
@@ -104,6 +132,15 @@ public final class GameState {
     public State getState() { return this.state; }
     public int getLevel() { return this.wave; }
     public List<Card> heldCards() { return this.held_cards; }
+    public List<Widget> getActiveWidgets() { 
+        // This has to extend active_widgets with held_cards
+        // if state == BUILDING
+        List<Widget> temp = new ArrayList<>(this.active_widgets);
+        if (state == State.BUILDING) {
+            temp.addAll(this.held_cards);
+        }
+        return temp; 
+    }
 
     // Setter
     public void setMouseX(int x) { this.mouse_x = x; }
@@ -114,7 +151,9 @@ public final class GameState {
         if (this.state == state) { return; }
 
         // Exit hook
-        onExitState(this.state);
+        // Don't call exit hook if we're
+        // stateless (default)
+        if (this.state != null) onExitState(this.state);
         this.state = state;
         onEnterState(this.state);
     }
@@ -132,6 +171,11 @@ public final class GameState {
     }
 
     private void onEnterState(State state) {
+        // Swap GUI to given state
+        this.active_widgets.clear();
+        this.active_widgets.addAll(state.getWidgets());
+
+        // Handle swapping state
         switch (state) {
             case PLACING_UNIT -> {
                 // Default to tree
@@ -286,9 +330,27 @@ public final class GameState {
     private void redealCards() {
         this.held_cards.clear();
 
+        // Add to held_cards
         for (int i=0; i<Constants.MAX_CARDS_HELD; i++) {
-            this.held_cards.add(new TowerCard(TowerType.ARCHER));
+            this.held_cards.add(this.decideCard(i));
         }
+    }
+
+    // Decide which cards to draw
+    private Card decideCard(int index) {
+        return new TowerCard(this::useCard, TowerType.ARCHER, index);
+    }
+
+    // Use a card at index i
+    public void useCard(int index) {
+        // Check the type of the card
+        Card c = held_cards.get(index);
+
+        if (c instanceof TowerCard tc) {
+            // Place tc if valid
+            this.setPlacingType(tc.getTowerType());
+        }
+
     }
 
     // Collision handler
@@ -336,14 +398,30 @@ public final class GameState {
     // Cancel placement type
     public void cancelPlacing() {
         this.setState(State.BUILDING);
+        this.selected_card = -1;
     }
 
+    // Did someone say... CLICK???
+    public void click() { this.queued_click = true; }
+
+    private void nothing() { }
+
     // Click handler
-    public void click() {
+    private void handleClicking() {
+        // ALWAYS handle Widgets first
+        for (Widget w : this.getActiveWidgets()) {
+            if (w.getHovered()) {
+                // Press the widget
+                w.onClick();
+                return;
+            }
+        }
+
+        // Defer to other clicks
         switch (state) {
-            case PLACING_UNIT -> click_place_object();
-            case BUILDING -> check_gui_clicks();
-            default -> check_gui_clicks();
+            case PLACING_UNIT -> clickPlaceSelectedCard();
+            case BUILDING     -> nothing();
+            default           -> nothing();
         }
 
         spawnEnemy(EnemyTypes.SLIME);
@@ -355,7 +433,7 @@ public final class GameState {
     }
 
     // Click with state as PLACING_UNIT
-    private void click_place_object() {
+    private void clickPlaceSelectedCard() {
         // No placement if can't place
         if (!canPlace) { return; }
 
@@ -364,7 +442,9 @@ public final class GameState {
         this.queryPlace(placingType, selected_x, selected_y);
 
         // Remove the selected_card
-        this.held_cards.set(selected_card, null);
+        this.held_cards.set(selected_card, TowerCard.getEmptyCard(
+            selected_card
+        ));
         selected_card = -1;
 
         // Cancel the placement
@@ -381,13 +461,10 @@ public final class GameState {
 
         // Place a tower of this type
         if (this.held_cards.get(num) instanceof TowerCard tc) {
-            setPlacingType(tc.getTowerType());
             selected_card = num;
+            setPlacingType(tc.getTowerType());
         }
     }
-
-    // Check GUI clicked
-    private void check_gui_clicks() {}
 
     // Get canPlace
     public boolean canPlace() { return this.canPlace; }
@@ -397,6 +474,18 @@ public final class GameState {
         // DEBUG: Set type to Tree, mode to PLACING_UNIT
         // this.gameState = State.PLACING_UNIT;
         // this.placingType = UnitType.TREE;
+
+        // Update the widgets to set hovered state
+        for (Widget w : this.getActiveWidgets()) {
+            w.update(this.mouse_x, this.mouse_y);
+        }
+
+        // We'll handle clicking first
+        if (queued_click) {
+            // Unqueue the click
+            queued_click = false;
+            this.handleClicking();
+        }
 
         // Skip update if paused
         if (this.paused) return;

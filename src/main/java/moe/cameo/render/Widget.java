@@ -2,9 +2,9 @@ package moe.cameo.render;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import moe.cameo.collision.Rect;
-import moe.cameo.core.GameState;
 
 public abstract class Widget {
     protected final int x;
@@ -13,14 +13,22 @@ public abstract class Widget {
     protected final int height;
 
     protected final Color backgroundColor;
+    protected final Color backgroundHoverColor;
     protected final Color borderColor;
 
-    protected final GameState state;
+    protected Rect collider;
 
-    protected final Rect collider;
+    protected boolean hovered = false;
 
-    public Widget(GameState state, int x, int y, int width, int height,
+    // No hover color Widgets
+    public Widget(int x, int y, int width, int height,
         Color background, Color border
+    ) {
+        this(x, y, width, height, background, background, border);
+    }
+
+    public Widget(int x, int y, int width, int height,
+        Color background, Color backgroundHoverColor, Color border
     ) {
         // Set vals
         this.x = x;
@@ -28,18 +36,21 @@ public abstract class Widget {
         this.width = width;
         this.height = height;
 
-        this.state = state;
-
         this.backgroundColor = background;
+        this.backgroundHoverColor = backgroundHoverColor;
         this.borderColor = border;
 
         // Generate collider 
-        this.collider = new Rect(x, y, width, height);
+        this.calculateCollider();
+    }
+
+    public final void calculateCollider() {
+        this.collider = new Rect(x + width/2, y + height/2, width, height);
     }
 
     // Point collision
-    public final boolean collides(int mx, int my) {
-        return mx >= collider.left &&
+    public final void update(int mx, int my) {
+        hovered = mx >= collider.left &&
                mx <= collider.right &&
                my >= collider.top &&
                my <= collider.bottom;
@@ -50,12 +61,25 @@ public abstract class Widget {
         // Draw the background
         g.setColor(borderColor);
         g.fillRect(x-2, y-2, width+4, height+4);
-        g.setColor(backgroundColor);
+
+        // Swap backgroundColors if hovering
+        if (this.hovered) {
+            g.setColor(backgroundHoverColor);
+        } else {
+            g.setColor(backgroundColor);
+        }
+
         g.fillRect(x, y, width, height);
 
         // Create a Graphics2D for draw
         Graphics2D canvas = (Graphics2D) g.create(x, y, width, height);
         canvas.setClip(0, 0, width, height);
+
+        // Turn on antialiasing
+        canvas.setRenderingHint(
+            RenderingHints.KEY_TEXT_ANTIALIASING,
+            RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+        );
 
         draw(canvas);
 
@@ -73,7 +97,6 @@ public abstract class Widget {
     public void onHover() {}
     public void onExit() {}
 
-    public final Rect getCollider() {
-        return this.collider;
-    }
+    public final Rect getCollider() { return this.collider;  }
+    public final boolean getHovered() { return this.hovered; }
 }

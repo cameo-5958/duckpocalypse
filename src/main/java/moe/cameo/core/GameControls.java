@@ -98,7 +98,7 @@ public class GameControls {
             public void mouseExited(MouseEvent e) {}
 
             @Override
-            public void mousePressed(MouseEvent e) {}
+            public void mousePressed(MouseEvent e) { }
 
             @Override
             public void mouseReleased(MouseEvent e) {

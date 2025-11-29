@@ -1,16 +1,19 @@
 package moe.cameo.cards;
 
+import java.util.function.IntConsumer;
+
 import moe.cameo.units.towers.Tower;
 import moe.cameo.units.towers.TowerType;
 
 public class TowerCard extends Card {
     private final TowerType tt;
 
-    public TowerCard(TowerType tt) {
-        this(tt, 1);
+    public TowerCard(IntConsumer func, TowerType tt, int x) {
+        this(func, tt, x, 1);
     }
 
-    public TowerCard(TowerType tt, int count) {
+    public TowerCard(IntConsumer func, TowerType tt, int x, int count) {
+        super(func, x, count);
         Tower template = tt.getTemplate(tt);
 
         this.cost = template.getCost() * count;
