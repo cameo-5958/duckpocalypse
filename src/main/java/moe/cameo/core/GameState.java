@@ -74,7 +74,7 @@ public final class GameState {
         BUILDING(), 
         AUTO(),
 
-        PLACING_UNIT();
+        PLACING();
 
         private final List<Widget> reserved_widgets = new ArrayList<>();
 
@@ -86,6 +86,9 @@ public final class GameState {
 
     public GameState(Board board) {
         this.board = board;
+
+        // Register GUI
+        registerGUI();
         
         // Create a player and add to board
         player = new Player();
@@ -95,20 +98,17 @@ public final class GameState {
         goal = new Goal();
         board.addEntity(goal);
 
-        // Create a new enemy
-        spawnEnemy(EnemyTypes.SLIME);
-
         // Assign unit tile squares
         this.setUnitTileSquares();
 
         // Set initial state
         setState(State.BUILDING); // This will auto set widgets
 
-        // Deal cards
-        redealCards();
+        // Deal initial cards
+        dealCards();
 
-        // Register GUI
-        registerGUI();
+        // Select a wave to begin with 
+        current_wave = selectWave();
     }
 
     // GUI Registerer
@@ -160,12 +160,21 @@ public final class GameState {
 
     private void onExitState(State state) {
         switch (state) {
-            case PLACING_UNIT -> {
+            case PLACING -> {
                 // Deselect the current placingType
-                this.placingType = null;
+                this.placing_type = null;
+            }
+            case AUTO -> {
+                // Increase wave by one
+                this.wave++;
+
+                // Select a wave for next round
+                this.current_wave = selectWave();
+
+                // Redeal cards
+                this.dealCards();
             }
             default -> {
-                // Increase wave by one
             }
         }
     }
@@ -177,7 +186,7 @@ public final class GameState {
 
         // Handle swapping state
         switch (state) {
-            case PLACING_UNIT -> {
+            case PLACING -> {
                 // Default to tree
 
 
@@ -185,26 +194,7 @@ public final class GameState {
 
             }
             case BUILDING -> {
-                // Increase wave by one
-                this.wave++;
 
-                // Select a wave for next round
-                Wave.WaveTypes wt;
-                if (wave % 25 == 0) // Select a boss wave
-                    wt = Wave.WaveTypes.BOSS;
-                else if (wave % 5 == 0) // Select a miniboss wave
-                    wt = Wave.WaveTypes.MINI_BOSS;
-                else {
-                    // Select another wave. 50% normal, 25% others
-                    double r = Math.random();
-                    if (r < 0.5) 
-                        wt = Wave.WaveTypes.NORMAL;
-                    else 
-                        wt = Wave.requestNonSpecialWave();
-                }
-
-                // Set the wave
-                this.current_wave = Wave.requestWave(wt);
             }
             case AUTO -> {
                 // Start the wave
@@ -214,6 +204,12 @@ public final class GameState {
             }
             default -> {}
         }
+    }
+
+    // Change state from BUILDING -> AUTO
+    public void play() {
+        if (this.state == State.BUILDING)
+            this.setState(State.AUTO);
     }
 
     // Calculate "focused" MouseTile
@@ -250,19 +246,19 @@ public final class GameState {
         // If the space is open, defer logic to 
         // old logic:
         if (!board.getOccupied(this.selected_x, this.selected_y))
-            this.canPlace = board.isLegalPlacement(this.selected_x, this.selected_y) &&
+            this.can_place = board.isLegalPlacement(this.selected_x, this.selected_y) &&
                         // Can't collide with player or we get softlocked
                         !Collision.intersects(
                             this.player.getCollider(), 
                             Board.tileRect(this.selected_x, this.selected_y)
                         );
         else {
-            this.canPlace = false;
+            this.can_place = false;
 
             // If the TowerType of this and 
             // my currently selected TowerCard
             // are the same AND the Status is correct
-            if (state != State.BUILDING || selected_card == -1) return;
+            if (state != State.PLACING || selected_card == -1) return;
 
             Unit u = board.getUnitAt(selected_x, selected_y);
             if (!(u instanceof Tower t)) return; 
@@ -272,7 +268,7 @@ public final class GameState {
 
             // If they're the same type of card
             // it's legal
-            this.canPlace = t.getTowerType() == tc.getTowerType();
+            this.can_place = t.getTowerType() == tc.getTowerType();
         }
     }
 
@@ -327,7 +323,7 @@ public final class GameState {
     }
 
     // Reroll the current held cards
-    private void redealCards() {
+    private void dealCards() {
         this.held_cards.clear();
 
         // Add to held_cards
@@ -338,7 +334,7 @@ public final class GameState {
 
     // Decide which cards to draw
     private Card decideCard(int index) {
-        return new TowerCard(this::useCard, TowerType.ARCHER, index);
+        return new TowerCard(this::useCard, TowerType.ARCHER, index, 10);
     }
 
     // Use a card at index i
@@ -351,6 +347,27 @@ public final class GameState {
             this.setPlacingType(tc.getTowerType());
         }
 
+    }
+
+    // Select next wave 
+    private Wave selectWave() {
+        // Select a wave for next round
+        Wave.WaveTypes wt;
+        if (wave % 25 == 0) // Select a boss wave
+            wt = Wave.WaveTypes.BOSS;
+        else if (wave % 5 == 0) // Select a miniboss wave
+            wt = Wave.WaveTypes.MINI_BOSS;
+        else {
+            // Select another wave. 50% normal, 25% others
+            double r = Math.random();
+            if (r < 0.5) 
+                wt = Wave.WaveTypes.NORMAL;
+            else 
+                wt = Wave.requestNonSpecialWave();
+        }
+
+        // Return a requested wave
+        return Wave.requestWave(wt);
     }
 
     // Collision handler
@@ -382,17 +399,17 @@ public final class GameState {
     }
 
     // Handle unit placement
-    private TowerType placingType = null;
-    private boolean canPlace = false;
+    private TowerType placing_type = null;
+    private boolean can_place = false;
 
     // Begin placement of a unit
     public void setPlacingType(TowerType tt) {
         // Only possible if building / placing
-        if (this.state != State.BUILDING && this.state != State.PLACING_UNIT) return;
+        if (this.state != State.BUILDING && this.state != State.PLACING) return;
 
         // Set state first as it overrides then
-        this.setState(State.PLACING_UNIT);
-        this.placingType = tt;
+        this.setState(State.PLACING);
+        this.placing_type = tt;
     }
 
     // Cancel placement type
@@ -419,12 +436,10 @@ public final class GameState {
 
         // Defer to other clicks
         switch (state) {
-            case PLACING_UNIT -> clickPlaceSelectedCard();
+            case PLACING -> clickPlaceSelectedCard();
             case BUILDING     -> nothing();
             default           -> nothing();
         }
-
-        spawnEnemy(EnemyTypes.SLIME);
     }
 
     // Debug: toggle pause state
@@ -435,17 +450,41 @@ public final class GameState {
     // Click with state as PLACING_UNIT
     private void clickPlaceSelectedCard() {
         // No placement if can't place
-        if (!canPlace) { return; }
+        if (!can_place) { return; }
+        
+        // No placement if no card selected
+        if (selected_card == -1) { 
+            System.out.println("DEBUG - attempted to place while selected_card = -1;");
+            return; 
+        }
 
-        // Create a new unit of type placingType
-        // at the focused point
-        this.queryPlace(placingType, selected_x, selected_y);
+        // Selected card should be a Tower
+        if (!(this.held_cards.get(selected_card) instanceof TowerCard tc)) { return; }
 
+        // Get metadata
+        int up = tc.getUpgradeAmount();
+
+        // Check if its upgrade vs placing new
+        if (this.board.getOccupied(selected_x, selected_y)) {
+            Tower t = (Tower) this.board.getUnitAt(selected_x, selected_y);
+
+            // Upgrade the tower
+            t.addCard(up);
+        } else {
+            // Create a new unit of type placingType
+            // at the focused point
+            this.queryPlace(placing_type, selected_x, selected_y);
+
+            // Upgrade it by tc.getUpgradeAmount - 1
+            
+            ((Tower) this.board.getUnitAt(selected_x, selected_y)).addCard(up - 1);
+        }
+
+        
         // Remove the selected_card
         this.held_cards.set(selected_card, TowerCard.getEmptyCard(
             selected_card
         ));
-        selected_card = -1;
 
         // Cancel the placement
         cancelPlacing();
@@ -467,7 +506,7 @@ public final class GameState {
     }
 
     // Get canPlace
-    public boolean canPlace() { return this.canPlace; }
+    public boolean canPlace() { return this.can_place; }
 
     // Tick updates
     public void update(double dt) {
@@ -539,6 +578,9 @@ public final class GameState {
             // Check if wave can still spawn
             if (this.current_wave.stillGoing()) {
                 this.current_wave.update(dt, this);
+            } else if (!this.board.stillEnemies()) {
+                // Set to BUILDING
+                this.setState(State.BUILDING);
             }
         }
  

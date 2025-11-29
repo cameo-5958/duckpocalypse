@@ -162,7 +162,7 @@ public class Renderer extends JPanel {
         int ty = state.getFocusedTileY();
         
         // Check the state of the game:
-        if (state.getState() == GameState.State.PLACING_UNIT) {
+        if (state.getState() == GameState.State.PLACING) {
             // Check if can place
             if (state.canPlace()) {
                 this.drawTilebox(g, tx, ty, Color.GREEN);

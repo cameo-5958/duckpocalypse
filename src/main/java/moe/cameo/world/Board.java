@@ -39,6 +39,8 @@ public class Board {
     private static final int[] DX = {0, 1, 0, -1};
     private static final int[] DY = {1, 0, -1, 0};
 
+    private int enemy_count = 0;
+
     public Board(int width, int height) {
         // Initialize board size
         this.width = width;
@@ -150,6 +152,9 @@ public class Board {
     public int getHeight()  { return this.height; }
     public List<Unit>   getUnits()      { return this.units; }
     public List<Entity> getEntities()   { return this.entities; }
+    
+    public boolean stillEnemies() { return this.enemy_count > 0; }
+
     public int getDistanceAt(int x, int y) {
         if (!inBounds(x, y)) return Integer.MAX_VALUE;
 
@@ -299,8 +304,13 @@ public class Board {
     }
 
     // Manage ENTITIES (movable; player, "enemies")
-    public void addEntity(Entity e)     { this.entities.add(e); }
-    public void removeEntity(Entity e)  { this.entities.remove(e); }
+    public void addEntity(Entity e)     { 
+        this.entities.add(e);
+        if (e instanceof Enemy) enemy_count++;
+    }
+    public void removeEntity(Entity e)  { this.entities.remove(e); 
+        if (e instanceof Enemy) enemy_count--;
+    }
 
     // Remove dead enemies
     public void cleanup() { this.entities.removeIf(e -> !e.isAlive()); }

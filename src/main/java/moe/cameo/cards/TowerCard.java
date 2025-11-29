@@ -26,4 +26,5 @@ public class TowerCard extends Card {
     }
 
     public TowerType getTowerType() { return this.tt; }
+    public int getUpgradeAmount() { return this.that_one_caption_number_at_the_top_right_corner_that_represents_how_many_cards_are_gained; }
 }

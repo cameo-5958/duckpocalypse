@@ -36,8 +36,8 @@ RequestsGamestates {
     protected int max_cards = 32;
 
     // Remember card upgrade levels
-    protected final int[] upgrades_at = {1, 2, 5, 12, 32};
-    protected final int max_level = upgrades_at.length;
+    protected final int[] upgrades_at = {1, 2, 5, 12, 32, max_cards};
+    protected final int max_level = upgrades_at.length - 1;
 
     // Damage, cash earn stats
     protected long damage_dealt = 0;

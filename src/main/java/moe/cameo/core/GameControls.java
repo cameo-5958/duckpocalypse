@@ -15,6 +15,7 @@ import javax.swing.KeyStroke;
 
 import moe.cameo.entities.Player;
 import moe.cameo.render.Renderer;
+import moe.cameo.units.towers.TowerType;
 
 /**
  *
@@ -129,16 +130,16 @@ public class GameControls {
 
     private static void registerDebugControls(GameState state, Renderer renderer) {
         // renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed C"), "DEBUG_PLACE_ARCHER");
+        renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed SPACE"), "DEBUG_PAUSE");
 
-        // renderer.getActionMap().put("DEBUG_PLACE_ARCHER", new AbstractAction() {
-        //     @Override
-        //     public void actionPerformed(ActionEvent e) {
-        //         state.setPlacingType(TowerType.ARCHER);
-        //     }
-        // });d
+        renderer.getActionMap().put("DEBUG_PLACE_ARCHER", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                state.setPlacingType(TowerType.ARCHER);
+            }
+        });
 
         // Spacebar to pause/unpause
-        renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed SPACE"), "DEBUG_PAUSE");
         renderer.getActionMap().put("DEBUG_PAUSE", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
