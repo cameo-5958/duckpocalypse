@@ -102,6 +102,14 @@ RequestsGamestates {
     protected final void fire(Projectile p) {
         this.queued.add(p);
     }
+
+    // Add a new projectile with partial blacklist setup
+    protected final void fire(Projectile p, List<Enemy> initialBlacklist) {
+        // Transfer initial blacklist to projectile if it supports it
+        this.queued.add(p);
+
+        p.addTohitList(initialBlacklist);
+    }
     
     // Public API
     public void addCard() { 

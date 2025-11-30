@@ -84,6 +84,13 @@ public abstract class Projectile extends Entity {
         return true;
     }
 
+    // Add to hit list
+    public void addTohitList(List<Enemy> enemies) {
+        for (Enemy e : enemies) {
+            hit.add(e);
+        }
+    }
+
     @Override
     public BufferedImage getSprite() {
         return null;

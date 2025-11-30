@@ -65,7 +65,7 @@ public class Slinger extends Tower {
             // We'll create 3 splinters
             int endpoint = 5 * (spread_count[level-1] / 2);
             for (int theta=-endpoint; theta <= endpoint; theta += 5) {
-                fire(new Splinter(this.x, this.y, this.angle + theta));
+                fire(new Splinter(this.x, this.y, this.angle + theta), this.hit);
             }
 
             return true;
