@@ -68,6 +68,10 @@ RequestsGamestates {
     // Self tower type
     protected TowerType self_tower_type = TowerType.ARCHER;
 
+    // Focused target
+    protected Enemy focusedEnemy;
+    protected double distanceToEnemy;
+
     protected Tower(int x, int y) {
         super(x, y);
     }      
@@ -173,10 +177,14 @@ RequestsGamestates {
 
         if (e == null) { return false; }
 
+        focusedEnemy = e;
+        double dx = e.getX() - getSX();
+        double dy = e.getY() - getSY();
+
+        distanceToEnemy = Math.sqrt(dx * dx + dy * dy);
+
         // Face the enemy
-        this.setDirection(Math.toDegrees(Math.atan2(
-            e.getY() - getSY(), e.getX() - getSX()
-        )));
+        this.setDirection(Math.toDegrees(Math.atan2(dy, dx)));
 
         // Play tower shooting animation
         this.animator.play("TowerShoot");

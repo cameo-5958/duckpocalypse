@@ -27,6 +27,7 @@ public abstract class Projectile extends Entity {
     protected int damage;
 
     protected int lifetime;
+    protected double travelled = 0.0;
 
     protected final List<Enemy> hit = new ArrayList<>();
 
@@ -42,18 +43,23 @@ public abstract class Projectile extends Entity {
         this.lifetime = 10000;
     }
 
+    protected void kill() {
+        this.hp = 0;
+        onDestroy();
+    }
+
     @Override
     protected void renderStepped(double dt) {
         // Move by vx, vy
         this.move(vx, vy);
 
-        // Decrease lifetime
+        // Decrease lifetime and increase travelled
         this.lifetime -= vmag;
+        this.travelled += vmag;
 
         // Kill self if lifetime elapsed
         if (this.lifetime <= 0) { 
-            this.hp = 0;
-            // return;
+            kill();    
         }
     }
 
@@ -66,7 +72,7 @@ public abstract class Projectile extends Entity {
 
             // No more pierce: kill self
             if (this.pierce == 0) {
-                this.hp = 0;
+                kill();
                 return;
             }
         }
@@ -95,4 +101,6 @@ public abstract class Projectile extends Entity {
     public BufferedImage getSprite() {
         return null;
     }
+
+    public void onDestroy() { }
 }
