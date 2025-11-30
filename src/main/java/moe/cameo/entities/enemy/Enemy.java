@@ -85,9 +85,6 @@ public class Enemy extends Entity {
             tx = chosen[0];
             ty = chosen[1];
         }
-
-        for (int[] point : path)
-            System.out.print(point[0] + ", " + point[1] + " -> ");
     }
 
     public double[] predictFuturePoint(double dt) {

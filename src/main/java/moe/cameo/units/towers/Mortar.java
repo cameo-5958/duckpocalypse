@@ -4,7 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import moe.cameo.collision.Rect;
-import moe.cameo.core.Constants;
 import moe.cameo.entities.projectile.Projectile;
 import moe.cameo.render.Animation;
 import moe.cameo.render.Animator;
@@ -15,12 +14,13 @@ public class Mortar extends Tower {
     private static final BufferedImage mortarUp = Sprites.load("FlyingOrange", "/projectiles/mortar-up");
     private static final BufferedImage mortarDown = Sprites.load("OrangeShadow", "/projectiles/mortar-down");
 
-    private static final BufferedImage bowImage   = Sprites.load("Bow", "/towers/bow");
+    private final Animator mortar_animator = new Animator("MortarIdle");
     
     private final double[] explosion_radii;
+    private long fire_at = Long.MAX_VALUE;
 
     static {
-        Sprites.load("Archer", "/sprites/archer");
+        Sprites.load("Mortar", "/sprites/mortar");
     }
 
     protected Mortar(int x, int y) {
@@ -48,6 +48,7 @@ public class Mortar extends Tower {
             this.pierce = 1;
             this.damage = (int) getDamage();
             this.lifetime = (int) distance;
+            this.SIZE = 16;
         }
         
         private double calculateZ() {
@@ -74,11 +75,11 @@ public class Mortar extends Tower {
             Graphics2D g = temp.createGraphics();
 
             // top image
-            g.drawImage(mortarUp, height / 2 - 8, 0, 32, 32, null);
+            g.drawImage(mortarUp, height / 2 - 8, 0, 16, 16, null);
 
             // middle image, only if height > 32
             if (height > 64)
-                g.drawImage(mortarDown, height / 2 - 8, height / 2, 32, 4, null);
+                g.drawImage(mortarDown, height / 2 - 8, height / 2, 16, 4, null);
 
             // Dispose and return
             g.dispose();
@@ -138,9 +139,20 @@ public class Mortar extends Tower {
 
     @Override
     protected void onShoot() {
-        // Begin by calculating time to get
-        // to enemy
-        double travel_time = distanceToEnemy / 180 / Constants.FPS;
+        // No damage is done here
+        // We'll queue shooting for later
+        this.fire_at = System.nanoTime() + 300_000_000;
+        animator.play("MortarShoot");
+    }
+
+    @Override
+    protected void renderStepped(double dt) {
+        super.renderStepped(dt);
+        animator.update(dt);
+
+        if (this.fire_at > System.nanoTime()) { return; }
+
+        double travel_time = distanceToEnemy / 180;
 
         double[] future = this.focusedEnemy.predictFuturePoint(travel_time);
 
@@ -153,18 +165,20 @@ public class Mortar extends Tower {
                 this.getSX(), this.getSY(), 
                 angle, Math.sqrt(ddx * ddx + ddy * ddy))
             );
+
+        this.fire_at = Long.MAX_VALUE;
     }
 
     @Override
     public BufferedImage getSprite() {
-        BufferedImage underlay = super.getSprite();
-        BufferedImage bow = Sprites.rotate(bowImage, this.direction);
+        BufferedImage overlay = super.getSprite();
+        BufferedImage mortar = mortar_animator.getFrame();
 
-        return Sprites.overlay(underlay, bow);
+        return Sprites.overlay(mortar, overlay);
     }
 
     @Override
     public BufferedImage getImage() {
-        return Sprites.get("Archer");
+        return Sprites.get("Mortar");
     }
 }

@@ -54,8 +54,8 @@ public abstract class Projectile extends Entity {
         this.move(vx * dt, vy * dt);
 
         // Decrease lifetime and increase travelled
-        this.lifetime -= vmag;
-        this.travelled += vmag;
+        this.lifetime -= vmag * dt;
+        this.travelled += vmag * dt;
 
         // Kill self if lifetime elapsed
         if (this.lifetime <= 0) { 
