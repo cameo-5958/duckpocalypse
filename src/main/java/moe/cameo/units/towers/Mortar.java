@@ -57,7 +57,7 @@ public class Mortar extends Tower {
             double t = this.travelled / this.distance;
             t = Math.max(0, Math.min(1, t));
 
-            double maxHeight = 480; 
+            double maxHeight = 240; 
 
             return 4 * maxHeight * t * (1 - t);
         }
