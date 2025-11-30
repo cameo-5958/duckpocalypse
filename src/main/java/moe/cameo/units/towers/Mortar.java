@@ -42,7 +42,7 @@ public class Mortar extends Tower {
     private class FlyingRock extends Projectile {
         private final double distance; 
         public FlyingRock(double x, double y, double angle, double distance) {
-            super(x, y, 3, angle);
+            super(x, y, 180, angle);
             this.distance = distance;
 
             this.pierce = 1;
@@ -53,7 +53,7 @@ public class Mortar extends Tower {
         private double calculateZ() {
             if (this.distance <= 0) return 0;
 
-            double t = this.travelled / this.distance;  // normalized 0 → 1
+            double t = this.travelled / this.distance;
             t = Math.max(0, Math.min(1, t));
 
             double maxHeight = 480; 
@@ -74,7 +74,7 @@ public class Mortar extends Tower {
             Graphics2D g = temp.createGraphics();
 
             // top image
-            g.drawImage(mortarUp,   height / 2 - 8, 0, 32, 32, null);
+            g.drawImage(mortarUp, height / 2 - 8, 0, 32, 32, null);
 
             // middle image, only if height > 32
             if (height > 64)
@@ -140,7 +140,7 @@ public class Mortar extends Tower {
     protected void onShoot() {
         // Begin by calculating time to get
         // to enemy
-        double travel_time = distanceToEnemy / 3.0 / Constants.FPS;
+        double travel_time = distanceToEnemy / 180 / Constants.FPS;
 
         double[] future = this.focusedEnemy.predictFuturePoint(travel_time);
 

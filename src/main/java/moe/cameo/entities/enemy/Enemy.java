@@ -173,7 +173,7 @@ public class Enemy extends Entity {
 
         if (mag <= step) {
             this.move(vx, vy);
-            pathIndex++;   // ✅ advance deterministically
+            pathIndex++;   
             return;
         }
 

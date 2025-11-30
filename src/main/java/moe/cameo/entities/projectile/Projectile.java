@@ -51,7 +51,7 @@ public abstract class Projectile extends Entity {
     @Override
     protected void renderStepped(double dt) {
         // Move by vx, vy
-        this.move(vx, vy);
+        this.move(vx * dt, vy * dt);
 
         // Decrease lifetime and increase travelled
         this.lifetime -= vmag;

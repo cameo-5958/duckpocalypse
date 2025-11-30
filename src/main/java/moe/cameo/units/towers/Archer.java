@@ -33,7 +33,7 @@ public class Archer extends Tower {
     private class Arrow extends Projectile {
         private final BufferedImage rotatedArrow;
         public Arrow(double x, double y, double angle) {
-            super(x, y, 10, angle);
+            super(x, y, 600, angle);
             this.SIZE = 16;
 
             this.pierce = 1;

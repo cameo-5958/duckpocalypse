@@ -39,7 +39,7 @@ public class Slinger extends Tower {
     // Create rock
     private class Rock extends Projectile {
         public Rock(double x, double y, double angle) {
-            super(x, y, 4, angle);
+            super(x, y, 240, angle);
             this.SIZE = 16;
 
             this.pierce = 1;
@@ -75,7 +75,7 @@ public class Slinger extends Tower {
     private class Splinter extends Projectile {
         public final BufferedImage rotateSplinter;
         public Splinter(double x, double y, double angle) {
-            super(x, y, 4, angle);
+            super(x, y, 240, angle);
             this.SIZE = 8;
 
             this.pierce = 3;
