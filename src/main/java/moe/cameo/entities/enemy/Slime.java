@@ -2,8 +2,8 @@ package moe.cameo.entities.enemy;
 
 import java.awt.image.BufferedImage;
 
-import moe.cameo.render.Animator;
 import moe.cameo.render.Animation;
+import moe.cameo.render.Animator;
 import moe.cameo.render.Sprites;
 
 public class Slime extends Enemy {
@@ -11,7 +11,7 @@ public class Slime extends Enemy {
         super(board, x, y, level);
 
         this.max_hp = 5;
-        this.baseSpeed = 60;
+        this.base_speed = 60;
 
         scaleStats();
     }
@@ -23,7 +23,7 @@ public class Slime extends Enemy {
     private double getAnimationSyncedSpeed() {
         // Get current animation
         Animation anim = animator.getCurrentAnimation();
-        if (anim == null) return this.baseSpeed;
+        if (anim == null) return this.base_speed;
         
         // Get progress through animation cycle (0 to 1)
         double progress = (double) anim.getFrameIndex() / anim.getFrameCount();
@@ -32,7 +32,7 @@ public class Slime extends Enemy {
         // sin(π * progress) goes from 0 at start, to 1 at middle, back to 0 at end
         double speedMultiplier = Math.sin(Math.PI * progress);
         
-        return this.baseSpeed * speedMultiplier;
+        return this.base_speed * speedMultiplier;
     }
 
     // Animate

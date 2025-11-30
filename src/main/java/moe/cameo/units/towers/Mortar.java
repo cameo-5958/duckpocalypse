@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import moe.cameo.collision.Rect;
+import moe.cameo.core.Constants;
 import moe.cameo.entities.projectile.Projectile;
 import moe.cameo.render.Animation;
 import moe.cameo.render.Animator;
@@ -137,12 +138,20 @@ public class Mortar extends Tower {
 
     @Override
     protected void onShoot() {
-        // Create an arrow that fires 
-        // in my direction
+        // Begin by calculating time to get
+        // to enemy
+        double travel_time = distanceToEnemy / 3.0 / Constants.FPS;
+
+        double[] future = this.focusedEnemy.predictFuturePoint(travel_time);
+
+        double ddx = future[0] - this.getSX();
+        double ddy = future[1] - this.getSY();
+        double angle = Math.toDegrees(Math.atan2(ddy, ddx));
+
         fire(
             new FlyingRock(
                 this.getSX(), this.getSY(), 
-                this.direction, distanceToEnemy)
+                angle, Math.sqrt(ddx * ddx + ddy * ddy))
             );
     }
 

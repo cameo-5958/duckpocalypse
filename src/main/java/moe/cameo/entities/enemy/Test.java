@@ -5,7 +5,7 @@ public class Test extends Enemy {
         super(board, x, y, level);
 
         this.max_hp = 3;
-        this.baseSpeed = 240;
+        this.base_speed = 240;
 
         scaleStats();
     }
