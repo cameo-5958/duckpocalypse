@@ -22,9 +22,9 @@ public class Archer extends Tower {
         this.name = "Archer";
         this.desc = "A low-cost, low-damage tower.";
 
-        this.base_damages = new double[] {1, 3, 12, 25, 35};
-        this.base_range = new double[] {240.0, 240.0, 320.0, 320.0, 320.0};
-        this.base_firerate = new double[] {2.5, 2.5, 3.5, 3.5, 1.2};
+        this.base_damages = new double[] {1, 2, 6, 12, 12};
+        this.base_range = new double[] {240, 240.0, 280.0, 280.0, 350.0};
+        this.base_firerate = new double[] {2.5, 2.5, 3.0, 3.0, 1};
 
         this.self_tower_type = TowerType.ARCHER;
     }
@@ -34,8 +34,6 @@ public class Archer extends Tower {
         private final BufferedImage rotatedArrow;
         public Arrow(double x, double y, double angle) {
             super(x, y, 10, angle);
-            this.x = x;
-            this.y = y;
             this.SIZE = 16;
 
             this.pierce = 1;

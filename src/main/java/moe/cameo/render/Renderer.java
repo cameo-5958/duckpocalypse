@@ -260,6 +260,7 @@ public class Renderer extends JPanel {
         final int top;
 
         int current_y;
+        private Integer ifaceHeight;
 
         public InfoboxLayout(Displayable d) {
             this(d, Constants.SCREEN_X - TSS - MARGIN * 3, MARGIN);
@@ -277,10 +278,12 @@ public class Renderer extends JPanel {
         public int calculateHeight(Displayable d) {
             int totalHeight = 0;
             // Check all directly-implemented interfaces
-            for (Class<?> iface : d.getClass().getInterfaces()) {
-                Integer ifaceHeight = interfaceHeightMap.get(iface);
-                if (ifaceHeight != null) {
-                    totalHeight += ifaceHeight + MARGIN;
+            for (Class<?> iface : interfaceHeightMap.keySet()) {
+                if (iface.isInstance(d)) {
+                    ifaceHeight = interfaceHeightMap.get(iface);
+                    if (ifaceHeight != null) {
+                        totalHeight += ifaceHeight + MARGIN;
+                    }
                 }
             }
             // Ensure minimum height (at least the base Displayable height)
@@ -319,6 +322,10 @@ public class Renderer extends JPanel {
 
         if (disp instanceof Displayable.HasCards dhc) {
             this.drawLabeledBar(g, layout, "Cards to Upgrade:", dhc.getCards(), dhc.getMaxCards(), 1);
+        }
+
+        if (disp instanceof Displayable.HasStats dhs) {
+            
         }
     }
 

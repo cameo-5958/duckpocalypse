@@ -6,6 +6,7 @@
 package moe.cameo.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import moe.cameo.cards.Card;
@@ -58,6 +59,9 @@ public final class GameState {
     // Store held cards and currently selected card
     private final List<Card> held_cards = new ArrayList<>();
     private int selected_card = -1;
+
+    // Select which card to be displayed
+    private final List<Integer> card_cost_distribution = Arrays.asList(1, 0, 0, 0, 0);
 
     // Click queued? 
     // true = not handled, false = handled
@@ -334,7 +338,16 @@ public final class GameState {
 
     // Decide which cards to draw
     private Card decideCard(int index) {
-        return new TowerCard(this::useCard, TowerType.ARCHER, index, 10);
+        // If towercard
+        // if (true) {
+            return new TowerCard(
+                this::useCard, 
+                TowerType.getRandomWithDistributions(card_cost_distribution),
+                index, 1
+            );
+        // } 
+        // return new TowerCard(this::useCard, TowerType.ARCHER, index, 10);
+
     }
 
     // Use a card at index i
@@ -344,6 +357,7 @@ public final class GameState {
 
         if (c instanceof TowerCard tc) {
             // Place tc if valid
+            selected_card = index;
             this.setPlacingType(tc.getTowerType());
         }
 
@@ -491,18 +505,15 @@ public final class GameState {
     }
 
     // Handle 1, 2, 3 pressed
-    public void nums_pressed(int num) {
+    public void numsPressed(int num) {
         // Must be building
         if (this.state != State.BUILDING) return;
 
         // Confirm current card isn't null
         if (this.held_cards.get(num) == null) return;
 
-        // Place a tower of this type
-        if (this.held_cards.get(num) instanceof TowerCard tc) {
-            selected_card = num;
-            setPlacingType(tc.getTowerType());
-        }
+        // useCard at num
+        useCard(num);
     }
 
     // Get canPlace

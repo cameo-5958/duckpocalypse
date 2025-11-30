@@ -28,15 +28,15 @@ implements Displayable, Displayable.HasCards, Displayable.HasLevel, Displayable.
 RequestsGamestates {
     protected String name = "Tower";
     protected String desc = "The default, abstracted Tower.";
-    // Cards required: 1 (unlock), 2 (+1), 5 (+3), 12 (+7), 32 (+17)
+    // Cards required: 1 (unlock), 2 (+1), 5 (+3), 12 (+7), 30 (+18)
     protected int level = 1; // it's defaulted to one since you must
                             // place the tower
     protected int cards = 1;
 
-    protected int max_cards = 32;
+    protected int max_cards = 30;
 
     // Remember card upgrade levels
-    protected final int[] upgrades_at = {1, 2, 5, 12, 32, max_cards};
+    protected final int[] upgrades_at = {1, 2, 5, 12, 30, max_cards};
     protected final int max_level = upgrades_at.length - 1;
 
     // Damage, cash earn stats

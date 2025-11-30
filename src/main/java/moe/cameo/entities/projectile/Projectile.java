@@ -20,11 +20,15 @@ import moe.cameo.entities.enemy.Enemy;
 public abstract class Projectile extends Entity {
     protected double vx;
     protected double vy;
+    protected double vmag;
+    protected double angle;
 
     protected int pierce;
     protected int damage;
 
-    private final List<Enemy> hit = new ArrayList<>();
+    protected int lifetime;
+
+    protected final List<Enemy> hit = new ArrayList<>();
 
     protected Projectile(double x, double y, double vmag, double angle) {
         super(x, y);
@@ -32,13 +36,25 @@ public abstract class Projectile extends Entity {
         double angleRad = Math.toRadians(angle);
         this.vx = vmag * Math.cos(angleRad);
         this.vy = vmag * Math.sin(angleRad);
+        this.vmag = vmag;
         this.collides_with_tiles = false;
+        this.angle = angle;
+        this.lifetime = 10000;
     }
 
     @Override
     protected void renderStepped(double dt) {
         // Move by vx, vy
         this.move(vx, vy);
+
+        // Decrease lifetime
+        this.lifetime -= vmag;
+
+        // Kill self if lifetime elapsed
+        if (this.lifetime <= 0) { 
+            this.hp = 0;
+            // return;
+        }
     }
 
     @Override

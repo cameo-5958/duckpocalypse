@@ -122,7 +122,7 @@ public class GameControls {
             renderer.getActionMap().put("Select" + key, new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    state.nums_pressed(j);
+                    state.numsPressed(j);
                 }
             });
         }

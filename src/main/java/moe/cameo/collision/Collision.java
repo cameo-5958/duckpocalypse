@@ -5,6 +5,9 @@ import moe.cameo.world.Board;
 
 public class Collision {
     public static boolean intersects(Rect r, int x, int y) {
+        // You cannot collide with the NULL rect
+        if (r == Rect.NULL) { return false; }
+
         return  x < r.right &&
                 x > r.left &&
                 x < r.bottom && 
@@ -12,6 +15,9 @@ public class Collision {
     }
 
     public static boolean intersects(Rect a, Rect b) {
+        // NULL rects cannot collide
+        if (a == Rect.NULL || b == Rect.NULL) { return false; }
+
         return  a.left < b.right &&
                 a.right > b.left &&
                 a.top < b.bottom && 
