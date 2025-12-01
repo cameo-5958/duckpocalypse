@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 
 import moe.cameo.collision.Rect;
 import moe.cameo.core.Constants;
+import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.projectile.Projectile;
 import moe.cameo.render.Sprites;
 
@@ -50,6 +51,12 @@ public class Archer extends Tower {
         @Override
         public Rect getCollider() {
             return new Rect(this.x, this.y, 4, 4);
+        }
+
+        @Override 
+        protected boolean onDamage(Enemy e) {
+            damage_dealt += super.doDamage(e);
+            return true;
         }
     }
 

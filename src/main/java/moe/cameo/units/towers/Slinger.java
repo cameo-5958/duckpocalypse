@@ -59,7 +59,7 @@ public class Slinger extends Tower {
         @Override
         public boolean onDamage(Enemy e) {
             // Do damage to the enemy and add to hits list
-            e.damage(this.damage);
+            damage_dealt += e.damage(this.damage);
             hit.add(e);
 
             // We'll create 3 splinters
@@ -93,6 +93,12 @@ public class Slinger extends Tower {
         @Override
         public Rect getCollider() {
             return new Rect(this.x, this.y, 4, 4);
+        }
+
+        @Override
+        protected boolean onDamage(Enemy e) {
+            damage_dealt += doDamage(e);
+            return true;
         }
     }
 

@@ -72,6 +72,31 @@ RequestsGamestates {
     protected Enemy focusedEnemy;
     protected double distanceToEnemy;
 
+    // Targetting
+    public enum Targetting {
+        CLOSEST, STRONGEST;
+
+        protected Enemy getEnemy(Tower t) {
+            switch(this) {
+                case CLOSEST -> {
+                    return t.state.getBoard().closestEnemyInRadius(
+                        t.getSX(), t.getSY(), t.getRange());
+                }
+                case STRONGEST -> {
+                    return t.state.getBoard().strongestEnemyInRadius(
+                        t.getSX(), t.getSY(), t.getRange()
+                    );
+                }
+
+                default -> { 
+                    return CLOSEST.getEnemy(t);
+                }
+            }
+        }
+
+    }
+    protected Targetting targets = Targetting.CLOSEST;
+
     protected Tower(int x, int y) {
         super(x, y);
     }      
@@ -171,9 +196,7 @@ RequestsGamestates {
     // SHOOTING!
     private boolean _shoot() {
         // Find an enemy
-        Enemy e = state.getBoard().closestEnemyInRadius(
-            getSX(), getSY(), getRange()
-        );
+        Enemy e = targets.getEnemy(this);
 
         if (e == null) { return false; }
 

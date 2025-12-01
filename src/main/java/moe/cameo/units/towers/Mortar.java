@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import moe.cameo.collision.Rect;
+import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.projectile.Projectile;
 import moe.cameo.render.Animation;
 import moe.cameo.render.Animator;
@@ -100,6 +101,13 @@ public class Mortar extends Tower {
             // Create an explosion
             fire(new Explosion(this.x, this.y, explosion_radii[level-1]));
         }
+
+        // No logic needs to be in this one
+        // as it doesn't do damage
+        @Override
+        protected boolean onDamage(Enemy e) {
+            return true;
+        }
     }
 
     private class Explosion extends Projectile {
@@ -134,6 +142,12 @@ public class Mortar extends Tower {
         @Override 
         public Rect getCollider() {
             return new Rect(this.x, this.y, this.SIZE, this.SIZE);
+        }
+
+        @Override 
+        protected boolean onDamage(Enemy e) {
+            damage_dealt += doDamage(e);
+            return true;
         }
     }
 

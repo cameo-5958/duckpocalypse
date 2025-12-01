@@ -88,10 +88,11 @@ public abstract class Projectile extends Entity {
         return !hit.contains(e);
     }
 
-    protected boolean onDamage(Enemy e) {
-        e.damage(this.damage);
+    protected abstract boolean onDamage(Enemy e);
+
+    protected int doDamage(Enemy e) {
         hit.add(e);
-        return true;
+        return e.damage(this.damage);
     }
 
     // Add to hit list

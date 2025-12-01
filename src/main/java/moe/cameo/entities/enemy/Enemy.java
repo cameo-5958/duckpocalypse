@@ -41,12 +41,17 @@ public class Enemy extends Entity {
         this.speed = this.base_speed;
     }
 
-    public void damage(int amt) {
+    public int damage(int amt) {
+        // Return the damage dealt
+        int dealt = Math.min((int) this.hp, amt);
+
         this.hp -= amt;
         if (this.hp <= 0) {
             this.hp = 0;
             onDeath();
         }
+
+        return dealt;
     }
 
     private void generateFullPath() {

@@ -8,7 +8,7 @@ import java.util.function.BiFunction;
 
 public enum TowerType {
     // UNITS BABYYYYY
-    ARCHER(Sniper::new),
+    ARCHER(Archer::new),
     SLINGER(Slinger::new),
     MORTAR(Mortar::new),
     SNIPER(Sniper::new);
