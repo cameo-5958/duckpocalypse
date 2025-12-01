@@ -8,9 +8,10 @@ import java.util.function.BiFunction;
 
 public enum TowerType {
     // UNITS BABYYYYY
-    ARCHER(Archer::new),
+    ARCHER(Sniper::new),
     SLINGER(Slinger::new),
-    MORTAR(Mortar::new);
+    MORTAR(Mortar::new),
+    SNIPER(Sniper::new);
     
     private final BiFunction<Integer, Integer, Tower> factory;
     private final static Map<TowerType, Tower> templates = new HashMap<>();

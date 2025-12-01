@@ -43,7 +43,7 @@ public class Slinger extends Tower {
             this.SIZE = 16;
 
             this.pierce = 1;
-            this.damage = (int) base_damages[level];
+            this.damage = (int) base_damages[level - 1];
         }
 
         @Override

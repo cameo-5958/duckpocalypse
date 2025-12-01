@@ -10,7 +10,7 @@ public class Slime extends Enemy {
     public Slime(moe.cameo.world.Board board, int x, int y, int level) {
         super(board, x, y, level);
 
-        this.max_hp = 5;
+        this.max_hp = 2;
         this.base_speed = 60;
 
         scaleStats();

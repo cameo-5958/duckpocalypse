@@ -14,8 +14,8 @@ public class GameGUI {
 
             // CANCEL BUTTON ----
             new Widget(10, 10, 96, 32, 
-                new Color(130, 40, 40), 
-                new Color(180, 50, 50), 
+                new Color(220, 40, 40), 
+                new Color(255, 50, 50), 
                 Color.WHITE) {
 
             // Draw method
@@ -42,9 +42,9 @@ public class GameGUI {
         });
 
         State.BUILDING.addWidget(// ALL WIDGETS RELATED TO BUILDING STAGE
-            new Widget(20 + 170 + 170 + 170, Constants.SCREEN_Y - 170 + 10, 96, 32,
-                new Color(130, 40, 40), 
-                new Color(180, 50, 50), 
+            new Widget(530, Constants.SCREEN_Y - 160, 96, 32,
+                new Color(40, 220, 40), 
+                new Color(50, 255, 50), 
                 Color.WHITE) {
 
             // Draw method
@@ -67,6 +67,34 @@ public class GameGUI {
             @Override
             public void onClick() {
                 state.play();
+            }
+        },
+
+        new Widget(530, Constants.SCREEN_Y - 118, 96, 32,
+                new Color(160, 32, 240), 
+                new Color(170, 42, 250), 
+                Color.WHITE) {
+
+            // Draw method
+            @Override
+            public void draw(Graphics2D g) {            
+                // Set font
+                g.setFont(Constants.BUTTON_FONT);
+                g.setColor(Color.WHITE);
+
+                // Render label
+                FontMetrics fm = g.getFontMetrics();
+
+                int tx = (96 - fm.stringWidth("2 Redraw")) / 2;
+                int ty = (32 - fm.getHeight()) / 2 + fm.getAscent();
+
+                g.drawString("2 Redraw", tx, ty);
+            }
+
+            // OnPress
+            @Override
+            public void onClick() {
+                state.attemptRedraw();
             }
         }
     );

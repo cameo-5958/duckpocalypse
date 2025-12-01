@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.Entity;
 import moe.cameo.entities.enemy.Enemy;
@@ -40,7 +41,10 @@ public abstract class Projectile extends Entity {
         this.vmag = vmag;
         this.collides_with_tiles = false;
         this.angle = angle;
-        this.lifetime = 10000;
+
+        // Be sure to set lifetime so projectiles
+        // kill themselves eventually
+        this.lifetime = Constants.SCREEN_X + Constants.SCREEN_Y;
     }
 
     protected void kill() {

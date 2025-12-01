@@ -7,6 +7,7 @@ package moe.cameo.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import moe.cameo.cards.Card;
@@ -67,6 +68,10 @@ public final class GameState {
     // true = not handled, false = handled
     private boolean queued_click = false;
 
+    // Money
+    private int money = 3;
+    private int per_wave = 2;
+
     // Active widgets
     // DO NOT DIRECTLY TRY AND GET 
     // active_widgets. ALWAYS USE THE
@@ -82,7 +87,7 @@ public final class GameState {
 
         private final List<Widget> reserved_widgets = new ArrayList<>();
 
-        public void addWidget(Widget w) { reserved_widgets.add(w); }
+        public void addWidget(Widget... w) { Collections.addAll(reserved_widgets, w); }
         public List<Widget> getWidgets() { 
             return reserved_widgets; 
         }
@@ -177,6 +182,9 @@ public final class GameState {
 
                 // Redeal cards
                 this.dealCards();
+
+                // Give money
+                this.money += this.per_wave;
             }
             default -> {
             }
@@ -518,6 +526,15 @@ public final class GameState {
 
     // Get canPlace
     public boolean canPlace() { return this.can_place; }
+
+    // Redrawing card logic
+    public void attemptRedraw() {
+        // Check if money is sufficient
+        if (this.money < 2) return;
+        
+        this.money -= 2;
+        this.dealCards();
+    }
 
     // Tick updates
     public void update(double dt) {
