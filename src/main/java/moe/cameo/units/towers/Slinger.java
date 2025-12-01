@@ -39,11 +39,11 @@ public class Slinger extends Tower {
     // Create rock
     private class Rock extends Projectile {
         public Rock(double x, double y, double angle) {
-            super(x, y, 4, angle);
+            super(x, y, 240, angle);
             this.SIZE = 16;
 
             this.pierce = 1;
-            this.damage = (int) base_damages[level];
+            this.damage = (int) base_damages[level - 1];
         }
 
         @Override
@@ -59,13 +59,13 @@ public class Slinger extends Tower {
         @Override
         public boolean onDamage(Enemy e) {
             // Do damage to the enemy and add to hits list
-            e.damage(this.damage);
+            damage_dealt += e.damage(this.damage);
             hit.add(e);
 
             // We'll create 3 splinters
             int endpoint = 5 * (spread_count[level-1] / 2);
             for (int theta=-endpoint; theta <= endpoint; theta += 5) {
-                fire(new Splinter(this.x, this.y, this.angle + theta));
+                fire(new Splinter(this.x, this.y, this.angle + theta), this.hit);
             }
 
             return true;
@@ -75,7 +75,7 @@ public class Slinger extends Tower {
     private class Splinter extends Projectile {
         public final BufferedImage rotateSplinter;
         public Splinter(double x, double y, double angle) {
-            super(x, y, 4, angle);
+            super(x, y, 240, angle);
             this.SIZE = 8;
 
             this.pierce = 3;
@@ -93,6 +93,12 @@ public class Slinger extends Tower {
         @Override
         public Rect getCollider() {
             return new Rect(this.x, this.y, 4, 4);
+        }
+
+        @Override
+        protected boolean onDamage(Enemy e) {
+            damage_dealt += doDamage(e);
+            return true;
         }
     }
 

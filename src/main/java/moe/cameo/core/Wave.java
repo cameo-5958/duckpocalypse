@@ -132,6 +132,11 @@ public class Wave {
         registerWave(DEFAULT_WAVE);
 
         // NORMAL WAVES
-        registerWave(WaveTypes.NORMAL, EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME);
+        registerWave(WaveTypes.NORMAL, 
+            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME,
+            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME,
+            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME,
+            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME,
+            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME);
     }
 }

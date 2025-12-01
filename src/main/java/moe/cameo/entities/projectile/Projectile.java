@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.Entity;
 import moe.cameo.entities.enemy.Enemy;
@@ -27,6 +28,7 @@ public abstract class Projectile extends Entity {
     protected int damage;
 
     protected int lifetime;
+    protected double travelled = 0.0;
 
     protected final List<Enemy> hit = new ArrayList<>();
 
@@ -39,21 +41,29 @@ public abstract class Projectile extends Entity {
         this.vmag = vmag;
         this.collides_with_tiles = false;
         this.angle = angle;
-        this.lifetime = 10000;
+
+        // Be sure to set lifetime so projectiles
+        // kill themselves eventually
+        this.lifetime = Constants.SCREEN_X + Constants.SCREEN_Y;
+    }
+
+    protected void kill() {
+        this.hp = 0;
+        onDestroy();
     }
 
     @Override
     protected void renderStepped(double dt) {
         // Move by vx, vy
-        this.move(vx, vy);
+        this.move(vx * dt, vy * dt);
 
-        // Decrease lifetime
-        this.lifetime -= vmag;
+        // Decrease lifetime and increase travelled
+        this.lifetime -= vmag * dt;
+        this.travelled += vmag * dt;
 
         // Kill self if lifetime elapsed
         if (this.lifetime <= 0) { 
-            this.hp = 0;
-            // return;
+            kill();    
         }
     }
 
@@ -66,7 +76,7 @@ public abstract class Projectile extends Entity {
 
             // No more pierce: kill self
             if (this.pierce == 0) {
-                this.hp = 0;
+                kill();
                 return;
             }
         }
@@ -78,14 +88,24 @@ public abstract class Projectile extends Entity {
         return !hit.contains(e);
     }
 
-    protected boolean onDamage(Enemy e) {
-        e.damage(this.damage);
+    protected abstract boolean onDamage(Enemy e);
+
+    protected int doDamage(Enemy e) {
         hit.add(e);
-        return true;
+        return e.damage(this.damage);
+    }
+
+    // Add to hit list
+    public void addTohitList(List<Enemy> enemies) {
+        for (Enemy e : enemies) {
+            hit.add(e);
+        }
     }
 
     @Override
     public BufferedImage getSprite() {
         return null;
     }
+
+    public void onDestroy() { }
 }

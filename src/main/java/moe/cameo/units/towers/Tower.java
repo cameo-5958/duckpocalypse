@@ -68,6 +68,35 @@ RequestsGamestates {
     // Self tower type
     protected TowerType self_tower_type = TowerType.ARCHER;
 
+    // Focused target
+    protected Enemy focusedEnemy;
+    protected double distanceToEnemy;
+
+    // Targetting
+    public enum Targetting {
+        CLOSEST, STRONGEST;
+
+        protected Enemy getEnemy(Tower t) {
+            switch(this) {
+                case CLOSEST -> {
+                    return t.state.getBoard().closestEnemyInRadius(
+                        t.getSX(), t.getSY(), t.getRange());
+                }
+                case STRONGEST -> {
+                    return t.state.getBoard().strongestEnemyInRadius(
+                        t.getSX(), t.getSY(), t.getRange()
+                    );
+                }
+
+                default -> { 
+                    return CLOSEST.getEnemy(t);
+                }
+            }
+        }
+
+    }
+    protected Targetting targets = Targetting.CLOSEST;
+
     protected Tower(int x, int y) {
         super(x, y);
     }      
@@ -101,6 +130,14 @@ RequestsGamestates {
     // Add a new projectile
     protected final void fire(Projectile p) {
         this.queued.add(p);
+    }
+
+    // Add a new projectile with partial blacklist setup
+    protected final void fire(Projectile p, List<Enemy> initialBlacklist) {
+        // Transfer initial blacklist to projectile if it supports it
+        this.queued.add(p);
+
+        p.addTohitList(initialBlacklist);
     }
     
     // Public API
@@ -159,16 +196,18 @@ RequestsGamestates {
     // SHOOTING!
     private boolean _shoot() {
         // Find an enemy
-        Enemy e = state.getBoard().closestEnemyInRadius(
-            getSX(), getSY(), getRange()
-        );
+        Enemy e = targets.getEnemy(this);
 
         if (e == null) { return false; }
 
+        focusedEnemy = e;
+        double dx = e.getX() - getSX();
+        double dy = e.getY() - getSY();
+
+        distanceToEnemy = Math.sqrt(dx * dx + dy * dy);
+
         // Face the enemy
-        this.setDirection(Math.toDegrees(Math.atan2(
-            e.getY() - getSY(), e.getX() - getSX()
-        )));
+        this.setDirection(Math.toDegrees(Math.atan2(dy, dx)));
 
         // Play tower shooting animation
         this.animator.play("TowerShoot");

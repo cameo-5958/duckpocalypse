@@ -28,6 +28,11 @@ public class Animations {
 
         load("TowerIdle", "/animations/tower-idle", 0.4, true);
         load("TowerShoot", "/animations/tower-fire", 0.12, false);
+
+        load("Explosion", "/misc/explosion", 0.02, false);
+
+        load("MortarIdle", "/animations/mortar-idle", 1, true);
+        load("MortarShoot", "/animations/mortar-fire", 0.1, false);
     }
     
     public static Animation load(String key, String path, int frameWidth, double frameTime, boolean loop) {

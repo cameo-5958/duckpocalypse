@@ -341,10 +341,10 @@ public class Board {
         return result;
     }
 
-    // Return all entities in a tile radius 
-    public Enemy closestEnemyInRadius(double cx, double cy, double radiusTiles) {
+    // Return closest enemy 
+    public Enemy closestEnemyInRadius(double cx, double cy, double radius) {
         Enemy result = null;
-        double distance = radiusTiles * radiusTiles;
+        double distance = radius * radius;
 
         // Loop through units
         for (Entity e : this.entities) {
@@ -358,6 +358,30 @@ public class Board {
                 // In range, or closer
                 result = enem;  
                 distance = dm;              
+            }
+        }
+
+        // Return closest enemy
+        return result;
+    }
+
+    // Return strongest enemy
+    public Enemy strongestEnemyInRadius(double cx, double cy, double radius) {
+        Enemy result = null;
+        double hp = -1;
+
+        // Loop through units
+        for (Entity e : this.entities) {
+            if (!(e instanceof Enemy enem)) continue;
+
+            // Calculate pythagorean distance or whatever it's called
+            double dx = e.getX() - cx;
+            double dy = e.getY() - cy;
+            double dm = dx * dx + dy * dy;
+            if (dm < radius * radius && enem.getHP() > hp) {
+                // In range and stronger
+                result = enem;  
+                hp = enem.getHP();
             }
         }
 
