@@ -42,6 +42,8 @@ public class Mortar extends Tower {
     // Create an arrow
     private class FlyingRock extends Projectile {
         private final double distance; 
+        private final double final_x;
+        private final double final_y;
         public FlyingRock(double x, double y, double angle, double distance) {
             super(x, y, 180, angle);
             this.distance = distance;
@@ -50,6 +52,9 @@ public class Mortar extends Tower {
             this.damage = (int) getDamage();
             this.lifetime = (int) distance;
             this.SIZE = 16;
+            
+            this.final_x = x + distance * Math.cos(Math.toRadians(angle));
+            this.final_y = y + distance * Math.sin(Math.toRadians(angle));
         }
         
         private double calculateZ() {
@@ -99,7 +104,7 @@ public class Mortar extends Tower {
         @Override
         public void onDestroy() {
             // Create an explosion
-            fire(new Explosion(this.x, this.y, explosion_radii[level-1]));
+            fire(new Explosion(this.final_x, this.final_y, explosion_radii[level-1]));
         }
 
         // No logic needs to be in this one
