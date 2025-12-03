@@ -57,7 +57,7 @@ public class Renderer extends JPanel {
         interfaceHeightMap.put(Displayable.HasHealth.class, FONT_SIZE);
         interfaceHeightMap.put(Displayable.HasLevel.class, FONT_SIZE);
         interfaceHeightMap.put(Displayable.HasCards.class, FONT_SIZE);
-        interfaceHeightMap.put(Displayable.HasStats.class, FONT_SIZE);
+        interfaceHeightMap.put(Displayable.HasStats.class, (FONT_SIZE + MARGIN) * 3);
     }
 
     private final int SCREEN_X;
@@ -325,7 +325,10 @@ public class Renderer extends JPanel {
         }
 
         if (disp instanceof Displayable.HasStats dhs) {
-            
+            double[] stats = dhs.getStats();
+            this.drawInfoboxWord(g, layout, "Damage: " + stats[0]);
+            this.drawInfoboxWord(g, layout, "Firerate: " + stats[1]);
+            this.drawInfoboxWord(g, layout, "Range: " + stats[2]);
         }
     }
 
@@ -341,7 +344,17 @@ public class Renderer extends JPanel {
         g.setColor(Color.BLACK);
         g.drawString(text,
             layout.left,
-            layout.nextLine(FONT_SIZE)
+            layout.nextLine(FONT_SIZE) - 16
+        ); 
+    }
+    
+    // Infobox minitext
+    private void drawInfoboxWord(Graphics g, InfoboxLayout layout, String text) {
+        g.setFont(NORMAL_FONT);
+        g.setColor(Color.BLACK);
+        g.drawString(text,
+            layout.left,
+            layout.nextLine(0)
         ); 
     } 
 

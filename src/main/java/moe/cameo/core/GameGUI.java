@@ -39,7 +39,7 @@ public class GameGUI {
             public void onClick() {
                 state.cancelPlacing();
             }
-        });
+        }, Error.widget());
 
         State.BUILDING.addWidget(// ALL WIDGETS RELATED TO BUILDING STAGE
             new Widget(530, Constants.SCREEN_Y - 160, 96, 32,
@@ -96,7 +96,8 @@ public class GameGUI {
             public void onClick() {
                 state.attemptRedraw();
             }
-        }
+        },
+        Error.widget()
     );
     }
 }

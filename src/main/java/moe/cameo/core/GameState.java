@@ -284,6 +284,17 @@ public final class GameState {
         }
     }
 
+    // Buying stuff
+    private boolean buy(int cost) {
+        if (this.money < cost) {
+            Error.raise("You don't have enough money to buy that.");
+            return false;
+        }
+
+        this.money -= cost;
+        return true;
+    }
+
     // Spawn enemy
     public void spawnEnemy(EnemyTypes et) {
         // Rather than spawn at a random location, 
@@ -360,8 +371,11 @@ public final class GameState {
 
     // Use a card at index i
     public void useCard(int index) {
-        // Check the type of the card
+        // Check the type of the card + cost
         Card c = held_cards.get(index);
+        int cost = c.getCost();
+
+        if (!this.buy(cost)) { return; }
 
         if (c instanceof TowerCard tc) {
             // Place tc if valid
@@ -472,7 +486,10 @@ public final class GameState {
     // Click with state as PLACING_UNIT
     private void clickPlaceSelectedCard() {
         // No placement if can't place
-        if (!can_place) { return; }
+        if (!can_place) { 
+            Error.raise("You can't place there!");
+            return; 
+        }
         
         // No placement if no card selected
         if (selected_card == -1) { 
@@ -530,9 +547,7 @@ public final class GameState {
     // Redrawing card logic
     public void attemptRedraw() {
         // Check if money is sufficient
-        if (this.money < 2) return;
-        
-        this.money -= 2;
+        if (!this.buy(2)) return; 
         this.dealCards();
     }
 

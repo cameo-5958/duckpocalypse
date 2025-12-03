@@ -99,4 +99,7 @@ public abstract class Widget {
 
     public final Rect getCollider() { return this.collider;  }
     public final boolean getHovered() { return this.hovered; }
+
+    // RenderStepped
+    public void renderStepped(double dt) {}
 }

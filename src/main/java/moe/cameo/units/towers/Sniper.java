@@ -24,7 +24,7 @@ public class Sniper extends Tower {
         this.name = "Sniper";
         this.desc = "Deals incredibly high damage to the strongest enemy. Fires incredibly slowly.";
 
-        this.base_damages = new double[] {8, 20, 44, 48, 150};
+        this.base_damages = new double[] {5, 12, 32, 80, 108};
         this.base_range = new double[] {400, 400, 600, 600, 900};
         this.base_firerate = new double[] {4, 4, 4, 2, 2};
 

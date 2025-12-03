@@ -65,6 +65,9 @@ public abstract class Card extends Widget {
         this.index = -67;
     }
 
+    // Getters
+    public int getCost() { return cost; }
+
     // Draw self
     @Override
     protected void draw(Graphics2D g) {
