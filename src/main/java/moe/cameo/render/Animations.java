@@ -33,7 +33,13 @@ public class Animations {
 
         load("MortarIdle", "/animations/mortar-idle", 1, true);
         load("MortarShoot", "/animations/mortar-fire", 0.1, false);
+
+        load("BatFly", "/animations/bat-run", 0.08, true);
+        load("MushroomWalk", "/animations/mushroom-walk", 0.08, true);
+        load("BlueGolemWalk", "/animations/blue-golem-walk", 0.2, true);
+        load("OrangeGolemWalk", "/animations/orange-golem-walk", 0.2, true);
     }
+    
     
     public static Animation load(String key, String path, int frameWidth, double frameTime, boolean loop) {
         if (sheets.containsKey(key)) 

@@ -3,7 +3,9 @@ package moe.cameo.entities.enemy;
 import moe.cameo.world.Board;
 
 public enum EnemyTypes {
-    TEST(Test::new, 0.2), SLIME(Slime::new, 0.3);
+    TEST(Test::new, 0.2), SLIME(Slime::new, 0.3),
+    BAT(Bat::new, 0.1), ORANGE(OrangeGolem::new, 0.5),
+    BLUE(BlueGolem::new, 0.5), MUSHROOM(Mushroom::new, 0.2);
     // Enemy spawner
 
     public interface EnemyFactory {

@@ -23,17 +23,23 @@ public class Enemy extends Entity {
     private final List<int[]> path = new ArrayList<>();
     private int pathIndex = 0;
 
-    public Enemy(Board board, int x, int y, int level) {
-        super(
-            (x + 0.5f) * Constants.TILE_SIZE,
-            (y + 0.5f) * Constants.TILE_SIZE
-        );
+    public Enemy(Board board, double x, double y, int level) {
+        super(x, y);
         this.board = board;
         this.level = level;
         this.SIZE = 32;
 
         // Generate path
         generateFullPath();
+    }
+
+    public Enemy(Board board, int x, int y, int level) {
+        this(
+            board,
+            (x + 0.5) * Constants.TILE_SIZE,
+            (y + 0.5) * Constants.TILE_SIZE,
+            level
+        );
     }
 
     protected void scaleStats() {

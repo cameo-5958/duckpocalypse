@@ -67,9 +67,8 @@ public class Wave {
         return NON_SPECIAL_TYPES[(int)(Math.random() * NON_SPECIAL_TYPES.length)];
     }
 
-    // Register a wave
-    private static void registerWave(WaveTypes type, EnemyTypes... enemies) {
-        registerWave(new Wave(type, enemies));
+    private static void registerWave(WaveTypes type, Dup... dups) {
+        registerWave(new Wave(type, dups));
     }
 
     private static void registerWave(Wave wave) {
@@ -85,11 +84,23 @@ public class Wave {
     private double spawnCooldown = 0;
     private boolean going = false;
 
+    static class Dup {
+        EnemyTypes e;
+        int count;
+        Dup(EnemyTypes e, int count) {
+            this.e = e; this.count = count;
+        }
+    }
+
     // Constructor
-    public Wave(WaveTypes type, EnemyTypes... enemies) {
-        // Add enemies to enemies list
-        this.enemies.addAll(List.of(enemies));
+    public Wave(WaveTypes type, Dup... dups) {
         this.type = type;
+
+        for (Dup dup : dups) {
+            for (int i=0; i<dup.count; i++) {
+                this.enemies.add(dup.e);
+            }
+        }
     }
 
     // Get wave state
@@ -128,15 +139,18 @@ public class Wave {
     static {
         // Define waves HERE
 
-        DEFAULT_WAVE = new Wave(WaveTypes.NORMAL, EnemyTypes.SLIME, EnemyTypes.SLIME);
+        DEFAULT_WAVE = new Wave(WaveTypes.NORMAL,
+            new Dup(EnemyTypes.SLIME, 5),
+            new Dup(EnemyTypes.BAT, 5),
+            new Dup(EnemyTypes.MUSHROOM, 5),
+            new Dup(EnemyTypes.ORANGE, 1),
+            new Dup(EnemyTypes.BLUE, 1)
+        );
         registerWave(DEFAULT_WAVE);
 
         // NORMAL WAVES
         registerWave(WaveTypes.NORMAL, 
-            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME,
-            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME,
-            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME,
-            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME,
-            EnemyTypes.SLIME, EnemyTypes.SLIME, EnemyTypes.SLIME);
+            new Dup(EnemyTypes.SLIME, 20)
+        );
     }
 }

@@ -5,9 +5,10 @@ import java.awt.image.BufferedImage;
 import moe.cameo.render.Animation;
 import moe.cameo.render.Animator;
 import moe.cameo.render.Sprites;
+import moe.cameo.world.Board;
 
 public class Slime extends Enemy {
-    public Slime(moe.cameo.world.Board board, int x, int y, int level) {
+    public Slime(Board board, int x, int y, int level) {
         super(board, x, y, level);
 
         this.max_hp = 2;
