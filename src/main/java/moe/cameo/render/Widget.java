@@ -91,7 +91,7 @@ public abstract class Widget {
     protected abstract void draw(Graphics2D g);
 
     // Clicking behavior
-    public void onClick() {}
+    public boolean onClick() { return false; }
 
     // Hooks
     public void onHover() {}

@@ -122,5 +122,8 @@ public abstract class Card extends Widget {
 
     // OnPress
     @Override
-    public void onClick() { this.callPlayCard.accept(this.index); }
+    public boolean onClick() { 
+        this.callPlayCard.accept(this.index);
+        return true;
+    }
 }

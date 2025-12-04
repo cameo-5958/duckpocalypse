@@ -36,8 +36,9 @@ public class GameGUI {
 
             // OnPress
             @Override
-            public void onClick() {
+            public boolean onClick() {
                 state.cancelPlacing();
+                return true;
             }
         }, Error.widget());
 
@@ -65,8 +66,9 @@ public class GameGUI {
 
             // OnPress
             @Override
-            public void onClick() {
+            public boolean onClick() {
                 state.play();
+                return true;
             }
         },
 
@@ -93,8 +95,9 @@ public class GameGUI {
 
             // OnPress
             @Override
-            public void onClick() {
+            public boolean onClick() {
                 state.attemptRedraw();
+                return true;
             }
         },
         Error.widget()

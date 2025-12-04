@@ -463,9 +463,8 @@ public final class GameState {
     private void handleClicking() {
         // ALWAYS handle Widgets first
         for (Widget w : this.getActiveWidgets()) {
-            if (w.getHovered()) {
+            if (w.getHovered() && w.onClick()) {
                 // Press the widget
-                w.onClick();
                 return;
             }
         }
