@@ -12,7 +12,7 @@ public class OrangeGolem extends Enemy {
 
         this.max_hp = 50;
         this.base_speed = 10;
-        this.SIZE = 48;
+        this.SIZE = 96;
 
         scaleStats();
     }

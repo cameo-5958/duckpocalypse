@@ -12,6 +12,7 @@ public class Mushroom extends Enemy {
 
         this.max_hp = 6;
         this.base_speed = 40;
+        this.SIZE = 48;
 
         scaleStats();
     }

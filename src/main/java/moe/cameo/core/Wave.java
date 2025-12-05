@@ -84,7 +84,7 @@ public class Wave {
     private double spawnCooldown = 0;
     private boolean going = false;
 
-    static class Dup {
+    public static class Dup {
         EnemyTypes e;
         int count;
         Dup(EnemyTypes e, int count) {

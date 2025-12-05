@@ -140,6 +140,7 @@ public final class GameState {
     public Goal getGoal() { return this.goal; }
     public State getState() { return this.state; }
     public int getLevel() { return this.wave; }
+    public int getMoney() { return this.money; }
     public List<Card> heldCards() { return this.held_cards; }
     public List<Widget> getActiveWidgets() { 
         // This has to extend active_widgets with held_cards

@@ -12,6 +12,8 @@ public class Bat extends Enemy {
 
         this.max_hp = 1;
         this.base_speed = 80;
+        
+        this.SIZE = 32;
 
         scaleStats();
     }

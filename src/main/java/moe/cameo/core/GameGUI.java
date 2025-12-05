@@ -87,10 +87,10 @@ public class GameGUI {
                 // Render label
                 FontMetrics fm = g.getFontMetrics();
 
-                int tx = (96 - fm.stringWidth("2 Redraw")) / 2;
+                int tx = (96 - fm.stringWidth("2Ð Redraw")) / 2;
                 int ty = (32 - fm.getHeight()) / 2 + fm.getAscent();
 
-                g.drawString("2 Redraw", tx, ty);
+                g.drawString("2Ð Redraw", tx, ty);
             }
 
             // OnPress
@@ -98,6 +98,24 @@ public class GameGUI {
             public boolean onClick() {
                 state.attemptRedraw();
                 return true;
+            }
+        },
+        
+        new Widget(530, Constants.SCREEN_Y - 10 - 32, 96, 32,
+            new Color(100, 100, 100, 100),
+            new Color(100, 100, 100, 100)
+        ) {
+            // Draw method
+            @Override
+            public void draw(Graphics2D g) {
+                g.setFont(Constants.BUTTON_FONT);
+                g.setColor(Color.WHITE);
+
+                // Render cost
+                FontMetrics fm = g.getFontMetrics();
+                int ty = (32 - fm.getHeight()) / 2 + fm.getAscent();
+
+                g.drawString("Ð: " + state.getMoney(), 10, ty);
             }
         },
         Error.widget()

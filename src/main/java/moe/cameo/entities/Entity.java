@@ -114,7 +114,7 @@ public abstract class Entity {
     }
 
     // Recalculate rect
-    private void recalculateRect() {
+    protected void recalculateRect() {
         collider = new Rect(this.x, this.y, this.SIZE, this.SIZE);
     }
 

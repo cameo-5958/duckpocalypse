@@ -21,6 +21,8 @@ public class BlueGolem extends Enemy {
         this.max_hp = 30;
         this.base_speed = 15;
 
+        this.SIZE = 80;
+
         scaleStats();
     }
 

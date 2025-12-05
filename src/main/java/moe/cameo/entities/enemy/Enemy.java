@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import moe.cameo.collision.Rect;
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.Entity;
@@ -206,4 +207,11 @@ public class Enemy extends Entity {
     @Override
     // Enemies are not allowed to collide with each other!!!
     public final void onCollide(GameState state, List<Enemy> collisions) {}
+
+    @Override
+    // Enemies should have well-sized hitboxes.
+    public final Rect getCollider() {
+        int size = Math.min(this.SIZE, 48);
+        return new Rect(this.x, this.y, size, size);
+    }
 }
