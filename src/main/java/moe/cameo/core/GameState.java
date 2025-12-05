@@ -54,8 +54,10 @@ public final class GameState {
     private int mouse_y = 0;
 
     // Current game level and wave
+    // stores wave structures
     private int wave = 0;
     private Wave current_wave = null;
+    private final List<Pair<Wave, Integer>> wave_structure = Wave.getWaveStructure(); 
 
     // Store held cards and currently selected card
     private final List<Card> held_cards = new ArrayList<>();

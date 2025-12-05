@@ -6,6 +6,7 @@
 package moe.cameo.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +75,14 @@ public class Wave {
     private static void registerWave(Wave wave) {
         List<Wave> wvs = waves.get(wave.type);
         wvs.add(wave);
+    }
+
+    public static List<Pair<Wave, Integer>> getWaveStructure() {
+        return new ArrayList<>(Arrays.asList(
+            new Pair<>(new Wave(
+                WaveTypes.NORMAL, new Dup(EnemyTypes.SLIME, 1)
+            ), 1)
+        ));
     }
 
     // Normal wave
