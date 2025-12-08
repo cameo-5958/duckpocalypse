@@ -14,6 +14,7 @@ import moe.cameo.cards.Card;
 import moe.cameo.cards.TowerCard;
 import moe.cameo.collision.Collision;
 import moe.cameo.collision.Rect;
+import moe.cameo.core.Wave.Structure;
 import moe.cameo.entities.Entity;
 import moe.cameo.entities.Goal;
 import moe.cameo.entities.Player;
@@ -56,8 +57,9 @@ public final class GameState {
     // Current game level and wave
     // stores wave structures
     private int wave = 0;
+    private int level = 1;
     private Wave current_wave = null;
-    private final List<Pair<Wave, Integer>> wave_structure = Wave.getWaveStructure(); 
+    private final Structure wave_structure = Wave.getWaveStructure(); 
 
     // Store held cards and currently selected card
     private final List<Card> held_cards = new ArrayList<>();
@@ -304,7 +306,7 @@ public final class GameState {
         // spawn at a random spawner
         Spawner sp = board.getRandomSpawner();
 
-        Enemy e = et.spawn(this.board, sp.getX(), sp.getY(), this.wave);
+        Enemy e = et.spawn(this.board, sp.getX(), sp.getY(), this.level);
         board.addEntity(e);
     }
 
@@ -384,13 +386,28 @@ public final class GameState {
             // Place tc if valid
             selected_card = index;
             this.setPlacingType(tc.getTowerType());
+        } else {
+            c.go();
         }
-
     }
 
     // Select next wave 
     private Wave selectWave() {
         // Select a wave for next round
+        // Check if there are still waves 
+        // in our wave structure
+        if (this.wave < wave_structure.size()) {
+            // Return the wave on the wave structure
+            Pair<Wave, Integer> pwi = wave_structure.get(this.wave);
+            
+            // Set the level to the given level
+            this.level = pwi.getSecond();
+            
+            // Return the wave
+            return pwi.getFirst();
+        }
+
+        // Inf mode
         Wave.WaveTypes wt;
         if (wave % 25 == 0) // Select a boss wave
             wt = Wave.WaveTypes.BOSS;
@@ -405,9 +422,24 @@ public final class GameState {
                 wt = Wave.requestNonSpecialWave();
         }
 
+        // Set the level to (wave / 4)
+        this.level = wave / 4;
+
         // Return a requested wave
         return Wave.requestWave(wt);
     }
+
+    /*********************
+    
+    CARD LOGIC
+    
+    *********************/
+
+    // Increasing income
+    public void increaseIncome() {
+
+    }
+
 
     // Collision handler
     private void collisionEngine() {

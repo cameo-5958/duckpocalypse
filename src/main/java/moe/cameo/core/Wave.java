@@ -18,6 +18,9 @@ import moe.cameo.entities.enemy.EnemyTypes;
  * @author kunru
  */
 public class Wave {
+    // Alias
+    public static final class Structure extends ArrayList<Pair<Wave, Integer>> {}
+
     // Global wave registry & Getters
     public static final Map<WaveTypes, List<Wave>> waves = new HashMap<>();
     public static final Wave DEFAULT_WAVE;
@@ -77,12 +80,39 @@ public class Wave {
         wvs.add(wave);
     }
 
-    public static List<Pair<Wave, Integer>> getWaveStructure() {
-        return new ArrayList<>(Arrays.asList(
-            new Pair<>(new Wave(
-                WaveTypes.NORMAL, new Dup(EnemyTypes.SLIME, 1)
-            ), 1)
+    private static Pair<Wave, Integer> newWave(WaveTypes wt, int level, Dup... dups) {
+        // Create the wave
+        Wave w = new Wave(wt, dups);
+
+        // Create the pair
+        Pair<Wave, Integer> pwi = new Pair<>(w, level);
+
+        // return the Pair
+        return pwi;
+    }
+
+    public static Structure getWaveStructure() {
+        Structure s = new Structure();
+        s.addAll(Arrays.asList(
+            newWave(WaveTypes.NORMAL, 1, new Dup(EnemyTypes.SLIME, 3)),     // Wave 1
+            newWave(WaveTypes.NORMAL, 1, new Dup(EnemyTypes.SLIME, 6)),     // Wave 2
+            newWave(WaveTypes.NORMAL, 1,                                          // Wave 3
+                new Dup(EnemyTypes.BAT, 2),
+                new Dup(EnemyTypes.SLIME, 4),
+                new Dup(EnemyTypes.BAT, 2)                    
+            ),
+            newWave(WaveTypes.NORMAL, 1,
+                new Dup(EnemyTypes.SLIME, 5), 
+                new Dup(EnemyTypes.BAT, 5),
+                new Dup(EnemyTypes.SLIME, 4)
+            ),
+            newWave(WaveTypes.MINI_BOSS, 1,
+                new Dup(EnemyTypes.SLIME, 10),
+                new Dup(EnemyTypes.MUSHROOM,3),
+                new Dup(EnemyTypes.SLIME, 5)
+            )
         ));
+        return s;
     }
 
     // Normal wave
