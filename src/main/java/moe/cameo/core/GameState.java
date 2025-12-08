@@ -12,6 +12,7 @@ import java.util.List;
 
 import moe.cameo.cards.Card;
 import moe.cameo.cards.TowerCard;
+import moe.cameo.cards.UpgradeCard;
 import moe.cameo.collision.Collision;
 import moe.cameo.collision.Rect;
 import moe.cameo.core.Wave.Structure;
@@ -386,8 +387,8 @@ public final class GameState {
             // Place tc if valid
             selected_card = index;
             this.setPlacingType(tc.getTowerType());
-        } else {
-            c.go();
+        } else if (c instanceof UpgradeCard uc) {
+            uc.go();
         }
     }
 
