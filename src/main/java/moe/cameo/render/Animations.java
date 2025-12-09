@@ -38,6 +38,14 @@ public class Animations {
         load("MushroomWalk", "/animations/mushroom-walk", 0.08, true);
         load("BlueGolemWalk", "/animations/blue-golem-walk", 0.2, true);
         load("OrangeGolemWalk", "/animations/orange-golem-walk", 0.2, true);
+
+        load("GambleRoll", "/animations/die", 0.05, true);
+        load("GambleOne", "/dicefaces/one", 1.5, false);
+        load("GambleTwo", "/dicefaces/two", 1.5, false);
+        load("GambleThree", "/dicefaces/three", 1.5, false);
+        load("GambleFour", "/dicefaces/four", 1.5, false);
+        load("GambleFive", "/dicefaces/five", 1.5, false);
+        load("GambleSix", "/dicefaces/six", 1.5, false);
     }
     
     

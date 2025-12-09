@@ -111,4 +111,21 @@ public class Sprites {
         g.dispose();
         return combined;
     }
+
+    public static BufferedImage resize(BufferedImage base, int size) {
+        // Create new BufferedImage
+        BufferedImage newBufferedImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = newBufferedImage.createGraphics();
+
+        // Enable high-quality scaling
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Draw scaled image
+        g2d.drawImage(base, 0, 0, size, size, null);
+        g2d.dispose();
+
+        return newBufferedImage;
+    }
 }

@@ -161,13 +161,13 @@ public class Mortar extends Tower {
         // No damage is done here
         // We'll queue shooting for later
         this.fire_at = System.nanoTime() + 300_000_000;
-        animator.play("MortarShoot");
+        mortar_animator.play("MortarShoot");
     }
 
     @Override
     protected void renderStepped(double dt) {
         super.renderStepped(dt);
-        animator.update(dt);
+        mortar_animator.update(dt);
 
         if (this.fire_at > System.nanoTime()) { return; }
 
@@ -190,7 +190,7 @@ public class Mortar extends Tower {
 
     @Override
     public BufferedImage getSprite() {
-        BufferedImage overlay = super.getSprite();
+        BufferedImage overlay = animator.getFrame();
         BufferedImage mortar = mortar_animator.getFrame();
 
         return Sprites.overlay(mortar, overlay);

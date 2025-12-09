@@ -146,6 +146,7 @@ public final class GameState {
     public State getState() { return this.state; }
     public int getLevel() { return this.wave; }
     public int getMoney() { return this.money; }
+    public int getIncome() { return this.per_wave; }
     public List<Card> heldCards() { return this.held_cards; }
     public List<Widget> getActiveWidgets() { 
         // This has to extend active_widgets with held_cards
@@ -365,14 +366,30 @@ public final class GameState {
     private Card decideCard(int index) {
         // If towercard
         // if (true) {
+        // Default 80-20 chance to get a TowerCard
+        double rnum = Math.random();
+        if (rnum < 0.8)
             return new TowerCard(
                 this::useCard, 
                 TowerType.getRandomWithDistributions(card_cost_distribution),
                 index, 1
             );
+        else {
+            // Allow UpgradeCard to handle it
+            return UpgradeCard.chooseNextCard(
+                this::useCard,
+                index,
+                this
+            );
+        }
         // } 
         // return new TowerCard(this::useCard, TowerType.ARCHER, index, 10);
 
+    }
+
+    // Clear card at location
+    public void clearCard(int index) {
+        this.held_cards.set(index, TowerCard.getEmptyCard(index));
     }
 
     // Use a card at index i
@@ -382,13 +399,19 @@ public final class GameState {
         int cost = c.getCost();
 
         if (!this.buy(cost)) { return; }
-
-        if (c instanceof TowerCard tc) {
-            // Place tc if valid
-            selected_card = index;
-            this.setPlacingType(tc.getTowerType());
-        } else if (c instanceof UpgradeCard uc) {
-            uc.go();
+        
+        switch (c) {
+            case TowerCard tc -> {
+                // Place tc if valid
+                selected_card = index;
+                this.setPlacingType(tc.getTowerType());
+            }
+            case UpgradeCard uc -> {
+                uc.go();
+                clearCard(index);
+            }
+            default -> {
+            }
         }
     }
 
@@ -438,7 +461,16 @@ public final class GameState {
 
     // Increasing income
     public void increaseIncome() {
+        this.per_wave++;
+    }
 
+    // Healing
+    public void heal() {
+        if (this.goal.getHP() < 10) {
+            this.goal.changeHP(1);
+        }
+        else 
+            Error.raise("You've gotta be stupid...");
     }
 
 
@@ -556,9 +588,8 @@ public final class GameState {
 
         
         // Remove the selected_card
-        this.held_cards.set(selected_card, TowerCard.getEmptyCard(
-            selected_card
-        ));
+        clearCard(selected_card);
+
 
         // Cancel the placement
         cancelPlacing();

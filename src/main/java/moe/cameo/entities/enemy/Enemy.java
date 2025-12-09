@@ -43,9 +43,11 @@ public class Enemy extends Entity {
         );
     }
 
+    private static final double[] STATS_SCALING = {0, 1, 1.5, 2.25, 4, 10};
     protected void scaleStats() {
+        this.max_hp *= STATS_SCALING[this.level];
         this.hp = this.max_hp;
-        this.speed = this.base_speed;
+        this.speed = this.base_speed * Math.sqrt(STATS_SCALING[this.level]);
     }
 
     public int damage(int amt) {

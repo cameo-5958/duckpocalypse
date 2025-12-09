@@ -46,7 +46,7 @@ public abstract class Card extends Widget {
     protected int that_one_caption_number_at_the_top_right_corner_that_represents_how_many_cards_are_gained;
 
     // Constructor
-    public Card(IntConsumer play_card, int x, int level) {
+    public Card(IntConsumer play_card, int x) {
         super(10 + (170 * x), Y_POS, WIDTH, HEIGHT, 
             new Color(128, 30, 30, 200),
             new Color(160, 42, 42, 200),

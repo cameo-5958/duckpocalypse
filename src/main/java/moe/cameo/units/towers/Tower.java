@@ -17,6 +17,7 @@ import moe.cameo.render.Displayable;
 import moe.cameo.render.Sprites;
 import moe.cameo.units.RequestsGamestates;
 import moe.cameo.units.Unit;
+import moe.cameo.world.Board;
 
 /**
  *
@@ -74,26 +75,29 @@ RequestsGamestates {
 
     // Targetting
     public enum Targetting {
-        CLOSEST, STRONGEST;
+        CLOSEST, STRONGEST, ALL;
 
         protected Enemy getEnemy(Tower t) {
+            return getEnemy(t.getSX(), t.getSY(), t.getRange(), t.state.getBoard());
+        }
+
+        protected Enemy getEnemy(double x, double y, double range, Board board) {
             switch(this) {
                 case CLOSEST -> {
-                    return t.state.getBoard().closestEnemyInRadius(
-                        t.getSX(), t.getSY(), t.getRange());
+                    return board.closestEnemyInRadius(
+                        x, y, range);
                 }
                 case STRONGEST -> {
-                    return t.state.getBoard().strongestEnemyInRadius(
-                        t.getSX(), t.getSY(), t.getRange()
+                    return board.strongestEnemyInRadius(
+                        x, y, range
                     );
                 }
 
                 default -> { 
-                    return CLOSEST.getEnemy(t);
+                    return CLOSEST.getEnemy(x, y, range, board);
                 }
             }
         }
-
     }
     protected Targetting targets = Targetting.CLOSEST;
 

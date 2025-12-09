@@ -13,7 +13,7 @@ public class TowerCard extends Card {
     }
 
     public TowerCard(IntConsumer func, TowerType tt, int x, int count) {
-        super(func, x, count);
+        super(func, x);
         Tower template = tt.getTemplate(tt);
 
         this.cost = template.getCost() * count;

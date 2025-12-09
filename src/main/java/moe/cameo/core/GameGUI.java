@@ -115,7 +115,7 @@ public class GameGUI {
                 FontMetrics fm = g.getFontMetrics();
                 int ty = (32 - fm.getHeight()) / 2 + fm.getAscent();
 
-                g.drawString("Ð: " + state.getMoney(), 10, ty);
+                g.drawString("Ð: " + state.getMoney() + " (+" + state.getIncome() + "Ð)", 10, ty);
             }
         },
         Error.widget()

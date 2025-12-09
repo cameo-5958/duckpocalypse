@@ -11,7 +11,8 @@ public enum TowerType {
     ARCHER(Archer::new),
     SLINGER(Slinger::new),
     MORTAR(Mortar::new),
-    SNIPER(Sniper::new);
+    SNIPER(Sniper::new),
+    GAMBLER(Gambler::new);
     
     private final BiFunction<Integer, Integer, Tower> factory;
     private final static Map<TowerType, Tower> templates = new HashMap<>();
