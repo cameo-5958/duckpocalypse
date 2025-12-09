@@ -3,6 +3,7 @@ package moe.cameo.cards;
 import java.awt.image.BufferedImage;
 import java.util.function.IntConsumer;
 
+import moe.cameo.core.Error;
 import moe.cameo.core.GameState;
 import moe.cameo.render.Sprites;
 
@@ -11,9 +12,9 @@ public class UpgradeCard extends Card {
 
     // Registry
     public enum UPGRADE_CARD_TYPES {
+        CARDCOSTS(1, 7),
         ECONOMY(1),
-        HEAL(1),
-        CARDCOSTS(1, 7); // Upgrades the ECONOMY
+        HEAL(1); // Upgrades the ECONOMY
 
         final int weight;
         int can_buy;
@@ -44,6 +45,7 @@ public class UpgradeCard extends Card {
                 if (t < 0) { return uct; }
             }
 
+            Error.raise("Defered to previous");
             return ECONOMY;
         }
 

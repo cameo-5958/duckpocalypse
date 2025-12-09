@@ -42,7 +42,7 @@ public class OrangeGolem extends Enemy {
 
     @Override
     protected void onDeath() {
-        for (int i=0; i<4; i++) 
+        for (int i=0; i<3; i++) 
             this.board.addEntity(
                 new BlueGolem(
                     this.board,

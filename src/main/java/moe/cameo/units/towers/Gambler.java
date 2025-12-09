@@ -50,9 +50,9 @@ public class Gambler extends Tower {
             super(x, y, 0.0, angle);
             this.SIZE = 16;
 
-            this.pierce = 5;
+            this.pierce = 4;
             this.damage = (int) getDamage();    
-            this.lifetime = 5000;        
+            this.lifetime = 2000;        
             this.target = target;
         }
 
@@ -64,14 +64,14 @@ public class Gambler extends Tower {
                 return;
             }
 
-            vmag += 250.0 * dt;
-            vmag = Math.min(vmag, 800.0);
+            vmag += 100.0 * dt;
+            vmag = Math.min(vmag, 400.0);
 
             // Check the angle that we're pointing in 
             // relative to our target
             double drx = this.target.getX() - x;
             double dry = this.target.getY() - y;
-            double dist = Math.sqrt(drx*drx + dry*dry);
+            // double dist = Math.sqrt(drx*drx + dry*dry);
 
             double desired = Math.toDegrees(Math.atan2(dry, drx));
 
@@ -79,17 +79,18 @@ public class Gambler extends Tower {
             double diff = (desired - angle + 540) % 360 - 180;
 
             // lerp
-            double lerp = Math.min(dist / 300.0, 1.0);
-            lerp = lerp * lerp;
-
-            double turnSpeed = 720.0 * (vmag / 800.0);  // degrees per second
-            double maxTurn = turnSpeed * dt * lerp;            // degrees this frame
+            double turnSpeed = 1080.0 * (vmag / 800.0);  // degrees per second
+            double maxTurn = turnSpeed * dt;            // degrees this frame
 
             // Clamp diff into allowed turn speed
-            if (diff > maxTurn) diff = maxTurn;
-            if (diff < -maxTurn) diff = -maxTurn;
-
-            angle += diff;
+            if (Math.abs(diff) < 5) {
+                angle = desired;
+            } else {
+                // Otherwise clamp the rotation
+                if (diff > maxTurn) diff = maxTurn;
+                if (diff < -maxTurn) diff = -maxTurn;
+                angle += diff;
+            }
 
             double angleRad = Math.toRadians(angle);
             this.vx = vmag * Math.cos(angleRad);
@@ -173,8 +174,8 @@ public class Gambler extends Tower {
             }
 
             case 5 -> {
-                for (int i=-5; i<5; i++) {
-                    fire(new Coin(this.getSX(), this.getSY(), this.direction + (i * 36), focusedEnemy));
+                for (int i=-3; i<3; i++) {
+                    fire(new Coin(this.getSX(), this.getSY(), this.direction + (i * 60), focusedEnemy));
                 }
             }
         }

@@ -377,7 +377,7 @@ public final class GameState {
         // if (true) {
         // Default 80-20 chance to get a TowerCard
         double rnum = Math.random();
-        if (rnum < 0.8)
+        if (rnum < 0.6)
             return new TowerCard(
                 this::useCard, 
                 TowerType.getRandomWithDistributions(card_cost_distros[card_cost_level]),
@@ -409,19 +409,27 @@ public final class GameState {
 
         if (!this.buy(cost)) { return; }
         
-        switch (c) {
-            case TowerCard tc -> {
-                // Place tc if valid
-                selected_card = index;
+        if(c instanceof TowerCard tc) {
+                            selected_card = index;
                 this.setPlacingType(tc.getTowerType());
-            }
-            case UpgradeCard uc -> {
-                uc.go();
-                clearCard(index);
-            }
-            default -> {
-            }
+        } else if (c instanceof UpgradeCard uc) {
+            uc.go();
+            clearCard(index);
         }
+
+        // switch (c) {
+        //     case TowerCard tc -> {
+        //         // Place tc if valid
+        //         selected_card = index;
+        //         this.setPlacingType(tc.getTowerType());
+        //     }
+        //     case UpgradeCard uc -> {
+        //         uc.go();
+        //         clearCard(index);
+        //     }
+        //     default -> {
+        //     }
+        // }
     }
 
     // Select next wave 

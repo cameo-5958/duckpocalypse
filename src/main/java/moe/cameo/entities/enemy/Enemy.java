@@ -52,6 +52,9 @@ public class Enemy extends Entity {
 
     public int damage(int amt) {
         // Return the damage dealt
+        // Make sure I haven't died already
+        if (this.hp == 0) { return 0; }
+
         int dealt = Math.min((int) this.hp, amt);
 
         this.hp -= amt;
