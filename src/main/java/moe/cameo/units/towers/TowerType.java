@@ -41,7 +41,7 @@ public enum TowerType {
     public Tower getTemplate(TowerType tt) { return templates.get(tt); }
 
     // Choose random tower from a distribution
-    public static TowerType getRandomWithDistributions(List<Integer> distribution) {
+    public static TowerType getRandomWithDistributions(int[] distribution) {
         // Calculate total weight (sum of all weights)
         int totalWeight = 0;
         for (int weight : distribution) {
@@ -58,8 +58,8 @@ public enum TowerType {
 
         // Find which cost bucket this random value falls into
         int cumulativeWeight = 0;
-        for (int cost = 1; cost <= distribution.size(); cost++) {
-            cumulativeWeight += distribution.get(cost - 1);
+        for (int cost = 1; cost <= distribution.length; cost++) {
+            cumulativeWeight += distribution[cost - 1];
             if (random < cumulativeWeight) {
                 // Found the cost bucket, now pick a random tower from it
                 List<TowerType> legal = by_cost.get(cost);

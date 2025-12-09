@@ -344,7 +344,7 @@ public class Renderer extends JPanel {
         g.setColor(Color.BLACK);
         g.drawString(text,
             layout.left,
-            layout.nextLine(FONT_SIZE) - 16
+            layout.nextLine(FONT_SIZE + 2)
         ); 
     }
     

@@ -27,6 +27,10 @@ public class Gambler extends Tower {
 
     private static final BufferedImage COIN_IMAGE = Sprites.load("Coin", "/projectiles/coin");
 
+    static {
+        Sprites.load("GamblerSprite", "/sprites/gambler");
+    }
+
     protected Gambler(int x, int y) {
         super(x, y);
 
@@ -180,5 +184,10 @@ public class Gambler extends Tower {
     protected void renderStepped(double dt) {
         super.renderStepped(dt);
         dice_animator.update(dt);
+    }
+
+    @Override
+    public BufferedImage getImage() {
+        return Sprites.get("GamblerSprite");
     }
 }

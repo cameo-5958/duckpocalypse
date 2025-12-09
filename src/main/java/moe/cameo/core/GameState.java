@@ -6,7 +6,6 @@
 package moe.cameo.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -67,7 +66,17 @@ public final class GameState {
     private int selected_card = -1;
 
     // Select which card to be displayed
-    private final List<Integer> card_cost_distribution = Arrays.asList(1, 0, 0, 0, 0);
+    private final int[][] card_cost_distros = {
+        {1, 0, 0, 0, 0},
+        {2, 1, 0, 0, 0},
+        {1, 2, 1, 0, 0},
+        {1, 3, 3, 1, 0},
+        {1, 4, 6, 4, 1}, 
+        {1, 1, 4, 6, 4},
+        {1, 1, 1, 8, 8},
+        {1, 1, 1, 1, 10}
+    };
+    private int card_cost_level = 0;
 
     // Click queued? 
     // true = not handled, false = handled
@@ -371,7 +380,7 @@ public final class GameState {
         if (rnum < 0.8)
             return new TowerCard(
                 this::useCard, 
-                TowerType.getRandomWithDistributions(card_cost_distribution),
+                TowerType.getRandomWithDistributions(card_cost_distros[card_cost_level]),
                 index, 1
             );
         else {
@@ -471,6 +480,11 @@ public final class GameState {
         }
         else 
             Error.raise("You've gotta be stupid...");
+    }
+
+    // Upgrade CardCostThing
+    public void upgradeCardCostRatio() {
+        this.card_cost_level++;
     }
 
 
