@@ -12,7 +12,6 @@ public class UpgradeCard extends Card {
 
     // Registry
     public enum UPGRADE_CARD_TYPES {
-        CARDCOSTS(1, 7),
         ECONOMY(1),
         HEAL(1),
         CARDCOSTS(1, 4),
