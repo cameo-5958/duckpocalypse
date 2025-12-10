@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.enemy.EnemyTypes;
 
 /**
@@ -87,6 +88,13 @@ public class Wave {
         // Create the pair
         Pair<Wave, Integer> pwi = new Pair<>(w, level);
 
+        // Print the wave metadata
+        int total = 0;
+        for (Dup d : dups) {
+            total += d.e.getEnemyHp() * d.count * Enemy.STATS_SCALING[level];
+        }
+        System.out.println("Created wave with effective HP & level: " + total + ", " + level) ;
+
         // return the Pair
         return pwi;
     }
@@ -96,20 +104,42 @@ public class Wave {
         s.addAll(Arrays.asList(
             newWave(WaveTypes.NORMAL, 1, new Dup(EnemyTypes.SLIME, 3)),     // Wave 1
             newWave(WaveTypes.NORMAL, 1, new Dup(EnemyTypes.SLIME, 6)),     // Wave 2
-            newWave(WaveTypes.NORMAL, 1,                                          // Wave 3
+            newWave(WaveTypes.RUSH, 1,                                          // Wave 3
                 new Dup(EnemyTypes.BAT, 2),
                 new Dup(EnemyTypes.SLIME, 4),
                 new Dup(EnemyTypes.BAT, 2)                    
             ),
-            newWave(WaveTypes.NORMAL, 1,
+            newWave(WaveTypes.CLUMP, 1,
                 new Dup(EnemyTypes.SLIME, 5), 
                 new Dup(EnemyTypes.BAT, 5),
-                new Dup(EnemyTypes.SLIME, 4)
+                new Dup(EnemyTypes.MUSHROOM, 4)
             ),
             newWave(WaveTypes.MINI_BOSS, 1,
                 new Dup(EnemyTypes.SLIME, 10),
                 new Dup(EnemyTypes.MUSHROOM,3),
-                new Dup(EnemyTypes.SLIME, 5)
+                new Dup(EnemyTypes.SLIME, 5),
+                new Dup(EnemyTypes.ORANGE, 1)
+            ),
+            // Increase difficulty for next ~3 waves.
+            newWave(WaveTypes.NORMAL, 2, 
+                new Dup(EnemyTypes.SLIME, 15)
+            ),
+            newWave(WaveTypes.NORMAL, 2, 
+                new Dup(EnemyTypes.BAT, 10), 
+                new Dup(EnemyTypes.SLIME, 8),
+                new Dup(EnemyTypes.BAT, 10)
+            ),
+            newWave(WaveTypes.CLUMP, 2, 
+                new Dup(EnemyTypes.MUSHROOM, 16)
+            ),
+            // Increase difficulty for the next 2 waves.
+            newWave(WaveTypes.MINI_BOSS, 3, 
+                new Dup(EnemyTypes.SLIME, 10), 
+                new Dup(EnemyTypes.ORANGE, 2)
+            ),
+            newWave(WaveTypes.BOSS, 3, 
+                new Dup(EnemyTypes.RETAINER, 8),
+                new Dup(EnemyTypes.SHADOW, 1)
             )
         ));
         return s;
@@ -124,8 +154,8 @@ public class Wave {
     private boolean going = false;
 
     public static class Dup {
-        EnemyTypes e;
-        int count;
+        public final EnemyTypes e;
+        public final int count;
         Dup(EnemyTypes e, int count) {
             this.e = e; this.count = count;
         }

@@ -42,6 +42,7 @@ public class Gambler extends Tower {
         this.base_firerate = new double[] {2.5, 2.5, 3.0, 3.0, 1};
 
         this.self_tower_type = TowerType.GAMBLER;
+        this.base_cost = 3;
     }
 
     private class Coin extends Projectile {
@@ -50,7 +51,7 @@ public class Gambler extends Tower {
             super(x, y, 0.0, angle);
             this.SIZE = 16;
 
-            this.pierce = 4;
+            this.pierce = 2;
             this.damage = (int) getDamage();    
             this.lifetime = 2000;        
             this.target = target;
@@ -59,13 +60,13 @@ public class Gambler extends Tower {
         private void recalculateTrajectory(double dt) {
             // Calculate distance between me and currently_targetted,
             // if currently_targetted exists
+            vmag += 150.0 * dt;
+            vmag = Math.min(vmag, 400.0);
+
             if (this.target == null) {
-                lifetime = Math.min(lifetime, 500);
+                lifetime = 0;
                 return;
             }
-
-            vmag += 100.0 * dt;
-            vmag = Math.min(vmag, 400.0);
 
             // Check the angle that we're pointing in 
             // relative to our target
@@ -78,19 +79,14 @@ public class Gambler extends Tower {
             // If need to turn LEFT (within requirement and requirement + 180, mod)
             double diff = (desired - angle + 540) % 360 - 180;
 
-            // lerp
-            double turnSpeed = 1080.0 * (vmag / 800.0);  // degrees per second
-            double maxTurn = turnSpeed * dt;            // degrees this frame
+            double turnSpeed = 720.0 * (vmag / 800.0) * dt;  // degrees per second
 
-            // Clamp diff into allowed turn speed
-            if (Math.abs(diff) < 5) {
-                angle = desired;
-            } else {
-                // Otherwise clamp the rotation
-                if (diff > maxTurn) diff = maxTurn;
-                if (diff < -maxTurn) diff = -maxTurn;
-                angle += diff;
-            }
+            // If this is sufficiently small, set the angle to desired
+            if (Math.abs(diff) < 5)  angle = desired;
+            else {
+                // Clamp here
+                angle += Math.max(-turnSpeed, Math.min(turnSpeed, diff));
+            }                     
 
             double angleRad = Math.toRadians(angle);
             this.vx = vmag * Math.cos(angleRad);

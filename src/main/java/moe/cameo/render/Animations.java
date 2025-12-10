@@ -46,6 +46,9 @@ public class Animations {
         load("GambleFour", "/dicefaces/four", 1.5, false);
         load("GambleFive", "/dicefaces/five", 1.5, false);
         load("GambleSix", "/dicefaces/six", 1.5, false);
+
+        load("ShadowBossWalk", "/animations/shadow", 0.35, true);
+        load("MiniShadowWalk", "/animations/shadow-mini-walk", 0.15, true);
     }
     
     

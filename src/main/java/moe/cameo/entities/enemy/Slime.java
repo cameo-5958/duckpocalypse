@@ -8,10 +8,12 @@ import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
 public class Slime extends Enemy {
+    public static final int MAX_HP_AMOUNT = 2;
+
     public Slime(Board board, int x, int y, int level) {
         super(board, x, y, level);
 
-        this.max_hp = 2;
+        this.max_hp = MAX_HP_AMOUNT;
         this.base_speed = 60;
 
         scaleStats();

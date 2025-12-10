@@ -19,6 +19,9 @@ public class Enemy extends Entity {
     protected double speed;
     protected double stopTimer = 0;
 
+    protected double abilityTimer = 0;
+    protected double abilityCooldown = -1;
+
     private static final Random RNG = new Random();
 
     private final List<int[]> path = new ArrayList<>();
@@ -43,7 +46,7 @@ public class Enemy extends Entity {
         );
     }
 
-    private static final double[] STATS_SCALING = {0, 1, 1.5, 2.25, 4, 10};
+    public static final double[] STATS_SCALING = {0, 1, 1.5, 2.25, 4, 10};
     protected void scaleStats() {
         this.max_hp *= STATS_SCALING[this.level];
         this.hp = this.max_hp;
@@ -167,6 +170,15 @@ public class Enemy extends Entity {
             return;
         }
 
+        if (abilityCooldown > 0) {
+            abilityTimer += dt;
+
+            if (abilityTimer >= abilityCooldown) {
+                abilityTimer = 0;
+                onAbilityTick();
+            }
+        }
+
         if (pathIndex >= path.size()) {
             this.move(0, 0);
             return;
@@ -218,5 +230,9 @@ public class Enemy extends Entity {
     public final Rect getCollider() {
         int size = Math.min(this.SIZE, 48);
         return new Rect(this.x, this.y, size, size);
+    }
+
+    protected void onAbilityTick() {
+
     }
 }

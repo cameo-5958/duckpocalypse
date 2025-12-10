@@ -7,10 +7,12 @@ import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
 public class Mushroom extends Enemy {
+    public static final int MAX_HP_AMOUNT = 4;
+
     public Mushroom(Board board, int x, int y, int level) {
         super(board, x, y, level);
 
-        this.max_hp = 6;
+        this.max_hp = MAX_HP_AMOUNT;
         this.base_speed = 40;
         this.SIZE = 48;
 

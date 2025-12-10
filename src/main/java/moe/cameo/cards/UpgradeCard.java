@@ -8,13 +8,15 @@ import moe.cameo.core.GameState;
 import moe.cameo.render.Sprites;
 
 public class UpgradeCard extends Card {
-    private static final int[] UPGRADE_COSTS = {67, 30, 21, 18, 13, 8, 5, 2};
+    private static final int[] UPGRADE_COSTS = {67, 13, 8, 5, 2};
 
     // Registry
     public enum UPGRADE_CARD_TYPES {
         CARDCOSTS(1, 7),
         ECONOMY(1),
-        HEAL(1); // Upgrades the ECONOMY
+        HEAL(1),
+        CARDCOSTS(1, 4),
+        MAXBUFFS(1, 4); // Upgrades the ECONOMY
 
         final int weight;
         int can_buy;
@@ -85,6 +87,16 @@ public class UpgradeCard extends Card {
                     "Increase the chance of high-cost units from spawning!",
                     Sprites.load("UpcostIcon", "/icons/upcost"),
                     UPGRADE_CARD_TYPES.CARDCOSTS
+                );
+            }
+
+            case MAXBUFFS -> {
+                yield new UpgradeCard(inct, index, state::upgradeCardMaxCount, 
+                    UPGRADE_COSTS[UPGRADE_CARD_TYPES.MAXBUFFS.can_buy],
+                    "Upskill",
+                    "Increase the amount of towers you purchase at once!",
+                    Sprites.load("UpskillIcon", "/icons/upskill"),
+                    UPGRADE_CARD_TYPES.MAXBUFFS
                 );
             }
         };

@@ -1,3 +1,8 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
 package moe.cameo.entities.enemy;
 
 import java.awt.image.BufferedImage;
@@ -6,21 +11,27 @@ import moe.cameo.render.Animator;
 import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
-public class OrangeGolem extends Enemy {
-    public static final int MAX_HP_AMOUNT = 50;
+/**
+ *
+ * @author kunru
+ */
+public class Shadow extends Enemy {
+    public static final int MAX_HP_AMOUNT = 160;
 
-    public OrangeGolem(Board board, int x, int y, int level) {
+    public Shadow(Board board, int x, int y, int level) {
         super(board, x, y, level);
 
         this.max_hp = MAX_HP_AMOUNT;
-        this.base_speed = 10;
-        this.SIZE = 96;
+        this.base_speed = 5;
+        
+        this.SIZE = 256;
+        this.abilityCooldown = 15;
 
         scaleStats();
     }
 
     // Animator
-    private final Animator animator = new Animator("OrangeGolemWalk");
+    private final Animator animator = new Animator("ShadowBossWalk");
 
     // Animate
     @Override
@@ -42,14 +53,15 @@ public class OrangeGolem extends Enemy {
         return frame;
     }
 
-    @Override
-    protected void onDeath() {
-        for (int i=0; i<3; i++) 
+    @Override 
+    public void onAbilityTick() {
+        // Spawn four MiniShadows
+        for (int i=0; i<4; i++) 
             this.board.addEntity(
-                new BlueGolem(
+                new MiniShadow(
                     this.board,
-                    this.x + (Math.random() - 0.5) * 16, 
-                    this.y + (Math.random() - 0.5) * 16,
+                    this.x, 
+                    this.y,
                     this.level
                 )
             );
