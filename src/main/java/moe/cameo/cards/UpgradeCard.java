@@ -13,7 +13,8 @@ public class UpgradeCard extends Card {
     public enum UPGRADE_CARD_TYPES {
         ECONOMY(1),
         HEAL(1),
-        CARDCOSTS(1, 4); // Upgrades the ECONOMY
+        CARDCOSTS(1, 4),
+        MAXBUFFS(1, 4); // Upgrades the ECONOMY
 
         final int weight;
         int can_buy;
@@ -83,6 +84,16 @@ public class UpgradeCard extends Card {
                     "Increase the chance of high-cost units from spawning!",
                     Sprites.load("UpcostIcon", "/icons/upcost"),
                     UPGRADE_CARD_TYPES.CARDCOSTS
+                );
+            }
+
+            case MAXBUFFS -> {
+                yield new UpgradeCard(inct, index, state::upgradeCardMaxCount, 
+                    UPGRADE_COSTS[UPGRADE_CARD_TYPES.MAXBUFFS.can_buy],
+                    "Upskill",
+                    "Increase the amount of towers you purchase at once!",
+                    Sprites.load("UpskillIcon", "/icons/upskill"),
+                    UPGRADE_CARD_TYPES.MAXBUFFS
                 );
             }
         };

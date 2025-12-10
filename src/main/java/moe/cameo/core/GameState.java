@@ -484,13 +484,22 @@ public final class GameState {
 
     // Upgrade CardCostThing
     public void upgradeCardCostRatio() {
+        if (card_cost_level == card_cost_distros.length) {
+            Error.raise("Oops! We sold too many of these cards.");
+            return;
+        }
         this.card_cost_level++;
     }
 
     // Upgrade CardNumberThing
-
+    private static final int[] CARDMAXCOUNTS = {1, 3, 7, 15, 32};
+    private int CARDMAXCOUNTSindex = 0;
     public void upgradeCardMaxCount() {
-        this.max_purchase = (max_purchase / 5 + 1) * 5; // 5, 10, 15, 20, 25
+        if (CARDMAXCOUNTSindex == CARDMAXCOUNTS.length) {
+            Error.raise("Oops! We sold too many of these cards.");
+            return;
+        }
+        this.max_purchase = CARDMAXCOUNTS[++CARDMAXCOUNTSindex]; 
     }
 
 
