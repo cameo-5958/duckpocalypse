@@ -131,6 +131,10 @@ public class GameControls {
     private static void registerDebugControls(GameState state, Renderer renderer) {
         // renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed C"), "DEBUG_PLACE_ARCHER");
         renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed SPACE"), "DEBUG_PAUSE");
+        renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed F"), "DEBUG_BAJILLION_DOLLARS");
+        renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed G"), "DEBUG_MAX_CAN_BUY");
+
+
 
         renderer.getActionMap().put("DEBUG_PLACE_ARCHER", new AbstractAction() {
             @Override
@@ -144,6 +148,20 @@ public class GameControls {
             @Override
             public void actionPerformed(ActionEvent e) {
                 state.togglePause();
+            }
+        });
+
+        renderer.getActionMap().put("DEBUG_BAJILLION_DOLLARS", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                state.giveABajillionDollars();
+            }
+        });
+
+        renderer.getActionMap().put("DEBUG_MAX_CAN_BUY", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                state.setStacksToMax();
             }
         });
     }

@@ -37,6 +37,8 @@ public class Mortar extends Tower {
         this.explosion_radii = new double[] { 64, 96, 96, 128, 160 };
 
         this.self_tower_type = TowerType.MORTAR;
+
+        this.base_cost = 3;
     }
 
     // Create an arrow

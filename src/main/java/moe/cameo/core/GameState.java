@@ -68,13 +68,10 @@ public final class GameState {
     // Select which card to be displayed
     private final int[][] card_cost_distros = {
         {1, 0, 0, 0, 0},
-        {2, 1, 0, 0, 0},
-        {1, 2, 1, 0, 0},
-        {1, 3, 3, 1, 0},
-        {1, 4, 6, 4, 1}, 
-        {1, 1, 4, 6, 4},
-        {1, 1, 1, 8, 8},
-        {1, 1, 1, 1, 10}
+        {6, 3, 1, 0, 0},
+        {8, 5, 4, 1, 0},
+        {4, 10, 8, 4, 1},
+        {0, 4, 4, 8, 4}
     };
     private int card_cost_level = 0;
 
@@ -83,8 +80,11 @@ public final class GameState {
     private boolean queued_click = false;
 
     // Money
-    private int money = 3;
-    private int per_wave = 2;
+    private int money = 4;
+    private int per_wave = 3;
+
+    // Maximum stacks of tower per purchase
+    private int max_purchase = 1;
 
     // Active widgets
     // DO NOT DIRECTLY TRY AND GET 
@@ -381,7 +381,7 @@ public final class GameState {
             return new TowerCard(
                 this::useCard, 
                 TowerType.getRandomWithDistributions(card_cost_distros[card_cost_level]),
-                index, 1
+                index, (int) (Math.random() * (max_purchase-1)) + 1
             );
         else {
             // Allow UpgradeCard to handle it
@@ -487,6 +487,12 @@ public final class GameState {
         this.card_cost_level++;
     }
 
+    // Upgrade CardNumberThing
+
+    public void upgradeCardMaxCount() {
+        this.max_purchase = (max_purchase / 5 + 1) * 5; // 5, 10, 15, 20, 25
+    }
+
 
     // Collision handler
     private void collisionEngine() {
@@ -533,6 +539,7 @@ public final class GameState {
     // Cancel placement type
     public void cancelPlacing() {
         this.setState(State.BUILDING);
+        this.money += held_cards.get(selected_card).getCost();
         this.selected_card = -1;
     }
 
@@ -629,6 +636,15 @@ public final class GameState {
         // Check if money is sufficient
         if (!this.buy(2)) return; 
         this.dealCards();
+    }
+
+    // Debugging methods
+    public void giveABajillionDollars() {
+        this.money = Integer.MAX_VALUE;
+    }
+
+    public void setStacksToMax() {
+        this.max_purchase = 25;
     }
 
     // Tick updates

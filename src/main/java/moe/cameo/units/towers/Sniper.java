@@ -31,6 +31,8 @@ public class Sniper extends Tower {
         this.self_tower_type = TowerType.SNIPER;
 
         this.targets = Targetting.STRONGEST;
+
+        this.base_cost = 2;
     }
 
     // Create an arrow

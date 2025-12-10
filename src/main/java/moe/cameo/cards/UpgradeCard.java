@@ -7,13 +7,13 @@ import moe.cameo.core.GameState;
 import moe.cameo.render.Sprites;
 
 public class UpgradeCard extends Card {
-    private static final int[] UPGRADE_COSTS = {67, 30, 21, 18, 13, 8, 5, 2};
+    private static final int[] UPGRADE_COSTS = {67, 13, 8, 5, 2};
 
     // Registry
     public enum UPGRADE_CARD_TYPES {
         ECONOMY(1),
         HEAL(1),
-        CARDCOSTS(1, 7); // Upgrades the ECONOMY
+        CARDCOSTS(1, 4); // Upgrades the ECONOMY
 
         final int weight;
         int can_buy;

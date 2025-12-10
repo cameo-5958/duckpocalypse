@@ -1,35 +1,36 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
 package moe.cameo.entities.enemy;
 
 import java.awt.image.BufferedImage;
 
-import moe.cameo.core.Constants;
 import moe.cameo.render.Animator;
 import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
-public class BlueGolem extends Enemy {
-    public static final int MAX_HP_AMOUNT = 20;
+/**
+ *
+ * @author kunru
+ */
+public class MiniShadow extends Enemy {
+    public static final int MAX_HP_AMOUNT = 10;
 
-    public BlueGolem(Board board, int x, int y, int level) {
-        this(board,             
-            (x + 0.5f) * Constants.TILE_SIZE,
-            (y + 0.5f) * Constants.TILE_SIZE,
-            level);
-    }
-
-    public BlueGolem(Board board, double x, double y, int level) {
+    public MiniShadow(Board board, double x, double y, int level) {
         super(board, x, y, level);
 
         this.max_hp = MAX_HP_AMOUNT;
-        this.base_speed = 15;
-
-        this.SIZE = 80;
+        this.base_speed = 35;
+        
+        this.SIZE = 64;
 
         scaleStats();
     }
 
     // Animator
-    private final Animator animator = new Animator("BlueGolemWalk");
+    private final Animator animator = new Animator("MiniShadowWalk");
 
     // Animate
     @Override
