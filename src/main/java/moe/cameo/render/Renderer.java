@@ -58,6 +58,8 @@ public class Renderer extends JPanel {
         interfaceHeightMap.put(Displayable.HasLevel.class, FONT_SIZE);
         interfaceHeightMap.put(Displayable.HasCards.class, FONT_SIZE);
         interfaceHeightMap.put(Displayable.HasStats.class, (FONT_SIZE + MARGIN) * 3);
+
+        Sprites.load("UpgradeStar", "/icons/upgrade-star");
     }
 
     private final int SCREEN_X;
@@ -143,10 +145,17 @@ public class Renderer extends JPanel {
         // Draw sprite
         g.drawImage(e.getSprite(), ex - es / 2, ey - es / 2, es, es, null);
 
-        // If its an enemy, draw its HP
+        // If its an enemy, draw its HP & level stars
         if (e instanceof Enemy enem) {
             double hp = enem.getHP();
             double max_hp = enem.getMaxHP();
+            int level = enem.getLevel();
+            
+            // Draw the level stars
+            for (int i=0; i<level; i++) {
+                g.drawImage(Sprites.get("UpgradeStar"), 
+                    ex-es/2 + (i * 8), ey-es/2 - 8, 8, 8, null);
+            }
 
             // Draw the HP
             g.setColor(Color.BLACK);

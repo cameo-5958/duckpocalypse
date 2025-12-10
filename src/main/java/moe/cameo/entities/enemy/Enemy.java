@@ -232,6 +232,8 @@ public class Enemy extends Entity {
         return new Rect(this.x, this.y, size, size);
     }
 
+    public final int getLevel() { return this.level; }
+
     protected void onAbilityTick() {
 
     }

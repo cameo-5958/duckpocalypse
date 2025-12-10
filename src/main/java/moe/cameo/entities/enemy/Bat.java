@@ -13,7 +13,7 @@ public class Bat extends Enemy {
         super(board, x, y, level);
 
         this.max_hp = MAX_HP_AMOUNT;
-        this.base_speed = 80;
+        this.base_speed = 60;
         
         this.SIZE = 32;
 
