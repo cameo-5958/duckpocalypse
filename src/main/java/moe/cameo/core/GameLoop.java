@@ -13,7 +13,7 @@ import moe.cameo.render.Renderer;
  */
 public class GameLoop implements Runnable{
     // Store state, rendering, running state
-    private final GameState state;
+    private GameState state;
     private final Renderer renderer; 
     private boolean running = true;
 
@@ -29,7 +29,13 @@ public class GameLoop implements Runnable{
         long prev = System.nanoTime();
         // double dt = 1.0 / Constants.FPS;
 
-        while (running && !state.isGameOver()) {
+        while (running) {
+            // Check if state needs to be replaced
+            if (state.isGameOver()) {
+                this.state = new GameState();
+                renderer.replaceState(this.state);
+            }
+
             // Calculate deltatime for other processes
             long now = System.nanoTime();
             double dt = (now - prev) / 1_000_000_000.0;

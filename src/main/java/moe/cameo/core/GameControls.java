@@ -6,6 +6,7 @@
 package moe.cameo.core;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -26,6 +27,9 @@ public class GameControls {
     // Stateful
 
     public static void registerAllControls(GameState state, Renderer renderer) {
+        // DISABLE all previous registrations
+        kill(renderer);
+
         // ENABLE methods for registration
         registerPlayerMovementControls(state, renderer);
         enablePlayerMousePosition(state, renderer);
@@ -164,5 +168,16 @@ public class GameControls {
                 state.setStacksToMax();
             }
         });
+    }
+
+    private static void kill(Renderer renderer) {
+        for (MouseListener ml : renderer.getMouseListeners())
+            renderer.removeMouseListener(ml);
+
+        for (MouseMotionListener mml : renderer.getMouseMotionListeners())
+            renderer.removeMouseMotionListener(mml);
+
+        for (KeyListener kl : renderer.getKeyListeners())
+            renderer.removeKeyListener(kl);
     }
 }

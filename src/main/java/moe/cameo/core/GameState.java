@@ -6,7 +6,6 @@
 package moe.cameo.core;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import moe.cameo.cards.Card;
@@ -96,16 +95,24 @@ public final class GameState {
         MENU(), 
         BUILDING(), 
         AUTO(),
-
+        LOST(), 
         PLACING();
 
-        private final List<Widget> reserved_widgets = new ArrayList<>();
+        private Menu reserved_widgets;
 
-        public void addWidget(Widget... w) { Collections.addAll(reserved_widgets, w); }
+        public void register(Menu m) {
+            reserved_widgets = m;
+        }
+
         public List<Widget> getWidgets() { 
-            return reserved_widgets; 
+            return reserved_widgets.get(); 
         }
     };
+
+    public GameState() {
+        // Create a new board with default dimensions
+        this(new Board(Constants.GAME_COLUMNS, Constants.GAME_ROWS));
+    }
 
     public GameState(Board board) {
         this.board = board;
@@ -125,7 +132,7 @@ public final class GameState {
         this.setUnitTileSquares();
 
         // Set initial state
-        setState(State.BUILDING); // This will auto set widgets
+        setState(State.MENU); // This will auto set widgets
 
         // Deal initial cards
         dealCards();
@@ -238,6 +245,12 @@ public final class GameState {
     public void play() {
         if (this.state == State.BUILDING)
             this.setState(State.AUTO);
+    }
+
+    // Change state from MENU -> BUILDING
+    public void start() {
+        if (this.state == State.MENU) 
+            this.setState(State.BUILDING);
     }
 
     // Calculate "focused" MouseTile

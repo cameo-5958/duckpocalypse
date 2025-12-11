@@ -34,7 +34,7 @@ public class Renderer extends JPanel {
     // Renderer class responsible for drawing
     // elements on screen
     
-    private final GameState state;
+    private GameState state;
     private static final int TILE_SIZE = Constants.TILE_SIZE;
     private static final int TSS = TILE_SIZE * 2;
     private static final int FONT_SIZE = 24;
@@ -80,6 +80,11 @@ public class Renderer extends JPanel {
 
         // Enable double buffering
         setDoubleBuffered(true);
+    }
+
+    // Destroy old game state
+    public void replaceState(GameState state) {
+        this.state = state;
     }
 
     // Draw ground

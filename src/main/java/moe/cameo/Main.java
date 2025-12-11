@@ -2,18 +2,15 @@ package moe.cameo;
 
 import javax.swing.JFrame;
 
-import moe.cameo.core.Constants;
 import moe.cameo.core.GameControls;
 import moe.cameo.core.GameLoop;
 import moe.cameo.core.GameState;
 import moe.cameo.render.Renderer;
-import moe.cameo.world.Board;
 
 public class Main {
     public static void main(String[] args) {
         // Initialize world and rendering
-        Board board = new Board(Constants.GAME_COLUMNS, Constants.GAME_ROWS);
-        GameState state = new GameState(board);        
+        GameState state = new GameState();        
         Renderer renderer = new Renderer(state);
 
         // Create the JFrame
