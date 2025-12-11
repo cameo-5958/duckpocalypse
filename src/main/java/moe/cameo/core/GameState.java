@@ -209,6 +209,9 @@ public final class GameState {
                 // Give money
                 this.money += this.per_wave;
             }
+            case MENU -> {
+                this.paused = false;
+            }
             default -> {
             }
         }
@@ -236,6 +239,9 @@ public final class GameState {
                 this.current_wave.start(this);
                 // Hide cancelButton, show CardGUI
                 
+            }
+            case MENU -> {
+                this.paused = true;
             }
             default -> {}
         }

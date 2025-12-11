@@ -146,11 +146,10 @@ public class GameGUI {
     private static void registerMenuMenu(GameState state) {
         Menu m = new Menu();
 
-        Widget start_game = new Widget(Constants.SCREEN_X - 120, 600, 240, 100,
-            new Color(40, 220, 40),
-            new Color(50, 255, 50),
-            Color.WHITE
-        ) {
+        Widget start_game = new Widget(Constants.SCREEN_X / 2 - 48, 400, 96, 32,
+                        new Color(40, 220, 40),
+                        new Color(50, 255, 50),
+                        Color.WHITE) {
             // Draw method
                     @Override
                     public void draw(Graphics2D g) {
@@ -161,16 +160,16 @@ public class GameGUI {
                         // Render label
                         FontMetrics fm = g.getFontMetrics();
 
-                        int tx = (96 - fm.stringWidth("Begin Wave")) / 2;
+                        int tx = (96 - fm.stringWidth("Begin Game")) / 2;
                         int ty = (32 - fm.getHeight()) / 2 + fm.getAscent();
 
-                        g.drawString("Begin Wave", tx, ty);
+                        g.drawString("Begin Game", tx, ty);
                     }
 
                     // OnPress
                     @Override
                     public boolean onClick() {
-                        state.play();
+                        state.start();
                         return true;
                     }
         };
