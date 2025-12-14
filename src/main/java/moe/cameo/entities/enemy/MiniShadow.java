@@ -7,6 +7,7 @@ package moe.cameo.entities.enemy;
 
 import java.awt.image.BufferedImage;
 
+import moe.cameo.core.Constants;
 import moe.cameo.render.Animator;
 import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
@@ -17,6 +18,10 @@ import moe.cameo.world.Board;
  */
 public class MiniShadow extends Enemy {
     public static final int MAX_HP_AMOUNT = 10;
+
+    public MiniShadow(Board board, int x, int y, int level) {
+        this(board, (x + 0.5) * Constants.TILE_SIZE , (y + 0.5) * Constants.TILE_SIZE, level);
+    }
 
     public MiniShadow(Board board, double x, double y, int level) {
         super(board, x, y, level);

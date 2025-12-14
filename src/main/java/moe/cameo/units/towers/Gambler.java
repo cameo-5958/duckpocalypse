@@ -37,9 +37,9 @@ public class Gambler extends Tower {
         this.name = "Gambler";
         this.desc = "Roll the dice: the higher you roll, the more enemies you obliterate.";
 
-        this.base_damages = new double[] {1, 2, 6, 12, 12};
-        this.base_range = new double[] {240, 240.0, 280.0, 280.0, 350.0};
-        this.base_firerate = new double[] {2.5, 2.5, 3.0, 3.0, 1};
+        this.base_damages = new double[] {2, 3, 5, 10, 18};
+        this.base_range = new double[] {280.0, 280.0, 280.0, 350.0, 350.0};
+        this.base_firerate = new double[] {2.5, 2.5, 2.5, 2.5, 2.5};
 
         this.self_tower_type = TowerType.GAMBLER;
         this.base_cost = 3;

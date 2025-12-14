@@ -15,10 +15,10 @@ import moe.cameo.world.Board;
  *
  * @author kunru
  */
-public class Shadow extends Enemy {
+public class Boss extends Enemy {
     public static final int MAX_HP_AMOUNT = 160;
 
-    public Shadow(Board board, int x, int y, int level) {
+    public Boss(Board board, int x, int y, int level) {
         super(board, x, y, level);
 
         this.max_hp = MAX_HP_AMOUNT;
@@ -29,20 +29,9 @@ public class Shadow extends Enemy {
 
         scaleStats();
     }
-    
-    public Shadow(Board board, double x, double y, int level) {
-        super(board, x, y, level);
 
-        this.max_hp = MAX_HP_AMOUNT;
-        this.base_speed = 5;
-        
-        this.SIZE = 256;
-        this.abilityCooldown = 15;
-
-        scaleStats();
-    }
     // Animator
-    private final Animator animator = new Animator("ShadowBossWalk");
+    private final Animator animator = new Animator("HasanWalk");
 
     // Animate
     @Override
@@ -66,10 +55,12 @@ public class Shadow extends Enemy {
 
     @Override 
     public void onAbilityTick() {
+        // For now just spawn a bunch of Shadows
         // Spawn four MiniShadows
+        animator.play("HasanAttack");
         for (int i=0; i<4; i++) 
             this.board.addEntity(
-                new MiniShadow(
+                new Shadow(
                     this.board,
                     this.x, 
                     this.y,

@@ -138,8 +138,6 @@ public class GameControls {
         renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed F"), "DEBUG_BAJILLION_DOLLARS");
         renderer.getInputMap().put(KeyStroke.getKeyStroke("pressed G"), "DEBUG_MAX_CAN_BUY");
 
-
-
         renderer.getActionMap().put("DEBUG_PLACE_ARCHER", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

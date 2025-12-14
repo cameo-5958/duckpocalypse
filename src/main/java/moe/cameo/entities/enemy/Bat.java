@@ -7,7 +7,7 @@ import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
 public class Bat extends Enemy {
-    public static final int MAX_HP_AMOUNT = 1;
+    public static final int MAX_HP_AMOUNT = 2;
 
     public Bat(Board board, int x, int y, int level) {
         super(board, x, y, level);

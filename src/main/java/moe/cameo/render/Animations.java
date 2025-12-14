@@ -49,6 +49,9 @@ public class Animations {
 
         load("ShadowBossWalk", "/animations/shadow", 0.35, true);
         load("MiniShadowWalk", "/animations/shadow-mini-walk", 0.15, true);
+
+        load("HasanWalk", "/animations/hasan-walk", 0.5, true);
+        load("HasanAttack", "/animations/hasan-attack", 0.4, false);
     }
     
     

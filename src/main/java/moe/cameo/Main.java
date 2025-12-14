@@ -25,7 +25,7 @@ public class Main {
         renderer.requestFocusInWindow();
 
         // Register events
-        GameControls.registerAllControls(state, renderer);
+        GameControls.registerAllControls(state, renderer);        
 
         // Create the thread for the main loop
         // and start it

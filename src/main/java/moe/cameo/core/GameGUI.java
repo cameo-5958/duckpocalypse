@@ -3,9 +3,12 @@ package moe.cameo.core;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 import moe.cameo.core.GameState.State;
+import moe.cameo.render.Sprites;
 import moe.cameo.render.Widget;
+import moe.waves.Wave;
 
 public class GameGUI {
     public static void register(GameState state) {
@@ -140,13 +143,32 @@ public class GameGUI {
 
     private static void registerAutoMenu(GameState state) {
         Menu m = new Menu();
+        state.getIncome();
         State.AUTO.register(m);
     }
 
     private static void registerMenuMenu(GameState state) {
         Menu m = new Menu();
 
-        Widget start_game = new Widget(Constants.SCREEN_X / 2 - 48, 400, 96, 32,
+        Wave.Difficulty[] diffs = Wave.Difficulty.values();
+        int icon_size = 400 + diffs.length * 40;
+
+        Widget game_icon = new Widget(Constants.SCREEN_X / 2 - 270, 100, 540, icon_size,
+            new Color(100, 100, 100, 255),
+            new Color(155,155,155,255)
+        ) {
+            @Override 
+            public void draw(Graphics2D g) {
+                BufferedImage logo = Sprites.load("StartLogo", "/icons/title");
+                g.drawImage(logo, 0, 0, null);
+            }
+        };
+
+        m.add(game_icon);
+        int i = 0;
+        for (Wave.Difficulty d : Wave.Difficulty.values()) {
+            // Create a widget
+            m.add(new Widget(Constants.SCREEN_X / 2 - 48, 480 + 40 * i++, 96, 32,
                         new Color(40, 220, 40),
                         new Color(50, 255, 50),
                         Color.WHITE) {
@@ -160,21 +182,22 @@ public class GameGUI {
                         // Render label
                         FontMetrics fm = g.getFontMetrics();
 
-                        int tx = (96 - fm.stringWidth("Begin Game")) / 2;
+                        int tx = (96 - fm.stringWidth(d.name())) / 2;
                         int ty = (32 - fm.getHeight()) / 2 + fm.getAscent();
 
-                        g.drawString("Begin Game", tx, ty);
+                        g.drawString(d.name(), tx, ty);
                     }
 
                     // OnPress
                     @Override
                     public boolean onClick() {
+                        state.setDifficulty(d);
                         state.start();
                         return true;
                     }
-        };
+            });
+        }
 
-        m.addAll(start_game);
         State.MENU.register(m);
     }
 }

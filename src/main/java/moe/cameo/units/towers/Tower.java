@@ -119,7 +119,7 @@ RequestsGamestates {
     @Override public int getMaxLevel()          { return this.max_level; }
     @Override public BufferedImage getImage()   { return Sprites.get("NULL"); }
     @Override public double[] getStats() {
-        double[] stats = { this.getDamage(), this.getFirerate(), this.getRange() };
+        double[] stats = { this.getDamage(), this.getFirerate(), this.getRange(), this.getDealt() };
         return stats;
     }
 
@@ -178,6 +178,10 @@ RequestsGamestates {
 
     public double getRange() {
         return this.base_range[level-1];
+    }
+
+    public double getDealt() {
+        return (double) this.damage_dealt;
     }
 
     public int getCost() { return this.base_cost; }

@@ -29,7 +29,7 @@ public class Slinger extends Tower {
 
         this.base_damages = new double[] {1, 3, 5, 9, 8};
         this.base_range = new double[] {160.0, 200.0, 200.0, 200.0, 240.0};
-        this.base_firerate = new double[] {6.0, 6.0, 6.0, 6.0, 4.0};
+        this.base_firerate = new double[] {4.0, 4.0, 3.0, 3.0, 1.2};
         this.spread_count = new int[] {3, 3, 5, 7, 13};
         this.shrapnel_damage = new int[] {1, 1, 2, 3, 4};
 

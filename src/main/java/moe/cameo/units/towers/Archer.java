@@ -24,8 +24,8 @@ public class Archer extends Tower {
         this.desc = "A low-cost, low-damage tower.";
 
         this.base_damages = new double[] {1, 2, 6, 12, 12};
-        this.base_range = new double[] {240, 240.0, 280.0, 280.0, 350.0};
-        this.base_firerate = new double[] {2.5, 2.5, 3.0, 3.0, 1};
+        this.base_range = new double[] {240.0, 240.0, 280.0, 280.0, 350.0};
+        this.base_firerate = new double[] {1.5, 1.5, 2.5, 2.5, 0.6};
 
         this.self_tower_type = TowerType.ARCHER;
     }

@@ -343,6 +343,7 @@ public class Renderer extends JPanel {
             this.drawInfoboxWord(g, layout, "Damage: " + stats[0]);
             this.drawInfoboxWord(g, layout, "Firerate: " + stats[1]);
             this.drawInfoboxWord(g, layout, "Range: " + stats[2]);
+            this.drawInfoboxWord(g, layout, "Damage done: " + stats[3]);
         }
     }
 

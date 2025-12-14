@@ -13,7 +13,6 @@ import moe.cameo.cards.TowerCard;
 import moe.cameo.cards.UpgradeCard;
 import moe.cameo.collision.Collision;
 import moe.cameo.collision.Rect;
-import moe.cameo.core.Wave.Structure;
 import moe.cameo.entities.Entity;
 import moe.cameo.entities.Goal;
 import moe.cameo.entities.Player;
@@ -28,6 +27,8 @@ import moe.cameo.units.UnitType;
 import moe.cameo.units.towers.Tower;
 import moe.cameo.units.towers.TowerType;
 import moe.cameo.world.Board;
+import moe.waves.Wave;
+import moe.waves.Wave.Structure;
 
 /**
  *
@@ -58,7 +59,7 @@ public final class GameState {
     private int wave = 0;
     private int level = 1;
     private Wave current_wave = null;
-    private final Structure wave_structure = Wave.getWaveStructure(); 
+    private Structure wave_structure;  
 
     // Store held cards and currently selected card
     private final List<Card> held_cards = new ArrayList<>();
@@ -119,7 +120,7 @@ public final class GameState {
 
         // Register GUI
         registerGUI();
-        
+
         // Create a player and add to board
         player = new Player();
         board.addEntity(player);
@@ -136,14 +137,16 @@ public final class GameState {
 
         // Deal initial cards
         dealCards();
-
-        // Select a wave to begin with 
-        current_wave = selectWave();
     }
 
     // GUI Registerer
     public void registerGUI() {
         GameGUI.register(this);
+    }
+
+    // Set difficulty (THIS SHOULD HAPPEN BEFORE ANYTHING)
+    public void setDifficulty(Wave.Difficulty d) {
+        this.wave_structure = Wave.getWaveStructure(d);
     }
 
     // Getter
@@ -211,6 +214,9 @@ public final class GameState {
             }
             case MENU -> {
                 this.paused = false;
+
+                // Select a wave for first round
+                this.current_wave = selectWave();
             }
             default -> {
             }
@@ -428,27 +434,27 @@ public final class GameState {
 
         if (!this.buy(cost)) { return; }
         
-        if(c instanceof TowerCard tc) {
-                            selected_card = index;
-                this.setPlacingType(tc.getTowerType());
-        } else if (c instanceof UpgradeCard uc) {
-            uc.go();
-            clearCard(index);
-        }
-
-        // switch (c) {
-        //     case TowerCard tc -> {
-        //         // Place tc if valid
-        //         selected_card = index;
+        // if(c instanceof TowerCard tc) {
+        //                     selected_card = index;
         //         this.setPlacingType(tc.getTowerType());
-        //     }
-        //     case UpgradeCard uc -> {
-        //         uc.go();
-        //         clearCard(index);
-        //     }
-        //     default -> {
-        //     }
+        // } else if (c instanceof UpgradeCard uc) {
+        //     uc.go();
+        //     clearCard(index);
         // }
+
+        switch (c) {
+            case TowerCard tc -> {
+                // Place tc if valid
+                selected_card = index;
+                this.setPlacingType(tc.getTowerType());
+            }
+            case UpgradeCard uc -> {
+                uc.go();
+                clearCard(index);
+            }
+            default -> {
+            }
+        }
     }
 
     // Select next wave 
@@ -467,26 +473,11 @@ public final class GameState {
             return pwi.getFirst();
         }
 
-        // Inf mode
-        Wave.WaveTypes wt;
-        if (wave % 25 == 0) // Select a boss wave
-            wt = Wave.WaveTypes.BOSS;
-        else if (wave % 5 == 0) // Select a miniboss wave
-            wt = Wave.WaveTypes.MINI_BOSS;
-        else {
-            // Select another wave. 50% normal, 25% others
-            double r = Math.random();
-            if (r < 0.5) 
-                wt = Wave.WaveTypes.NORMAL;
-            else 
-                wt = Wave.requestNonSpecialWave();
-        }
-
         // Set the level to (wave / 4)
         this.level = wave / 4;
 
         // Return a requested wave
-        return Wave.requestWave(wt);
+        return Wave.requestWave(Wave.WaveTypes.NORMAL);
     }
 
     /*********************

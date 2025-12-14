@@ -34,6 +34,9 @@ public class GameLoop implements Runnable{
             if (state.isGameOver()) {
                 this.state = new GameState();
                 renderer.replaceState(this.state);
+
+                // Register events
+                GameControls.registerAllControls(state, renderer);
             }
 
             // Calculate deltatime for other processes

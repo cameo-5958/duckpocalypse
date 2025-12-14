@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-package moe.cameo.core;
+package moe.waves;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import moe.cameo.core.GameState;
+import moe.cameo.core.Pair;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.enemy.EnemyTypes;
 
@@ -21,6 +23,21 @@ import moe.cameo.entities.enemy.EnemyTypes;
 public class Wave {
     // Alias
     public static final class Structure extends ArrayList<Pair<Wave, Integer>> {}
+
+    // Three wave structures:
+    // - LIGHTWORK: Tutorial, teaches about game
+    // - ORDINARY : A bit longer and harder
+    // - NIGHTMARE: self explanatory blud
+    public enum Difficulty {
+        LIGHTWORK, ORDINARY, NIGHTMARE;
+
+        private final Structure structure;
+        Difficulty() {
+            structure = DifficultyLoader.load(name());
+        }
+
+        public Structure getStructure() { return structure; }
+    }
 
     // Global wave registry & Getters
     public static final Map<WaveTypes, List<Wave>> waves = new HashMap<>();
@@ -81,7 +98,7 @@ public class Wave {
         wvs.add(wave);
     }
 
-    private static Pair<Wave, Integer> newWave(WaveTypes wt, int level, Dup... dups) {
+    public static Pair<Wave, Integer> newWave(WaveTypes wt, int level, Dup... dups) {
         // Create the wave
         Wave w = new Wave(wt, dups);
 
@@ -97,6 +114,10 @@ public class Wave {
 
         // return the Pair
         return pwi;
+    }
+
+    public static Structure getWaveStructure(Difficulty d) {
+        return d.getStructure();
     }
 
     public static Structure getWaveStructure() {

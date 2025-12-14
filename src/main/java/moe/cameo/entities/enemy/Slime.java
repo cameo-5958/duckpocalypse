@@ -8,7 +8,7 @@ import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
 public class Slime extends Enemy {
-    public static final int MAX_HP_AMOUNT = 2;
+    public static final int MAX_HP_AMOUNT = 3;
 
     public Slime(Board board, int x, int y, int level) {
         super(board, x, y, level);

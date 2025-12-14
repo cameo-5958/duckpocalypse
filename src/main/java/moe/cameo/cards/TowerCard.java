@@ -16,7 +16,7 @@ public class TowerCard extends Card {
         super(func, x);
         Tower template = tt.getTemplate(tt);
 
-        this.cost = template.getCost() * count;
+        this.cost = template.getCost();
         this.name = template.getName();
         this.desc = template.getDesc();
         this.sprite = template.getImage();
