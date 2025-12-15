@@ -52,7 +52,6 @@ public class Error extends Widget {
         for (int i=0; i<QUEUE.size(); i++) {
             if (QUEUE.get(i).getExpiry() < now) {
                 // Delete it
-                System.out.println("Deleted");
                 QUEUE.remove(i);
                 continue;
             }
