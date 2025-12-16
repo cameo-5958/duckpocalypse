@@ -12,10 +12,11 @@ public class UpgradeCard extends Card {
 
     // Registry
     public enum UPGRADE_CARD_TYPES {
-        ECONOMY(1),
-        HEAL(1),
-        CARDCOSTS(1, 4),
-        MAXBUFFS(1, 4); // Upgrades the ECONOMY
+        ECONOMY(4),
+        HEAL(2),
+        CARDCOSTS(6, 4),
+        MAXBUFFS(6, 4),
+        SWORD_SHARPEN(4); // Upgrades the ECONOMY
 
         final int weight;
         int can_buy;
@@ -96,6 +97,16 @@ public class UpgradeCard extends Card {
                     "Increase the amount of towers you purchase at once!",
                     Sprites.load("UpskillIcon", "/icons/upskill"),
                     UPGRADE_CARD_TYPES.MAXBUFFS
+                );
+            }
+
+            case SWORD_SHARPEN -> {
+                yield new UpgradeCard(inct, index, state::sharpenSword,
+                    2,
+                    "Sharpen",
+                    "Increase the damage your sword does!",
+                    Sprites.load("SharpenIcon", "/icons/sword-sharpen"),
+                    UPGRADE_CARD_TYPES.SWORD_SHARPEN
                 );
             }
         };

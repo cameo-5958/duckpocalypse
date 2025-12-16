@@ -85,6 +85,9 @@ public final class GameState {
 
     // Maximum stacks of tower per purchase
     private int max_purchase = 1;
+    
+    // Player damage, damage %
+    private int player_damage = 1;
 
     // Active widgets
     // DO NOT DIRECTLY TRY AND GET 
@@ -520,6 +523,11 @@ public final class GameState {
         this.max_purchase = CARDMAXCOUNTS[++CARDMAXCOUNTSindex]; 
     }
 
+    // Sword sharpening
+    public void sharpenSword() {
+        this.player_damage++;
+    }
+
 
     // Collision handler
     private void collisionEngine() {
@@ -665,9 +673,11 @@ public final class GameState {
 
                     double distance = dx * dx + dy * dy;
                     double angle = Math.toDegrees(Math.atan2(dy, dx));
-                    double diff = (angle - this.player.getDirection()) % 360;
+                    double diff = (angle - this.player.getDirection() + 540) % 360 - 180;
                     if (distance < 10_000 && Math.abs(diff) < 90) {
-                        enem.damage(5);
+                        enem.damage(player_damage + 
+                            (int) Math.floor(enem.getMaxHP() * (double) player_damage / 100.0)
+                        );
                     }
                 }
             }

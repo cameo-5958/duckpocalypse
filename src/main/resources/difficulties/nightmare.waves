@@ -1,2 +1,21 @@
+# META: 20 waves (2-5) BOSS: BOSS
 # type      level   enemies
-BOSS        5       BOSS:1
+# Part 1: Lightwork (Much harder)
+NORMAL      2       SLIME:4
+NORMAL      2       SLIME:6
+RUSH        2       BAT:4
+RUSH        2       SLIME:5 BAT:5
+CLUMP       2       MUSHROOM:5 SLIME:4 
+CLUMP       2       MUSHROOM:10 BAT:8
+# There is a nearly x2 spike here
+NORMAL      3       SLIME:16
+RUSH        3       BAT:6 SLIME:12
+CLUMP       3       MUSHROOM:12 SLIME:6 BAT:6
+MINI_BOSS   3       MUSHROOM:8 ORANGE:4
+# Part 2: Ordinary
+RUSH        4       BAT:12
+NORMAL      4       SLIME:8 BAT:8 MUSHROOM:8
+CLUMP       4       ORANGE:1 BAT:24 ORANGE:1
+RUSH        4       MUSHROOM:12 RETAINER:8
+MINI_BOSS   4       RETAINER:6 SHADOW:1
+# Part 3: Final Stretch

@@ -174,7 +174,13 @@ public class Player extends Entity {
     }
     public BufferedImage getSpriteBack() {        // Create the sprite
         double theta = Math.toRadians(direction + 90);
-        BufferedImage sword = Sprites.rotate(sword_animator.getFrame(), direction+90);
+        BufferedImage sword = sword_animator.getFrame();
+
+
+        // Flip the sword if direction smaller than 180
+        if (!(90 < direction && direction <= 270)) sword = Sprites.flip(sword);
+
+        sword = Sprites.rotate(sword, direction+90);
 
         // Overlay the sword OVER the frame if the 
         // sword is attacking; otherwise, overlay it 

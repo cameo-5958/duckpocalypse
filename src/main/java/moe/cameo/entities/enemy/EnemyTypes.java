@@ -4,10 +4,10 @@
 
     public enum EnemyTypes {
         SLIME(Slime::new, 0.3, Slime.MAX_HP_AMOUNT),
-        BAT(Bat::new, 0.1, Bat.MAX_HP_AMOUNT), ORANGE(OrangeGolem::new, 0.5, OrangeGolem.MAX_HP_AMOUNT),
-        BLUE(BlueGolem::new, 0.5, BlueGolem.MAX_HP_AMOUNT), MUSHROOM(Mushroom::new, 0.2, Mushroom.MAX_HP_AMOUNT),
-        SHADOW(Shadow::new, 2.5, Shadow.MAX_HP_AMOUNT), RETAINER(MiniShadow::new, 0.5, MiniShadow.MAX_HP_AMOUNT),
-        BOSS(Boss::new, 0.1, Boss.MAX_HP_AMOUNT);
+        BAT(Bat::new, 0.1, Bat.MAX_HP_AMOUNT), ORANGE(OrangeGolem::new, 1.0, OrangeGolem.MAX_HP_AMOUNT),
+        BLUE(BlueGolem::new, 0.5, BlueGolem.MAX_HP_AMOUNT), MUSHROOM(Mushroom::new, 0.8, Mushroom.MAX_HP_AMOUNT),
+        SHADOW(Shadow::new, 2.5, Shadow.MAX_HP_AMOUNT), RETAINER(MiniShadow::new, 1.5, MiniShadow.MAX_HP_AMOUNT),
+        BOSS(Boss::new, 2.5, Boss.MAX_HP_AMOUNT);
         // Enemy spawner
 
         public interface EnemyFactory {

@@ -35,7 +35,7 @@ public class Board {
     private final List<Entity> entities = new ArrayList<>();
     private final List<Spawner> spawners = new ArrayList<>();
 
-    private static final int NUM_SPAWNERS = (int) (Math.random() * 5) + 4;
+    private static final int NUM_SPAWNERS = (int) (Math.random() * 3) + 2;
 
     private static final int[] DX = {0, 1, 0, -1};
     private static final int[] DY = {1, 0, -1, 0};

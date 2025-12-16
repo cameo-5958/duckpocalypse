@@ -46,7 +46,7 @@ public class Enemy extends Entity {
         );
     }
 
-    public static final double[] STATS_SCALING = {0, 1, 1.5, 2.25, 4, 10};
+    public static final double[] STATS_SCALING = {0, 1, 1.5, 3, 8, 15};
     protected void scaleStats() {
         this.max_hp *= STATS_SCALING[this.level];
         this.hp = this.max_hp;
