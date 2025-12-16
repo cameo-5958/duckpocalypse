@@ -16,8 +16,6 @@ public class Bat extends Enemy {
         this.base_speed = 60;
         
         this.SIZE = 32;
-
-        scaleStats();
     }
 
     // Animator

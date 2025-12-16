@@ -15,8 +15,6 @@ public class Slime extends Enemy {
 
         this.max_hp = MAX_HP_AMOUNT;
         this.base_speed = 60;
-
-        scaleStats();
     }
     
     // Give fresh new drip

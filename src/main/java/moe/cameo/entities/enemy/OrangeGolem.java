@@ -7,7 +7,7 @@ import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
 public class OrangeGolem extends Enemy {
-    public static final int MAX_HP_AMOUNT = 40;
+    public static final int MAX_HP_AMOUNT = 50;
 
     public OrangeGolem(Board board, int x, int y, int level) {
         super(board, x, y, level);
@@ -15,8 +15,6 @@ public class OrangeGolem extends Enemy {
         this.max_hp = MAX_HP_AMOUNT;
         this.base_speed = 10;
         this.SIZE = 96;
-
-        scaleStats();
     }
 
     // Animator

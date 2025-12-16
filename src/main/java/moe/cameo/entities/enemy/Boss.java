@@ -26,8 +26,6 @@ public class Boss extends Enemy {
         
         this.SIZE = 256;
         this.abilityCooldown = 15;
-
-        scaleStats();
     }
 
     // Animator

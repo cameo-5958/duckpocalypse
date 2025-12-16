@@ -81,7 +81,7 @@ public class Sniper extends Tower {
         BufferedImage underlay = super.getSprite();
 
         // Rather than rotate, we'll flip the 
-        // slingshot image if facing left to
+        // sniper image if facing left to
         // guarantee it always faces up
         BufferedImage sniper = sniperImage;
         if (this.direction >= 90 && this.direction < 270) {
