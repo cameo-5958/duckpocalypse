@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-package moe.waves;
+package moe.cameo.waves;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import moe.cameo.entities.enemy.EnemyTypes;
-import moe.waves.Wave.Dup;
-import moe.waves.Wave.Structure;
-import moe.waves.Wave.WaveTypes;
+import moe.cameo.waves.Wave.Dup;
+import moe.cameo.waves.Wave.Structure;
+import moe.cameo.waves.Wave.WaveTypes;
 
 /**
  *

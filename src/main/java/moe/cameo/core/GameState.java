@@ -27,9 +27,9 @@ import moe.cameo.units.UnitType;
 import moe.cameo.units.towers.Farmer;
 import moe.cameo.units.towers.Tower;
 import moe.cameo.units.towers.TowerType;
+import moe.cameo.waves.Wave;
+import moe.cameo.waves.Wave.Structure;
 import moe.cameo.world.Board;
-import moe.waves.Wave;
-import moe.waves.Wave.Structure;
 
 /**
  *

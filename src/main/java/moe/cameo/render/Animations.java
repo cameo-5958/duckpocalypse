@@ -56,6 +56,7 @@ public class Animations {
 
         load("SwordAttack", "/animations/sword-swing", 0.04, false);
         load("SwordIdle", "/animations/sword-idle", 1, true);
+        load("ZombieWalk", "/animations/zombie-walk", 0.12, true);
     }
     
     
