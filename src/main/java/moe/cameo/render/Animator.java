@@ -75,4 +75,7 @@ public class Animator {
 
     public String getCurrentKey() { return currentKey; }
     public Animation getCurrentAnimation() { return current; }
+    public int getFrameIndex() {
+        return (current == null) ? -1 : current.getFrameIndex();    
+    }
 }

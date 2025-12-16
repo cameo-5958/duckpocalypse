@@ -16,7 +16,7 @@ import moe.cameo.world.Board;
  * @author kunru
  */
 public class Boss extends Enemy {
-    public static final int MAX_HP_AMOUNT = 160;
+    public static final int MAX_HP_AMOUNT = 250;
 
     public Boss(Board board, int x, int y, int level) {
         super(board, x, y, level);
@@ -33,12 +33,47 @@ public class Boss extends Enemy {
     // Animator
     private final Animator animator = new Animator("HasanWalk");
 
+    // Catch the ith frame for the ability
+    // Bounce variable
+    private boolean bouncer = false;
+    private double NORM_SPEED = 0;
+
     // Animate
     @Override
     protected void renderStepped(double dt) {
         // Just animate the dang thing
         super.renderStepped(dt);
         animator.update(dt);
+        this.NORM_SPEED = (this.speed != 0 ) ? this.speed : this.NORM_SPEED;
+
+        if (animator.getCurrentKey() == "HasanAttack" && 
+            animator.getFrameIndex() == 4) {
+            if (!bouncer) {
+                attack();
+                bouncer = true;
+            }
+        } else {
+            bouncer = false;
+        }
+
+        if (animator.getCurrentKey() == "HasanWalk") {
+            this.speed = NORM_SPEED;
+        }
+    }
+
+    private void attack() {
+        // The REAL attack method, fired
+        // on sprite i of the animator
+
+        for (int i=0; i<4; i++) 
+            this.board.addEntity(
+                new Shadow(
+                    this.board,
+                    this.x, 
+                    this.y,
+                    this.level
+                )
+            );
     }
 
     @Override
@@ -55,17 +90,11 @@ public class Boss extends Enemy {
 
     @Override 
     public void onAbilityTick() {
-        // For now just spawn a bunch of Shadows
-        // Spawn four MiniShadows
+        // Play the animation (the code will
+        // automatically switch back) and stop
+        // movement
         animator.play("HasanAttack");
-        for (int i=0; i<4; i++) 
-            this.board.addEntity(
-                new Shadow(
-                    this.board,
-                    this.x, 
-                    this.y,
-                    this.level
-                )
-            );
+
+        this.speed = 0;
     }
 }

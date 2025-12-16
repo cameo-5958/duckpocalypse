@@ -52,6 +52,8 @@ public class Animations {
 
         load("HasanWalk", "/animations/hasan-walk", 0.5, true);
         load("HasanAttack", "/animations/hasan-attack", 0.4, false);
+
+        load("ZombieWalk", "/animations/zombie-walk", 0.12, true);
     }
     
     

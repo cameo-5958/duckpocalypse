@@ -26,9 +26,9 @@ import moe.cameo.units.Unit;
 import moe.cameo.units.UnitType;
 import moe.cameo.units.towers.Tower;
 import moe.cameo.units.towers.TowerType;
+import moe.cameo.waves.Wave;
+import moe.cameo.waves.Wave.Structure;
 import moe.cameo.world.Board;
-import moe.waves.Wave;
-import moe.waves.Wave.Structure;
 
 /**
  *
@@ -434,27 +434,27 @@ public final class GameState {
 
         if (!this.buy(cost)) { return; }
         
-        // if(c instanceof TowerCard tc) {
-        //                     selected_card = index;
-        //         this.setPlacingType(tc.getTowerType());
-        // } else if (c instanceof UpgradeCard uc) {
-        //     uc.go();
-        //     clearCard(index);
-        // }
-
-        switch (c) {
-            case TowerCard tc -> {
-                // Place tc if valid
-                selected_card = index;
+        if(c instanceof TowerCard tc) {
+                            selected_card = index;
                 this.setPlacingType(tc.getTowerType());
-            }
-            case UpgradeCard uc -> {
-                uc.go();
-                clearCard(index);
-            }
-            default -> {
-            }
+        } else if (c instanceof UpgradeCard uc) {
+            uc.go();
+            clearCard(index);
         }
+
+        // switch (c) {
+        //     case TowerCard tc -> {
+        //         // Place tc if valid
+        //         selected_card = index;
+        //         this.setPlacingType(tc.getTowerType());
+        //     }
+        //     case UpgradeCard uc -> {
+        //         uc.go();
+        //         clearCard(index);
+        //     }
+        //     default -> {
+        //     }
+        // }
     }
 
     // Select next wave 

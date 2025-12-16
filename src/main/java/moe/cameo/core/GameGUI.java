@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import moe.cameo.core.GameState.State;
 import moe.cameo.render.Sprites;
 import moe.cameo.render.Widget;
-import moe.waves.Wave;
+import moe.cameo.waves.Wave;
 
 public class GameGUI {
     public static void register(GameState state) {

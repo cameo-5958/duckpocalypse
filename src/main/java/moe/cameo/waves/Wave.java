@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-package moe.waves;
+package moe.cameo.waves;
 
 import java.util.ArrayList;
 import java.util.Arrays;
