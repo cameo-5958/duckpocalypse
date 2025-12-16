@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.Entity;
+import moe.cameo.entities.Player;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.units.Unit;
 import moe.cameo.units.towers.Tower;
@@ -148,7 +149,12 @@ public class Renderer extends JPanel {
         int ey = (int) e.getY();
 
         // Draw sprite
-        g.drawImage(e.getSprite(), ex - es / 2, ey - es / 2, es, es, null);
+        if (e instanceof Player p) {
+            g.drawImage(p.getSpriteBack(), ex - e.getSize() / 2, ey - e.getSize() / 2, null);
+            g.drawImage(p.getSpriteFront(), ex - 32, ey - 32, null);
+        } else
+            g.drawImage(e.getSprite(), ex - es / 2, ey - es / 2, es, es, null);
+ 
 
         // If its an enemy, draw its HP & level stars
         if (e instanceof Enemy enem) {

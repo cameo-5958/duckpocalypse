@@ -20,6 +20,7 @@ public class Animations {
 
     static {
         load("DuckIdle", "/animations/duck-stand", 0.4, true);
+        load("PlayerIdle", "/animations/player-stand", 0.4, true);
         load("DuckWalk", "/animations/duck-walk", 0.125, false);
         load("DuckJump", "/animations/duck-jump", 0.4, false);
         load("DuckWaddle", "/animations/duck-waddle", 0.15, false);
@@ -52,6 +53,9 @@ public class Animations {
 
         load("HasanWalk", "/animations/hasan-walk", 0.5, true);
         load("HasanAttack", "/animations/hasan-attack", 0.4, false);
+
+        load("SwordAttack", "/animations/sword-swing", 0.04, false);
+        load("SwordIdle", "/animations/sword-idle", 1, true);
     }
     
     

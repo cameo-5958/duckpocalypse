@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 
 import moe.cameo.render.Animator;
 import moe.cameo.render.Sprites;
+import moe.cameo.sound.Audio;
 import moe.cameo.world.Board;
 
 /**
@@ -32,6 +33,9 @@ public class Boss extends Enemy {
 
     // Animator
     private final Animator animator = new Animator("HasanWalk");
+
+    // Audios
+    // private final Audio vine_boom = new Audio(null);
 
     // Animate
     @Override
@@ -67,5 +71,17 @@ public class Boss extends Enemy {
                     this.level
                 )
             );
+    }
+
+    private void attack1() {
+        // Delete anywhere from 1 to 5 towers
+        int num = (int) (Math.random() * 5) + 1;
+
+        // Play vine boom effect
+        
+
+        for (int i=0; i<num; i++) {
+            board.deleteRandomTower();
+        }
     }
 }

@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import moe.cameo.collision.Rect;
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
 import moe.cameo.entities.enemy.Enemy;
@@ -39,7 +40,8 @@ public class Player extends Entity {
     private double vy = 0.0f;
 
     // Create animator
-    private final Animator animator = new Animator("DuckIdle");
+    private final Animator mov_animator = new Animator("PlayerIdle");
+    private final Animator sword_animator = new Animator("SwordIdle");
 
     // Flipped state
     private boolean isFlipped = false;
@@ -51,11 +53,17 @@ public class Player extends Entity {
         this.x = Constants.SCREEN_X / 2;
         this.y = Constants.SCREEN_Y / 2 + Constants.TILE_SIZE * 2;
         this.COLOR = new Color(0, 0, 160);
+        this.SIZE = 128;
     } 
 
     // Setter
     public void setKeyState(int key, boolean down) {
         key_states[key] = down;
+    }
+
+    // Play an attack animation
+    public void playAttackAnimation() {
+        this.sword_animator.play("SwordAttack");
     }
 
     // Inherit RenderStepped
@@ -115,13 +123,14 @@ public class Player extends Entity {
             if (this.vx < 0) this.isFlipped = true;
             else if (this.vx > 0) this.isFlipped = false;
             
-            animator.play("DuckWaddle");
+            mov_animator.play("DuckWaddle");
         } else {
-            animator.play("DuckIdle");
+            mov_animator.play("PlayerIdle");
         }
 
         // Update animator
-        animator.update(dt);
+        mov_animator.update(dt);
+        sword_animator.update(dt);
 
         // Move by vx, vy
         this.move(vx * dt, vy * dt);
@@ -133,12 +142,58 @@ public class Player extends Entity {
 
     @Override
     public BufferedImage getSprite() {
-        BufferedImage frame = animator.getFrame();
+        // Create the sprite
+        double theta = Math.toRadians(direction + 90);
+        BufferedImage sword = Sprites.rotate(sword_animator.getFrame(), direction+90);
 
+        // Overlay the sword OVER the frame if the 
+        // sword is attacking; otherwise, overlay it 
+        // under
+        // if (sword_animator.getCurrentKey().equals("SwordAttack")) {
+            // frame = Sprites.overlay(frame, sword);
+        // } else {
+        // }
+
+        this.SIZE = (int) Math.ceil(
+    128 * (Math.abs(Math.cos(theta)) + Math.abs(Math.sin(theta)))
+);
+
+
+        return sword;
+    }
+
+    public BufferedImage getSpriteFront() {
+        BufferedImage frame = this.mov_animator.getFrame();
+        
         // Flip if facing opposite direction
         if (isFlipped) {
             frame = Sprites.flip(frame);
         }
+
         return frame;
+    }
+    public BufferedImage getSpriteBack() {        // Create the sprite
+        double theta = Math.toRadians(direction + 90);
+        BufferedImage sword = Sprites.rotate(sword_animator.getFrame(), direction+90);
+
+        // Overlay the sword OVER the frame if the 
+        // sword is attacking; otherwise, overlay it 
+        // under
+        // if (sword_animator.getCurrentKey().equals("SwordAttack")) {
+            // frame = Sprites.overlay(frame, sword);
+        // } else {
+        // }
+
+        this.SIZE = (int) Math.ceil(
+    128 * (Math.abs(Math.cos(theta)) + Math.abs(Math.sin(theta)))
+);
+
+
+        return sword;}
+
+    // Recalculate rect
+    @Override
+    protected void recalculateRect() {
+        collider = new Rect(this.x, this.y, 64, 64);
     }
 }

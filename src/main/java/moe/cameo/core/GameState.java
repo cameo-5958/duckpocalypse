@@ -434,27 +434,27 @@ public final class GameState {
 
         if (!this.buy(cost)) { return; }
         
-        // if(c instanceof TowerCard tc) {
-        //                     selected_card = index;
-        //         this.setPlacingType(tc.getTowerType());
-        // } else if (c instanceof UpgradeCard uc) {
-        //     uc.go();
-        //     clearCard(index);
-        // }
-
-        switch (c) {
-            case TowerCard tc -> {
-                // Place tc if valid
-                selected_card = index;
+        if(c instanceof TowerCard tc) {
+                            selected_card = index;
                 this.setPlacingType(tc.getTowerType());
-            }
-            case UpgradeCard uc -> {
-                uc.go();
-                clearCard(index);
-            }
-            default -> {
-            }
+        } else if (c instanceof UpgradeCard uc) {
+            uc.go();
+            clearCard(index);
         }
+
+        // switch (c) {
+        //     case TowerCard tc -> {
+        //         // Place tc if valid
+        //         selected_card = index;
+        //         this.setPlacingType(tc.getTowerType());
+        //     }
+        //     case UpgradeCard uc -> {
+        //         uc.go();
+        //         clearCard(index);
+        //     }
+        //     default -> {
+        //     }
+        // }
     }
 
     // Select next wave 
@@ -589,6 +589,7 @@ public final class GameState {
         switch (state) {
             case PLACING -> clickPlaceSelectedCard();
             case BUILDING     -> nothing();
+            case AUTO         -> handleDuckDoDamage();
             default           -> nothing();
         }
     }
@@ -641,6 +642,39 @@ public final class GameState {
 
         // Cancel the placement
         cancelPlacing();
+    }
+
+    // Doing damage with the Duck
+    private boolean can_attack = true;
+    private double attack_cooldown = 0;
+
+    private void handleDuckDoDamage() {
+        if (can_attack) {
+            // Begin an attack
+            can_attack = false; 
+            attack_cooldown = 0.4;
+
+            // Handle the player attacking
+            this.player.playAttackAnimation();
+            // Hit scan
+            for (Entity e : new ArrayList<>(this.board.getEntities())) {
+                if (e instanceof Enemy enem) {
+                    // Detect range
+                    double dx = enem.getX() - player.getX();
+                    double dy = enem.getY() - player.getY();
+
+                    double distance = dx * dx + dy * dy;
+                    if (distance < 10_000) {
+                        enem.damage(5);
+                    }
+                }
+            }
+
+        } else if (attack_cooldown <= 0) {
+            // Reset can_attack
+            can_attack = true;
+
+        }
     }
 
     // Handle 1, 2, 3 pressed
@@ -763,5 +797,8 @@ public final class GameState {
         if (!goal.isAlive()) {
             this.gameOver = true;
         }
+
+        // Reduce attack cooldown
+        this.attack_cooldown -= dt;
     }
 }

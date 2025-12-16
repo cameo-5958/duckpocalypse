@@ -14,6 +14,7 @@ import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.units.Spawner;
 import moe.cameo.units.Unit;
 import moe.cameo.units.UnitType;
+import moe.cameo.units.towers.Tower;
 
 public class Board {
     // Board size
@@ -393,5 +394,18 @@ public class Board {
     public void boardChanged() {
         this.calculateDistanceArray();
         this.calculateLegalPlacementPositions();
+    }
+
+    // Destroy a random tower
+    public void deleteRandomTower() {
+        List<Unit> cpy = new ArrayList<>(this.getUnits());
+
+        Collections.shuffle(cpy);
+        for (Unit u : cpy) {
+            if (u instanceof Tower) {
+                this.units.remove(u);
+                return;
+            }
+        }
     }
 }
