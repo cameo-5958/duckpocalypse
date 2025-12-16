@@ -11,6 +11,7 @@ import moe.cameo.entities.Entity;
 import moe.cameo.world.Board;
 
 public class Enemy extends Entity {
+    public static int MAX_HP_AMOUNT = 1;
 
     protected final Board board;
     protected final int level;

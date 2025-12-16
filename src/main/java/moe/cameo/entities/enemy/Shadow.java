@@ -15,7 +15,7 @@ import moe.cameo.world.Board;
  *
  * @author kunru
  */
-public class Shadow extends Enemy {
+public class Shadow extends Enemy implements Spawnable {
     public static final int MAX_HP_AMOUNT = 160;
 
     public Shadow(Board board, int x, int y, int level) {
@@ -65,7 +65,7 @@ public class Shadow extends Enemy {
         // Spawn four MiniShadows
         for (int i=0; i<4; i++) 
             this.board.addEntity(
-                new MiniShadow(
+                EnemyTypes.MINI_SHADOW.spawn(
                     this.board,
                     this.x, 
                     this.y,

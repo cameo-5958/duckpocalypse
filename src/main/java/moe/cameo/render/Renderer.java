@@ -440,5 +440,10 @@ public class Renderer extends JPanel {
 
         // Draw gui
         this.drawGui(g);
+
+        // Check the flashbang
+        if (Flashbang.queued()) {
+            Flashbang.draw((Graphics2D) g);
+        }
     }
 }

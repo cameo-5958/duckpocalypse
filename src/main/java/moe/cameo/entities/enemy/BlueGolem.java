@@ -7,7 +7,7 @@ import moe.cameo.render.Animator;
 import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
-public class BlueGolem extends Enemy {
+public class BlueGolem extends Enemy implements Spawnable {
     public static final int MAX_HP_AMOUNT = 40;
 
     public BlueGolem(Board board, int x, int y, int level) {

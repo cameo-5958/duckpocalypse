@@ -8,7 +8,9 @@ package moe.cameo.entities.enemy;
 import java.awt.image.BufferedImage;
 
 import moe.cameo.render.Animator;
+import moe.cameo.render.Flashbang;
 import moe.cameo.render.Sprites;
+import moe.cameo.sound.Audio;
 import moe.cameo.world.Board;
 
 /**
@@ -32,7 +34,7 @@ public class Boss extends Enemy {
     private final Animator animator = new Animator("HasanWalk");
 
     // Audios
-    // private final Audio vine_boom = new Audio("vine-boom");
+    private final Audio vine_boom = new Audio("vine-boom");
     // Catch the ith frame for the ability
     // Bounce variable
     private boolean bouncer = false;
@@ -64,16 +66,12 @@ public class Boss extends Enemy {
     private void attack() {
         // The REAL attack method, fired
         // on sprite i of the animator
+        vine_boom.play();
 
         for (int i=0; i<4; i++) 
-            this.board.addEntity(
-                new Shadow(
-                    this.board,
-                    this.x, 
-                    this.y,
-                    this.level
-                )
-            );
+            this.board.addEntity(EnemyTypes.SHADOW.spawn(this.board, this.x, this.y, this.level));
+        this.board.deleteRandomTowers(4);
+        Flashbang.queue(Sprites.load("F1", "/flashbang/flashbang-1"));
     }
 
     @Override

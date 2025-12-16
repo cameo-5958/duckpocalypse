@@ -159,7 +159,7 @@ public class Wave {
                 new Dup(EnemyTypes.ORANGE, 2)
             ),
             newWave(WaveTypes.BOSS, 3, 
-                new Dup(EnemyTypes.RETAINER, 8),
+                new Dup(EnemyTypes.MINI_SHADOW, 8),
                 new Dup(EnemyTypes.SHADOW, 1)
             )
         ));

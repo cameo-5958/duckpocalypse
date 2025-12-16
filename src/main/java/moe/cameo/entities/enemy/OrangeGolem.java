@@ -44,7 +44,7 @@ public class OrangeGolem extends Enemy {
     protected void onDeath() {
         for (int i=0; i<2; i++) 
             this.board.addEntity(
-                new BlueGolem(
+                EnemyTypes.BLUE.spawn(
                     this.board,
                     this.x + (Math.random() - 0.5) * 16, 
                     this.y + (Math.random() - 0.5) * 16,

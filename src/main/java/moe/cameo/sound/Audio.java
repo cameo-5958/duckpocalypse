@@ -14,22 +14,22 @@ public class Audio {
     // NON-STATIC OBJECT DATA
     private Clip clip;
 
-public Audio(String url) {
-    try {
-        AudioInputStream stream = AudioSystem.getAudioInputStream(
-            Audio.class.getResource("/sounds/" + url + ".wav")
-        );
+    public Audio(String url) {
+        try {
+            AudioInputStream stream = AudioSystem.getAudioInputStream(
+                Audio.class.getResource("/sounds/" + url + ".wav")
+            );
 
-        AudioFormat format = stream.getFormat();
-        DataLine.Info info = new DataLine.Info(Clip.class, format);
+            AudioFormat format = stream.getFormat();
+            DataLine.Info info = new DataLine.Info(Clip.class, format);
 
-        clip = (Clip) AudioSystem.getLine(info); 
-        clip.open(stream);
+            clip = (Clip) AudioSystem.getLine(info); 
+            clip.open(stream);
 
-    } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
-        System.out.println("SOMETHING FAILED");
+        } catch (IOException | LineUnavailableException | UnsupportedAudioFileException e) {
+            System.out.println("SOMETHING FAILED");
+        }
     }
-}
 
 
     public void play() {

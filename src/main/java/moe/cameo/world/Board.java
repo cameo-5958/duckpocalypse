@@ -397,14 +397,14 @@ public class Board {
     }
 
     // Destroy a random tower
-    public void deleteRandomTower() {
+    public void deleteRandomTowers(int times) {
         List<Unit> cpy = new ArrayList<>(this.getUnits());
 
         Collections.shuffle(cpy);
         for (Unit u : cpy) {
             if (u instanceof Tower) {
-                this.units.remove(u);
-                return;
+                this.removeUnit(u.getX(), u.getY());
+                if (--times == 0) { return; }
             }
         }
     }

@@ -16,7 +16,7 @@ import moe.cameo.world.Board;
  *
  * @author kunru
  */
-public class MiniShadow extends Enemy {
+public class MiniShadow extends Enemy implements Spawnable {
     public static final int MAX_HP_AMOUNT = 10;
 
     public MiniShadow(Board board, int x, int y, int level) {
