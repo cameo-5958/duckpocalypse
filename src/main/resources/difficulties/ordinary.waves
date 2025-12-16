@@ -1,2 +1,14 @@
 # META: 12 waves (1-3) BOSS: SHADOW
 # type      level   enemies
+NORMAL      1       SLIME:5
+NORMAL      1       SLIME:8 BAT:4
+RUSH        1       BAT:10 SLIME:6
+CLUMP       1       MUSHROOM:16
+NORMAL      2       SLIME:16 BAT:4
+MINI_BOSS   2       MUSHROOM:4 ORANGE:2
+RUSH        2       BAT:24
+CLUMP       2       MUSHROOM:16
+NORMAL      3       SLIME:8 BAT:8
+CLUMP       3       SLIME:23 BAT:16 MUSHROOM:10
+RUSH        3       MINI_SHADOW:12
+BOSS        3       MINI_SHADOW:6 SHADOW:1       

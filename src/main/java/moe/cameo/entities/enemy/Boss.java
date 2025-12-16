@@ -19,6 +19,14 @@ import moe.cameo.world.Board;
  */
 public class Boss extends Enemy {
     public static final int MAX_HP_AMOUNT = 250;
+    private static final String[] flashbangs = {"f1","f2","f3"};
+    int i=0;
+    
+    static {
+        Sprites.load("f1", "/flashbang/flashbang-1");
+        Sprites.load("f2", "/flashbang/flashbang-2");
+        Sprites.load("f3", "/flashbang/flashbang-3");
+    }
 
     public Boss(Board board, int x, int y, int level) {
         super(board, x, y, level);
@@ -48,7 +56,7 @@ public class Boss extends Enemy {
         animator.update(dt);
         this.NORM_SPEED = (this.speed != 0 ) ? this.speed : this.NORM_SPEED;
 
-        if (animator.getCurrentKey() == "HasanAttack" && 
+        if (animator.getCurrentKey().equals("HasanAttack") && 
             animator.getFrameIndex() == 4) {
             if (!bouncer) {
                 attack();
@@ -58,7 +66,7 @@ public class Boss extends Enemy {
             bouncer = false;
         }
 
-        if (animator.getCurrentKey() == "HasanWalk") {
+        if (animator.getCurrentKey().equals("HasanWalk")) {
             this.speed = NORM_SPEED;
         }
     }
@@ -68,10 +76,9 @@ public class Boss extends Enemy {
         // on sprite i of the animator
         vine_boom.play();
 
-        for (int i=0; i<4; i++) 
-            this.board.addEntity(EnemyTypes.SHADOW.spawn(this.board, this.x, this.y, this.level));
         this.board.deleteRandomTowers(4);
-        Flashbang.queue(Sprites.load("F1", "/flashbang/flashbang-1"));
+        Flashbang.queue(Sprites.get(flashbangs[i++]));
+        i%=3;
     }
 
     @Override

@@ -7,7 +7,7 @@ import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
 public class Zombie extends Enemy {
-    public static final int MAX_HP_AMOUNT = 6;
+    public static final int MAX_HP_AMOUNT = 20;
 
     public Zombie(Board board, int x, int y, int level) {
         super(board, x, y, level);
@@ -15,8 +15,6 @@ public class Zombie extends Enemy {
         this.max_hp = MAX_HP_AMOUNT;
         this.base_speed = 40;
         this.SIZE = 48;
-
-        scaleStats();
     }
 
     // Animator
@@ -35,7 +33,7 @@ public class Zombie extends Enemy {
         BufferedImage frame = animator.getFrame();
 
         // Flip if facing opposite direction
-        if (dx > 0) {
+        if (dx < 0) {
             frame = Sprites.flip(frame);
         }
 

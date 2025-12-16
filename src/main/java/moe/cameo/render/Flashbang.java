@@ -19,10 +19,10 @@ public class Flashbang {
 
         // Draw the img at a transparency
         double transparency;
-        if (elapsed <= 0.5) {
-            transparency = elapsed * 510.0;
+        if (elapsed <= 0.25) {
+            transparency = elapsed * 1020.0;
         } else {
-            transparency = 255 * Math.pow(Math.E, -0.8 * (elapsed - 0.5));
+            transparency = 255 * Math.pow(Math.E, -0.8 * (elapsed - 0.25));
         }
 
         float a = (float)Math.max(0.0, Math.min(1.0, transparency / 255.0));
@@ -49,6 +49,7 @@ public class Flashbang {
         if (elapsed > 4) {
             queued = false;
             img = null;
+            elapsed = 0.0;
         }
     }
 }
