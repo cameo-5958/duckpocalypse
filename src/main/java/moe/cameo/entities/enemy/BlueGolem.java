@@ -8,7 +8,7 @@ import moe.cameo.render.Sprites;
 import moe.cameo.world.Board;
 
 public class BlueGolem extends Enemy {
-    public static final int MAX_HP_AMOUNT = 15;
+    public static final int MAX_HP_AMOUNT = 40;
 
     public BlueGolem(Board board, int x, int y, int level) {
         this(board,             
@@ -24,8 +24,6 @@ public class BlueGolem extends Enemy {
         this.base_speed = 15;
 
         this.SIZE = 80;
-
-        scaleStats();
     }
 
     // Animator

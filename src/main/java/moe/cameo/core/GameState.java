@@ -24,6 +24,7 @@ import moe.cameo.units.RequestsGamestates;
 import moe.cameo.units.Spawner;
 import moe.cameo.units.Unit;
 import moe.cameo.units.UnitType;
+import moe.cameo.units.towers.Farmer;
 import moe.cameo.units.towers.Tower;
 import moe.cameo.units.towers.TowerType;
 import moe.cameo.waves.Wave;
@@ -85,6 +86,9 @@ public final class GameState {
 
     // Maximum stacks of tower per purchase
     private int max_purchase = 1;
+    
+    // Player damage, damage %
+    private int player_damage = 1;
 
     // Active widgets
     // DO NOT DIRECTLY TRY AND GET 
@@ -168,12 +172,21 @@ public final class GameState {
     public int getIncome() { return this.per_wave; }
     public List<Card> heldCards() { return this.held_cards; }
     public List<Widget> getActiveWidgets() { 
-        // This has to extend active_widgets with held_cards
-        // if state == BUILDING
+        // Additionally extends with widgets
         List<Widget> temp = new ArrayList<>(this.active_widgets);
+
+        // Held cards
         if (state == State.BUILDING) {
             temp.addAll(this.held_cards);
         }
+
+        // Farmers
+        for (Unit u : board.getUnits()) {
+            if (u instanceof Farmer f) {
+                temp.add(f.getThingy());
+            }
+        }
+
         return temp; 
     }
 
@@ -520,6 +533,11 @@ public final class GameState {
         this.max_purchase = CARDMAXCOUNTS[++CARDMAXCOUNTSindex]; 
     }
 
+    // Sword sharpening
+    public void sharpenSword() {
+        this.player_damage++;
+    }
+
 
     // Collision handler
     private void collisionEngine() {
@@ -589,6 +607,7 @@ public final class GameState {
         switch (state) {
             case PLACING -> clickPlaceSelectedCard();
             case BUILDING     -> nothing();
+            case AUTO         -> handleDuckDoDamage();
             default           -> nothing();
         }
     }
@@ -641,6 +660,43 @@ public final class GameState {
 
         // Cancel the placement
         cancelPlacing();
+    }
+
+    // Doing damage with the Duck
+    private boolean can_attack = true;
+    private double attack_cooldown = 0;
+
+    private void handleDuckDoDamage() {
+        if (can_attack) {
+            // Begin an attack
+            can_attack = false; 
+            attack_cooldown = 0.4;
+
+            // Handle the player attacking
+            this.player.playAttackAnimation();
+            // Hit scan
+            for (Entity e : new ArrayList<>(this.board.getEntities())) {
+                if (e instanceof Enemy enem) {
+                    // Detect range
+                    double dx = enem.getX() - player.getX();
+                    double dy = enem.getY() - player.getY();
+
+                    double distance = dx * dx + dy * dy;
+                    double angle = Math.toDegrees(Math.atan2(dy, dx));
+                    double diff = (angle - this.player.getDirection() + 540) % 360 - 180;
+                    if (distance < 10_000 && Math.abs(diff) < 90) {
+                        enem.damage(player_damage + 
+                            (int) Math.floor(enem.getMaxHP() * (double) player_damage / 100.0)
+                        );
+                    }
+                }
+            }
+
+        } else if (attack_cooldown <= 0) {
+            // Reset can_attack
+            can_attack = true;
+
+        }
     }
 
     // Handle 1, 2, 3 pressed
@@ -716,12 +772,16 @@ public final class GameState {
             }
         }
 
-        // Create projetiles requested by towers
+        // Create projetiles requested by towers, earn money
+        // based on farmers
         for (Unit u : this.board.getUnits()) {
             if (u instanceof Tower t) {
                 for (Projectile p : t.getQueuedProjectiles()) {
                     this.board.addEntity(p);
                 }
+            }
+            if (u instanceof Farmer f) {
+                this.money += f.getEarned();
             }
         }
 
@@ -763,5 +823,8 @@ public final class GameState {
         if (!goal.isAlive()) {
             this.gameOver = true;
         }
+
+        // Reduce attack cooldown
+        this.attack_cooldown -= dt;
     }
 }

@@ -22,24 +22,20 @@ public class Shadow extends Enemy {
         super(board, x, y, level);
 
         this.max_hp = MAX_HP_AMOUNT;
-        this.base_speed = 5;
+        this.base_speed = 15;
         
         this.SIZE = 256;
-        this.abilityCooldown = 15;
-
-        scaleStats();
+        this.abilityCooldown = 8;
     }
     
     public Shadow(Board board, double x, double y, int level) {
         super(board, x, y, level);
 
         this.max_hp = MAX_HP_AMOUNT;
-        this.base_speed = 5;
+        this.base_speed = 15;
         
         this.SIZE = 256;
-        this.abilityCooldown = 15;
-
-        scaleStats();
+        this.abilityCooldown = 8;
     }
     // Animator
     private final Animator animator = new Animator("ShadowBossWalk");

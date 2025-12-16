@@ -21,6 +21,7 @@ import moe.cameo.waves.Wave.WaveTypes;
  */
 public final class DifficultyLoader {
     public static Structure load(String name) {
+        System.out.println("Loading " + name);
         Structure s = new Structure();
 
         String path = "/difficulties/" + name.toLowerCase() + ".waves";

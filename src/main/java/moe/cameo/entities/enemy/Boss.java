@@ -26,13 +26,13 @@ public class Boss extends Enemy {
         
         this.SIZE = 256;
         this.abilityCooldown = 15;
-
-        scaleStats();
     }
 
     // Animator
     private final Animator animator = new Animator("HasanWalk");
 
+    // Audios
+    // private final Audio vine_boom = new Audio("vine-boom");
     // Catch the ith frame for the ability
     // Bounce variable
     private boolean bouncer = false;

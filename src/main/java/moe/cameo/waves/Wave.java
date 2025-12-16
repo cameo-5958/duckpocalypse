@@ -29,7 +29,7 @@ public class Wave {
     // - ORDINARY : A bit longer and harder
     // - NIGHTMARE: self explanatory blud
     public enum Difficulty {
-        LIGHTWORK, ORDINARY, NIGHTMARE;
+        LIGHTWORK, ORDINARY, NIGHTMARE, TEST;
 
         private final Structure structure;
         Difficulty() {

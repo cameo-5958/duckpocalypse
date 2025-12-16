@@ -46,11 +46,12 @@ public class Enemy extends Entity {
         );
     }
 
-    public static final double[] STATS_SCALING = {0, 1, 1.5, 2.25, 4, 10};
+    public static final double[] STATS_SCALING = {0, 1, 2, 6, 15, 67};
+    public static final double[] SPEED_SCALING = {0, 1, 1.5, 2, 2.5, 3};
     protected void scaleStats() {
         this.max_hp *= STATS_SCALING[this.level];
         this.hp = this.max_hp;
-        this.speed = this.base_speed * Math.sqrt(STATS_SCALING[this.level]);
+        this.speed = this.base_speed * Math.sqrt(SPEED_SCALING[this.level]);
     }
 
     public int damage(int amt) {
@@ -69,7 +70,7 @@ public class Enemy extends Entity {
         return dealt;
     }
 
-    private void generateFullPath() {
+    public final void generateFullPath() {
         path.clear();
         pathIndex = 0;
 
@@ -234,7 +235,5 @@ public class Enemy extends Entity {
 
     public final int getLevel() { return this.level; }
 
-    protected void onAbilityTick() {
-
-    }
+    protected void onAbilityTick() { }
 }

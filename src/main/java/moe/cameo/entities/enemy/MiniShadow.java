@@ -30,8 +30,6 @@ public class MiniShadow extends Enemy {
         this.base_speed = 35;
         
         this.SIZE = 64;
-
-        scaleStats();
     }
 
     // Animator
