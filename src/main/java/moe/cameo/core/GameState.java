@@ -19,6 +19,7 @@ import moe.cameo.entities.Player;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.entities.enemy.EnemyTypes;
 import moe.cameo.entities.projectile.Projectile;
+import moe.cameo.render.Flashbang;
 import moe.cameo.render.Widget;
 import moe.cameo.units.RequestsGamestates;
 import moe.cameo.units.Spawner;
@@ -797,6 +798,9 @@ public final class GameState {
                 this.board.removeEntity(e);
             }
         }
+        
+        // Update Flashbang
+        Flashbang.renderStepped(dt);
 
         // Attempt to spawn enemies from spawners
         // if state is correct

@@ -45,7 +45,6 @@ public enum EnemyTypes {
 
     public Enemy spawn(Board board, double x, double y, int level) {
         if (Spawnable.class.isAssignableFrom(this.enemyClass)) {
-            System.out.println("Successfully spawned boss");
             Enemy e = spawner.create(board, x, y, level); 
 
             e.scaleStats();
