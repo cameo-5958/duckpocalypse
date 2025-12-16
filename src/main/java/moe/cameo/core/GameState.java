@@ -664,7 +664,9 @@ public final class GameState {
                     double dy = enem.getY() - player.getY();
 
                     double distance = dx * dx + dy * dy;
-                    if (distance < 10_000) {
+                    double angle = Math.atan2(dy, dx);
+                    double diff = Math.toDegrees(angle - this.player.getDirection()) % 360;
+                    if (distance < 10_000 && Math.abs(diff) < 90) {
                         enem.damage(5);
                     }
                 }
