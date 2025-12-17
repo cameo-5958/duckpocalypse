@@ -731,11 +731,21 @@ public final class GameState {
         this.max_purchase = 25;
     }
 
+    // Game is over after 5 seconds of LOST state
+    private double entered_lost = 0.0;
+
     // Tick updates
     public void update(double dt) {
         // DEBUG: Set type to Tree, mode to PLACING_UNIT
         // this.gameState = State.PLACING_UNIT;
         // this.placingType = UnitType.TREE;
+
+        // Update entered_lost
+        if (this.state == State.LOST) {
+            if ((entered_lost += dt) > 5) {
+                this.gameOver = true;
+            }
+        }
 
         // Update the widgets to set hovered state
         for (Widget w : this.getActiveWidgets()) {
@@ -748,6 +758,9 @@ public final class GameState {
             queued_click = false;
             this.handleClicking();
         }
+
+        // Update Flashbang
+        Flashbang.renderStepped(dt);
 
         // Skip update if paused
         if (this.paused) return;
@@ -798,9 +811,6 @@ public final class GameState {
                 this.board.removeEntity(e);
             }
         }
-        
-        // Update Flashbang
-        Flashbang.renderStepped(dt);
 
         // Attempt to spawn enemies from spawners
         // if state is correct
@@ -825,7 +835,8 @@ public final class GameState {
 
         // Check if game over
         if (!goal.isAlive()) {
-            this.gameOver = true;
+            this.state = State.LOST;
+            this.paused = true;
         }
 
         // Reduce attack cooldown

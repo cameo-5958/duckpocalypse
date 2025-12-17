@@ -1,0 +1,11 @@
+# type      level   enemies
+NORMAL      1       SLIME:4
+NORMAL      1       SLIME:8
+NORMAL      1       MUSHROOM:4 BAT:6 SLIME:4
+NORMAL      1       MUSHROOM:6 ORANGE:1
+NORMAL      2       SLIME:6
+NORMAL      2       MUSHROOM:2 BAT:4 SLIME:4
+NORMAL      1       MINI_SHADOW:6 SHADOW:1
+NORMAL      2       MUSHROOM:20 SLIME:16 BAT:16
+NORMAL      2       ZOMBIE:12
+BOSS        2       ZOMBIE:6 BOSS:1 GOOD:15

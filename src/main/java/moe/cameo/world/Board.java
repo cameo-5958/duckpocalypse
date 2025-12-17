@@ -404,7 +404,14 @@ public class Board {
         for (Unit u : cpy) {
             if (u instanceof Tower) {
                 this.removeUnit(u.getX(), u.getY());
-                if (--times == 0) { return; }
+                if (--times == 0) { break; }
+            }
+        }
+
+        // Force all enemies to recalculate
+        for (Entity e : getEntities()) {
+            if (e instanceof Enemy enem) {
+                enem.generateFullPath();
             }
         }
     }

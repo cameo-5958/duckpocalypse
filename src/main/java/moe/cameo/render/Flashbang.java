@@ -22,7 +22,7 @@ public class Flashbang {
         if (elapsed <= 0.25) {
             transparency = elapsed * 1020.0;
         } else {
-            transparency = 255 * Math.pow(Math.E, -0.8 * (elapsed - 0.25));
+            transparency = 255 * Math.pow(Math.E, -0.4 * (elapsed - 0.25));
         }
 
         float a = (float)Math.max(0.0, Math.min(1.0, transparency / 255.0));

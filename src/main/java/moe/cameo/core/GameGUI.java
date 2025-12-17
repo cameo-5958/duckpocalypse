@@ -1,6 +1,7 @@
 package moe.cameo.core;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -19,6 +20,7 @@ public class GameGUI {
         registerBuildingMenu(state);
         registerAutoMenu(state);
         registerMenuMenu(state);
+        registerLossMenu(state);
     }
 
     private static void registerPlacingMenu(GameState state) {
@@ -143,7 +145,30 @@ public class GameGUI {
 
     private static void registerAutoMenu(GameState state) {
         Menu m = new Menu();
-        state.getIncome();
+        Widget wave_display = new Widget((Constants.SCREEN_X - 120) / 2, 10, 120, 32, 
+            new Color(0.2f, 0.2f, 0.2f, 0.4f),
+            new Color(0.2f, 0.2f, 0.2f, 0.4f)
+        ) {
+            @Override
+            public void draw(Graphics2D g) {
+                // Wave string
+                String ws = "Wave " + (state.getLevel() + 1);
+
+                // Draw the wave onto the screen
+                g.setFont(Constants.BUTTON_FONT);
+                g.setColor(Color.WHITE);
+
+                // Render label
+                FontMetrics fm = g.getFontMetrics();
+
+                int tx = (120 - fm.stringWidth(ws)) / 2;
+                int ty = (32 - fm.getHeight()) / 2 + fm.getAscent();
+
+                g.drawString(ws, tx, ty);
+            }
+        };
+        
+        m.addAll(wave_display);
         State.AUTO.register(m);
     }
 
@@ -199,5 +224,33 @@ public class GameGUI {
         }
 
         State.MENU.register(m);
+    }
+
+    private static void registerLossMenu(GameState state) {
+        Menu m = new Menu();
+
+        Widget lost = new Widget(0,0,Constants.SCREEN_X, Constants.SCREEN_Y,
+            new Color(0,0,0,0), new Color(0,0,0,0)
+        ) {
+            @Override
+            public void draw(Graphics2D g) {
+                                        // Set font
+                g.setFont(new Font("Impact", Font.PLAIN, 60));
+                g.setColor(Color.RED);
+
+                String text = "YOU LOST";
+
+                // Render label
+                FontMetrics fm = g.getFontMetrics();
+
+                int tx = (Constants.SCREEN_X - fm.stringWidth(text)) / 2;
+                int ty = (Constants.SCREEN_Y - fm.getHeight()) / 2 + fm.getAscent();
+
+                g.drawString(text, tx, ty);
+            }
+        };
+
+        m.add(lost);
+        State.LOST.register(m);
     }
 }

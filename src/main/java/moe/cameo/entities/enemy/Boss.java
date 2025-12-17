@@ -7,6 +7,7 @@ package moe.cameo.entities.enemy;
 
 import java.awt.image.BufferedImage;
 
+import moe.cameo.core.Constants;
 import moe.cameo.render.Animator;
 import moe.cameo.render.Flashbang;
 import moe.cameo.render.Sprites;
@@ -76,17 +77,25 @@ public class Boss extends Enemy {
         // on sprite i of the animator
         vine_boom.play();
 
-        this.board.deleteRandomTowers(4);
+        this.board.deleteRandomTowers((int) (Math.random() * 2) + 1);
         Flashbang.queue(Sprites.get(flashbangs[i++]));
         i%=3;
     }
 
+    private boolean facing_left = x < Constants.SCREEN_X / 2;
     @Override
     public BufferedImage getSprite() {
         BufferedImage frame = animator.getFrame();
 
+        // Flip if direction changed
+        if (dx != 0) {
+            if (facing_left != (dx > 0)) {
+                facing_left = dx > 0;
+            }
+        }
+
         // Flip if facing opposite direction
-        if (dx < 0) {
+        if (!facing_left) {
             frame = Sprites.flip(frame);
         }
 

@@ -11,7 +11,8 @@ public enum EnemyTypes {
     SHADOW(Shadow.class, Shadow::new, 2.5, Shadow.MAX_HP_AMOUNT, Shadow::new), 
     MINI_SHADOW(MiniShadow.class, MiniShadow::new, 0.5, MiniShadow.MAX_HP_AMOUNT, MiniShadow::new),
     BOSS(Boss.class, Boss::new, 0.1, Boss.MAX_HP_AMOUNT, null),
-    ZOMBIE(Zombie.class, Zombie::new, 0.1, Zombie.MAX_HP_AMOUNT, null);
+    ZOMBIE(Zombie.class, Zombie::new, 0.1, Zombie.MAX_HP_AMOUNT, null),
+    GOOD(GoodEnemy.class, GoodEnemy::new, 2.5, GoodEnemy.MAX_HP_AMOUNT, GoodEnemy::new);
     // Enemy spawner
 
     public interface EnemyFactory {

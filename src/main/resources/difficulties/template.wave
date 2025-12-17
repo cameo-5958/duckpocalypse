@@ -1,9 +1,1 @@
 # type      level   enemies
-NORMAL      1       SLIME:4
-NORMAL      1       SLIME:8
-RUSH        1       SLIME:6 BAT:4 SLIME:6
-CLUMP       1       SLIME:15 BAT:6 MUSHROOM:6
-CLUMP       2       SLIME:24
-NORMAL      2       BAT:6 SLIME:16
-NORMAL      2       BAT:4 SLIME:8 BAT:4
-MINI_BOSS   1       MUSHROOM:24 ORANGE:1

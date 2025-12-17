@@ -10,6 +10,7 @@ import java.util.List;
 
 import moe.cameo.core.Constants;
 import moe.cameo.core.GameState;
+import moe.cameo.entities.enemy.Boss;
 import moe.cameo.entities.enemy.Enemy;
 import moe.cameo.render.Sprites;
 
@@ -46,13 +47,19 @@ public class Goal extends Entity {
         // We don't care how many enemies we collided with.
         // As long as we collided with one, we'll check
         // to decrement HP.
-        if (System.nanoTime() - last_collided > Constants.GRACE_TIME_PER_ATTACK * 1_000_000_000) {
-            last_collided = System.nanoTime();
-            this.hp -= 1;
+        // Kill every enemy that touches it, 
+        // confirming none of them are BOSS
+        int dec = 1;
+        for (Enemy e : collisions) {
+            state.getBoard().removeEntity(e);
+            if (e instanceof Boss) {
+                dec = 10;
+            }
         }
 
-        // Kill every enemy that touches it
-        for (Enemy e : collisions) 
-            state.getBoard().removeEntity(e);
+        if (System.nanoTime() - last_collided > Constants.GRACE_TIME_PER_ATTACK * 1_000_000_000) {
+            last_collided = System.nanoTime();
+            this.hp -= dec;
+        }
     }
 }
